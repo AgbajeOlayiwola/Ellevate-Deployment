@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 
 function MyApp({ Component, pageProps, router }) {
     const variants = {
-        hidden: { opacity: 0, x: 200, y: 0 },
+        hidden: { background: 0, x: 200, y: 0 },
         enter: { opacity: 1, x: 0, y: 0 },
         exit: { opacity: 0, x: 0, y: -200 }
     };

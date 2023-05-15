@@ -44,6 +44,8 @@ import TotlaCollctionsSvg from '../../components/ReusableComponents/ReusableSvgC
 import MoreAction from '../../components/ReusableComponents/MoreAction';
 import TransactionStatus from '../../components/ReusableComponents/TransactionStatus';
 import { IoMdCopy } from 'react-icons/io';
+import Lottie from 'react-lottie';
+import socialdata from '../../components/ReusableComponents/Lotties/loading.json';
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
     return (
@@ -81,14 +83,16 @@ const Dashboard = () => {
     let pending = 0;
     let failed = 0;
     const [accountUpgrade, setAccountUpgrade] = useState(true);
-    const [balance, setBalance] = useState('₦0.00');
+    const [balance, setBalance] = useState('......');
     const [tableDetails, setTableDetails] = useState([]);
     const [userProfileData, setUserProfileData] = useState([]);
     const [dateState, setDateState] = useState(false);
     const [acctNum, setAcctNumm] = useState('');
     const [isCopied, setIsCopied] = useState(false);
     const [acctNumber, setAcctNumber] = useState('');
-
+    const [isLoading, setIsLoading] = useState(true);
+    const [inflow, setInflow] = useState(0);
+    const [outflow, setOutflow] = useState(0);
     const { transactionElevate, errorMessageTransactionElevate } = useSelector(
         (state) => state.transactionElevateReducer
     );
@@ -117,23 +121,44 @@ const Dashboard = () => {
     const [pageSrchIndex, setPageSrchIndex] = useState(0);
     const [numOfRecords, setNumOfRecords] = useState(10);
     const [disputes, setDisputes] = useState();
+    const [acctInfoNum, setAcctInfoNum] = useState();
+    const [accountNumberTest, setAccountNumberTest] = useState();
+    const [accountBalanceTest, setAccountBalanceTest] = useState();
     useEffect(() => {
         setDisputes(getDisputCategOryTypeSuccess);
     }, [getDisputCategOryTypeSuccess]);
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'NGN',
+        currencyDisplay: 'narrowSymbol'
+    });
+    useEffect(() => {
+        setAcctInfoNum(accountPrimarys?.accountNumber);
+        let balanceData;
+        balanceData = {
+            accountId: accountPrimarys?.accountId
+        };
+        dispatch(getBalanceEnquiry(balanceData));
+        // if (balanceEnquiry) {
+        //     setAccountBalanceTest(balanceEnquiry?.availableBalance);
+        // }
+    }, [accountPrimarys]);
     useEffect(() => {
         if (balanceEnquiry !== null) {
-            const formatter = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'NGN',
-                currencyDisplay: 'narrowSymbol'
-            });
             const formattedAmount = formatter.format(
                 balanceEnquiry.availableBalance
             );
             setBalance(formattedAmount);
         }
     }, [balanceEnquiry]);
-
+    const socialOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: socialdata,
+        rendererSettings: {
+            preserveAspectRatio: 'xMidYMid slice'
+        }
+    };
     const getCurrentDate = () => {
         let newDate = new Date();
         let date = newDate.getDate();
@@ -199,12 +224,12 @@ const Dashboard = () => {
     }
 
     useEffect(() => {
-        console.log(accountPrimarys);
-        setAcctNumm(accountPrimarys?.accountNumber);
-        const balanceData = {
-            accountId: accountPrimarys?.accountId
-        };
-        dispatch(getBalanceEnquiry(balanceData));
+        // console.log(accountPrimarys);
+        // setAcctNumm(accountPrimarys?.accountNumber);
+        // const balanceData = {
+        //     accountId: accountPrimarys?.accountId
+        // };
+        // dispatch(getBalanceEnquiry(balanceData));
         Object.keys(bankAccounts)?.map((accountNo) => {
             if (bankAccounts[accountNo].accountNumber === acctNum) {
                 setAcctNumber(accountPrimarys);
@@ -233,7 +258,28 @@ const Dashboard = () => {
     }-0${current.getDate()}`;
     useEffect(() => {
         if (transactionHistory !== null) {
+            setIsLoading(false);
             setTableDetails(transactionHistory.transactions);
+            transactionHistory.transactions
+                .filter((item) => {
+                    if (item.paymentDirection === 'CREDIT') {
+                        return item;
+                    }
+                })
+                .reduce((a, b) => {
+                    setInflow(formatter.format(a));
+                    return a + +b.transactionAmount;
+                }, 0);
+            transactionHistory.transactions
+                .filter((item) => {
+                    if (item.paymentDirection === 'DEBIT') {
+                        return item;
+                    }
+                })
+                .reduce((a, b) => {
+                    setOutflow(formatter.format(a));
+                    return a + +b.transactionAmount;
+                }, 0);
             const newDate = transactionHistory.transactions[0]?.transactionDate?.split(
                 'T'
             );
@@ -282,16 +328,12 @@ const Dashboard = () => {
                                 <div>
                                     <TotalCollections />
                                     <p>Total Collections</p>
-                                    <p className={styles.Success}>
-                                        N 24,000,000
-                                    </p>
+                                    <p className={styles.Success}>{outflow}</p>
                                 </div>
                                 <div>
                                     <TotalPendingCollections />
                                     <p>Total Collections</p>
-                                    <p className={styles.pending}>
-                                        N 24,000,000
-                                    </p>
+                                    <p className={styles.pending}>{inflow}</p>
                                 </div>
                                 <div>
                                     <TotlaCollctionsSvg />
@@ -460,9 +502,10 @@ const Dashboard = () => {
                                                             }
                                                         >
                                                             <p>
-                                                                {
-                                                                    item.transactionType
-                                                                }
+                                                                {item.transactionType.replace(
+                                                                    '_',
+                                                                    ' '
+                                                                )}
                                                             </p>
                                                         </div>
                                                         <div
@@ -478,7 +521,13 @@ const Dashboard = () => {
                                                         </div>
                                                         <div
                                                             className={
-                                                                item.status
+                                                                item.transactionStatus ===
+                                                                'PENDING'
+                                                                    ? styles.pending
+                                                                    : item.transactionStatus ===
+                                                                      'FAILED'
+                                                                    ? styles.failed
+                                                                    : styles.success
                                                             }
                                                         >
                                                             <div
@@ -516,6 +565,8 @@ const Dashboard = () => {
                                                     <h1>
                                                         {outType
                                                             ? '*******'
+                                                            : accountBalanceTest
+                                                            ? accountBalanceTest
                                                             : balance}
                                                     </h1>
                                                     <Visbility
@@ -538,7 +589,11 @@ const Dashboard = () => {
                                                 <div
                                                     className={styles.assctDrop}
                                                 >
-                                                    <p>{acctNum}</p>
+                                                    <p>
+                                                        {acctInfoNum != null
+                                                            ? acctInfoNum
+                                                            : acctNum}
+                                                    </p>
                                                     {/* <select
                                                         className={
                                                             styles.accountNumbers
@@ -627,12 +682,18 @@ const Dashboard = () => {
                                                     >
                                                         <p
                                                             onClick={(e) => {
-                                                                setAcctNumm(
-                                                                    bankAccounts[
-                                                                        accountNo
-                                                                    ]
-                                                                        .accountNumber
-                                                                );
+                                                                setAccountBalanceTest(
+                                                                    null
+                                                                ),
+                                                                    setAcctInfoNum(
+                                                                        null
+                                                                    ),
+                                                                    setAcctNumm(
+                                                                        bankAccounts[
+                                                                            accountNo
+                                                                        ]
+                                                                            .accountNumber
+                                                                    );
                                                             }}
                                                         >
                                                             {
@@ -670,19 +731,29 @@ const Dashboard = () => {
                                 <div className={styles.btmIIp}>
                                     <p>Recent Transactions</p>
                                 </div>
-                                {tableDetails.map((item) => {
-                                    if (item.transactionStatus === 'SUCCESS') {
-                                        success += 1;
-                                    } else if (
-                                        item.transactionStatus === 'PENDING'
-                                    ) {
-                                        pending = pending + 1;
-                                    } else if (
-                                        item.transactionStatus === 'FAILED'
-                                    ) {
-                                        failed += 1;
-                                    }
-                                })}
+                                {isLoading ? (
+                                    <Lottie
+                                        options={socialOptions}
+                                        height={200}
+                                        width={200}
+                                    />
+                                ) : (
+                                    tableDetails.map((item) => {
+                                        if (
+                                            item.transactionStatus === 'SUCCESS'
+                                        ) {
+                                            success += 1;
+                                        } else if (
+                                            item.transactionStatus === 'PENDING'
+                                        ) {
+                                            pending = pending + 1;
+                                        } else if (
+                                            item.transactionStatus === 'FAILED'
+                                        ) {
+                                            failed += 1;
+                                        }
+                                    })
+                                )}
                                 <TransactionStatus
                                     success={success}
                                     failed={failed}
@@ -786,7 +857,13 @@ const Dashboard = () => {
                                                         </div>
                                                         <div
                                                             className={
-                                                                styles.status
+                                                                item.transactionStatus ===
+                                                                'PENDING'
+                                                                    ? styles.pending
+                                                                    : item.transactionStatus ===
+                                                                      'FAILED'
+                                                                    ? styles.failed
+                                                                    : styles.success
                                                             }
                                                         >
                                                             <div

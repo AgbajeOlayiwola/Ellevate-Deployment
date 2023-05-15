@@ -241,14 +241,13 @@ const Profile = () => {
         setInterEnquiry('');
     }, []);
     useEffect(() => {
-        // console.log(accountPrimary);
-        // if (accountPrimary !== null) {
-        //     setAcctNumber(accountPrimary);
-        //     const test = { accountId: accountPrimary.accountId };
-        //     dispatch(loadfetchRM(test));
-        // } else {
-        //     setAcctNumber('Pending');
-        // }
+        if (accountPrimarys !== null) {
+            setAcctNumber(accountPrimarys.accountNumber);
+            const test = { accountId: accountPrimarys.accountId };
+            dispatch(loadfetchRM(test));
+        } else {
+            setAcctNumber('Pending');
+        }
     }, [accountPrimarys]);
     useEffect(() => {
         if (fetchRM !== null) {
@@ -1653,6 +1652,21 @@ const Profile = () => {
                                         width={400}
                                     />
                                 </div>
+                                <p className={styles.toGet}>
+                                    To get started, simply copy and share your
+                                    unique referral code with as many people as
+                                    possible. You can share it via social media,
+                                    email, text, or even by word of mouth.
+                                    Remember, the more people who use your code,
+                                    the greater the rewards youll receive. So
+                                    dont hesitate to spread the word and tell
+                                    everyone you know about our product or
+                                    service. Thank you for helping us grow and
+                                    for being a valuable member of our
+                                    community. If you have any questions or
+                                    concerns, please dont hesitate to contact
+                                    us.
+                                </p>
                                 <div className={styles.referralCont}>
                                     <p className={styles.referralCode}>
                                         Your Referral Code is:
@@ -1741,14 +1755,12 @@ const Profile = () => {
                             <div className={styles.accountNumber}>
                                 <h4>Account Number</h4>
                                 <div className={styles.accountNumberCopy}>
-                                    <p>{accountPrimarys?.accountNumber}</p>
+                                    <p>{acctNumber}</p>
                                     <h5
                                         onClick={() => {
                                             {
                                                 navigator.clipboard
-                                                    .writeText(
-                                                        acctNumber.accountNumber
-                                                    )
+                                                    .writeText(acctNumber)
                                                     .then(() => {
                                                         alert('Copied');
                                                     });

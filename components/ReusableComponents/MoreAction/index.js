@@ -10,6 +10,8 @@ import {
     lodgeDisputeSubGen
 } from '../../../redux/actions/actions';
 import OutsideClick from '../OutsideClick';
+import StorePopup from '../StorePopup';
+import CloseBtnSvg from '../ClosebtnSvg';
 
 const MoreAction = ({
     transactionAmount,
@@ -30,15 +32,21 @@ const MoreAction = ({
     const [disputeType, setDisputeType] = useState();
     const [selectedDisputeType, setSelectedDisputeType] = useState();
 
-    const [selectedDisputSubCategory, setSelectedDisputeSubCategory] =
-        useState();
+    const [
+        selectedDisputSubCategory,
+        setSelectedDisputeSubCategory
+    ] = useState();
     const [selectedDisputeCategory, setSelectedDisputeCategory] = useState();
     const [complaintCategory, setComplaintCategory] = useState();
     const exportRef = useRef();
-    const { getDisputCategorySuccess, getDisputCategoryErrorMessage } =
-        useSelector((state) => state.getDisputeCategoryReducer);
-    const { getDisputCategorySubSuccess, getDisputCategoryErrorSubMessage } =
-        useSelector((state) => state.getDisputeSubCategoryReducer);
+    const {
+        getDisputCategorySuccess,
+        getDisputCategoryErrorMessage
+    } = useSelector((state) => state.getDisputeCategoryReducer);
+    const {
+        getDisputCategorySubSuccess,
+        getDisputCategoryErrorSubMessage
+    } = useSelector((state) => state.getDisputeSubCategoryReducer);
     const { lodgeDisputeSuccess, lodgeDisputeErrorSubMessage } = useSelector(
         (state) => state.lodgeDisputeReducer
     );
@@ -76,7 +84,9 @@ const MoreAction = ({
     };
     return (
         <div
-            className={styles.edit}
+            className={
+                showDispute ? styles.edit : reciept ? styles.edit : styles.edits
+            }
             onClick={() => setDispute((prev) => !prev)}
         >
             <EditSvg />
@@ -105,14 +115,15 @@ const MoreAction = ({
                 </OutsideClick>
             ) : null}
             {showDispute ? (
-                <OutsideClick
-                    onClickOutside={() => {
-                        setShowDispute(false);
-                    }}
-                >
+                // <OutsideClick
+                //     onClickOutside={() => {
+                //         setShowDispute(false);
+                //     }}
+                // >
+                <StorePopup overlay={true}>
                     <div className={styles.showDispute}>
                         <div className={styles.cancel}>
-                            <MdCancel onClick={() => setShowDispute(false)} />
+                            <CloseBtnSvg action={() => setShowDispute(false)} />
                         </div>
                         {lodgeDisputeErrorSubMessage ? (
                             <p className={styles.errors}>
@@ -164,17 +175,13 @@ const MoreAction = ({
                         </div>
                         <button onClick={lodgeTheComplaint}>Submit</button>
                     </div>
-                </OutsideClick>
+                </StorePopup>
             ) : null}
             {reciept ? (
-                <OutsideClick
-                    onClickOutside={() => {
-                        setReciept(false);
-                    }}
-                >
+                <StorePopup overlay={true}>
                     <div className={styles.showReciept}>
                         <div className={styles.cancelReciept}>
-                            <MdCancel onClick={() => setReciept(false)} />
+                            <CloseBtnSvg action={() => setReciept(false)} />
                         </div>
                         <div ref={exportRef} className={styles.recieptDiv}>
                             <div
@@ -263,7 +270,7 @@ const MoreAction = ({
                             </button>
                         </div>
                     </div>
-                </OutsideClick>
+                </StorePopup>
             ) : null}
         </div>
     );

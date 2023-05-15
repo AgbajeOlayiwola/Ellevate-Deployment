@@ -3,7 +3,7 @@
     width: 100%;
     justify-content: space-between;
     padding: 10px 0px 10px 24px;
-    border-bottom: 0.5px solid #3e3e3e;
+    border-bottom: 2px solid #f6f6f6;
     align-items: center;
 }
 
@@ -39,6 +39,17 @@
 
 .status {
     width: 14%;
+    color: #ff2e00 !important;
+}
+
+.pending {
+    width: 14%;
+    color: #ceb407 !important;
+}
+
+.success {
+    width: 14%;
+    color: #5dbe3f !important;
 }
 
 .more {

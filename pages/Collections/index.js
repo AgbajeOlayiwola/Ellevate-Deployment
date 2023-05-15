@@ -667,7 +667,7 @@ const Collections = () => {
                                 overlay={overlay}
                                 title="Ecobank QR Code"
                                 action={buttonHandleClose}
-                                buttonText="Next"
+                                buttonText="Complete"
                                 allLink={(data) => {
                                     //console.logdata);
                                     setCount(count + 1);
