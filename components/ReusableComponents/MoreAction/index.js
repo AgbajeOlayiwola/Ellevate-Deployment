@@ -21,12 +21,14 @@ const MoreAction = ({
     destinationBank,
     type,
     narration,
-    disputes
+    disputes,
+    accountId
 }) => {
     const [dispute, setDispute] = useState('');
     const [disputeCate, setDisputeCat] = useState('');
     const dispatch = useDispatch();
     const [showReciept, setShowReciept] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [showDispute, setShowDispute] = useState(false);
     const [reciept, setReciept] = useState(false);
     const [disputeType, setDisputeType] = useState();
@@ -76,7 +78,7 @@ const MoreAction = ({
             caseCategory: selectedDisputeCategory,
             caseSubCategory: selectedDisputSubCategory,
             caseType: disputeType,
-            description: `${disputeType} from USER about ${selectedDisputeCategory} regarding ${selectedDisputSubCategory}. With Transaction Id: ${transactionId} and Transaction Ref: ${transactionRef}. Amount involved: ${transactionAmmount}`
+            description: `${disputeType} from USER about ${selectedDisputeCategory} regarding ${selectedDisputSubCategory}. With Transaction Id:  and Transaction Ref: . Amount involved: ${transactionAmount}`
         };
         dispatch(lodgeDisputeSubGen(data));
         if (lodgeDisputeErrorSubMessage) {
@@ -188,10 +190,23 @@ const MoreAction = ({
                                 className={
                                     transactionStatus === 'PENDING'
                                         ? styles.pendingReciept
-                                        : styles.success
+                                        : transactionStatus === 'FAILED'
+                                        ? styles.failedReciept
+                                        : styles.successReciept
                                 }
                             >
                                 <h1>{transactionAmount}</h1>
+                                <h2
+                                    className={
+                                        transactionStatus === 'PENDING'
+                                            ? styles.statusText
+                                            : transactionStatus === 'FAILED'
+                                            ? styles.failedText
+                                            : styles.successText
+                                    }
+                                >
+                                    {transactionStatus}
+                                </h2>
                             </div>
                             <div className={styles.recieptPad}>
                                 <div>

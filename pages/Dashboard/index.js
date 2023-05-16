@@ -73,8 +73,21 @@ function SamplePrevArrow(props) {
     );
 }
 
+const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 2,
+    slidesToScroll: 1
+};
+
 const Dashboard = () => {
     const dispatch = useDispatch();
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'NGN',
+        currencyDisplay: 'narrowSymbol'
+    });
     const router = useRouter();
     const [outType, setOutType] = useState();
     const [time, setTime] = useState();
@@ -91,8 +104,9 @@ const Dashboard = () => {
     const [isCopied, setIsCopied] = useState(false);
     const [acctNumber, setAcctNumber] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const [inflow, setInflow] = useState(0);
-    const [outflow, setOutflow] = useState(0);
+    const [inflow, setInflow] = useState(formatter.format(0));
+    const [outflow, setOutflow] = useState(formatter.format(0));
+    const [totalMoney, setTotalMMoney] = useState(formatter.format(0));
     const { transactionElevate, errorMessageTransactionElevate } = useSelector(
         (state) => state.transactionElevateReducer
     );
@@ -108,10 +122,8 @@ const Dashboard = () => {
     const { bankAccounts, bankAccountErrorMessages } = useSelector(
         (state) => state.bankAccountsReducer
     );
-    const {
-        getDisputCategOryTypeSuccess,
-        getDisputCategOryTypeErrorMessage
-    } = useSelector((state) => state.getDisputeTypeReducer);
+    const { getDisputCategOryTypeSuccess, getDisputCategOryTypeErrorMessage } =
+        useSelector((state) => state.getDisputeTypeReducer);
 
     const { userProfile } = useSelector((state) => state.userProfileReducer);
 
@@ -127,11 +139,7 @@ const Dashboard = () => {
     useEffect(() => {
         setDisputes(getDisputCategOryTypeSuccess);
     }, [getDisputCategOryTypeSuccess]);
-    const formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'NGN',
-        currencyDisplay: 'narrowSymbol'
-    });
+
     useEffect(() => {
         setAcctInfoNum(accountPrimarys?.accountNumber);
         let balanceData;
@@ -194,7 +202,9 @@ const Dashboard = () => {
         getDateXDaysAgo(2);
         dispatch(getDisputCategOryTypeGen());
     }, []);
-
+    useEffect(() => {
+        setAcctNumm(accountPrimarys?.accountNumber);
+    }, [accountPrimarys]);
     useEffect(() => {
         Object.keys(bankAccounts)?.map((accountNo) => {
             if (bankAccounts[accountNo].accountNumber === acctNum) {
@@ -258,6 +268,8 @@ const Dashboard = () => {
     }-0${current.getDate()}`;
     useEffect(() => {
         if (transactionHistory !== null) {
+            let one = 0;
+            let two = 0;
             setIsLoading(false);
             setTableDetails(transactionHistory.transactions);
             transactionHistory.transactions
@@ -268,6 +280,7 @@ const Dashboard = () => {
                 })
                 .reduce((a, b) => {
                     setInflow(formatter.format(a));
+                    one = a;
                     return a + +b.transactionAmount;
                 }, 0);
             transactionHistory.transactions
@@ -278,11 +291,12 @@ const Dashboard = () => {
                 })
                 .reduce((a, b) => {
                     setOutflow(formatter.format(a));
+                    two = a;
                     return a + +b.transactionAmount;
                 }, 0);
-            const newDate = transactionHistory.transactions[0]?.transactionDate?.split(
-                'T'
-            );
+            setTotalMMoney(formatter.format(one + two));
+            const newDate =
+                transactionHistory.transactions[0]?.transactionDate?.split('T');
             if (newDate[0] == time) {
                 setDateState(true);
             } else {
@@ -294,6 +308,7 @@ const Dashboard = () => {
             // });
         }
     }, [transactionHistory]);
+    console.log(bankAccounts);
 
     useEffect(() => {}, [pending, success, failed]);
     //console.log(newDate[0]);
@@ -305,7 +320,8 @@ const Dashboard = () => {
         }
     }
     const copyAccountNumber = () => {
-        copyTextToClipboard(acctNum)
+        console.log('copy');
+        copyTextToClipboard(`Account Number is ${acctNum} `)
             .then(() => {
                 // If successful, update the isCopied state value
                 setIsCopied(true);
@@ -327,26 +343,41 @@ const Dashboard = () => {
                             <div className={styles.Tpwhflex}>
                                 <div>
                                     <TotalCollections />
-                                    <p>Total Collections</p>
+                                    <p>Total Outflow</p>
                                     <p className={styles.Success}>{outflow}</p>
                                 </div>
                                 <div>
                                     <TotalPendingCollections />
-                                    <p>Total Collections</p>
+                                    <p>Total Inflow</p>
                                     <p className={styles.pending}>{inflow}</p>
                                 </div>
                                 <div>
                                     <TotlaCollctionsSvg />
-                                    <p>Total Collections</p>
-                                    <p className={styles.filed}>N 24,000,000</p>
+                                    <p>Total</p>
+                                    <p className={styles.filed}>{totalMoney}</p>
                                 </div>
                             </div>
                         </div>
 
                         <div className={styles.otherTrans}>
-                            <p>Other Transaction</p>
+                            <p>Quick Transaction</p>
                         </div>
                         <div className={styles.divCover}>
+                            <Link
+                                href={{
+                                    pathname: '/Payment',
+                                    query: { id: 'Single Transfer' }
+                                }}
+                            >
+                                <div className={styles.dinCLass}>
+                                    <div className={styles.svg}>
+                                        <SingleTrans />
+                                    </div>
+                                    <p className={styles.name}>
+                                        Single Transfer
+                                    </p>
+                                </div>
+                            </Link>
                             <Link
                                 href={{
                                     pathname: '/Payment',
@@ -389,21 +420,6 @@ const Dashboard = () => {
                                         <Ussd />
                                     </div>
                                     <p className={styles.name}>USSD</p>
-                                </div>
-                            </Link>
-                            <Link
-                                href={{
-                                    pathname: '/Payment',
-                                    query: { id: 'Single Transfer' }
-                                }}
-                            >
-                                <div className={styles.dinCLass}>
-                                    <div className={styles.svg}>
-                                        <SingleTrans />
-                                    </div>
-                                    <p className={styles.name}>
-                                        Single Transfer
-                                    </p>
                                 </div>
                             </Link>
                         </div>
@@ -452,34 +468,33 @@ const Dashboard = () => {
                                 ) : (
                                     tableDetails
                                         ?.filter((item) => {
-                                            const newDate = item.transactionDate.split(
-                                                'T'
-                                            );
+                                            const newDate =
+                                                item.transactionDate.split('T');
                                             return (
                                                 newDate[0] >= rangeDate &&
                                                 newDate[0] <= time
                                             );
                                         })
                                         ?.map((item, index) => {
-                                            const formatter = new Intl.NumberFormat(
-                                                'en-US',
-                                                {
+                                            const formatter =
+                                                new Intl.NumberFormat('en-US', {
                                                     style: 'currency',
                                                     currency: 'NGN',
                                                     currencyDisplay:
                                                         'narrowSymbol'
-                                                }
-                                            );
-                                            const formattedAmount = formatter.format(
-                                                item.transactionAmount
-                                            );
+                                                });
+                                            const formattedAmount =
+                                                formatter.format(
+                                                    item.transactionAmount
+                                                );
                                             let newBeneficiary;
                                             if (item.receiversName === null) {
                                                 newBeneficiary = '';
                                             } else {
-                                                newBeneficiary = item?.receiversName?.split(
-                                                    ' '
-                                                );
+                                                newBeneficiary =
+                                                    item?.receiversName?.split(
+                                                        ' '
+                                                    );
                                             }
                                             // {
                                             //     //console.log(item);
@@ -642,15 +657,27 @@ const Dashboard = () => {
                                                         )}
                                                     </select>{' '} */}
                                                     <div>
-                                                        {isCopied
-                                                            ? 'Copied!'
-                                                            : null}
+                                                        {isCopied ? (
+                                                            <div
+                                                                className={
+                                                                    styles.coppied
+                                                                }
+                                                            >
+                                                                Copied!
+                                                            </div>
+                                                        ) : null}
                                                     </div>
-                                                    <IoMdCopy
+                                                    <div
                                                         onClick={
                                                             copyAccountNumber
                                                         }
-                                                    />
+                                                    >
+                                                        <IoMdCopy
+                                                            className={
+                                                                styles.mdCopy
+                                                            }
+                                                        />
+                                                    </div>
                                                 </div>
                                                 {/* <p className={styles.accountNumber}>
                                                 {acctNumber.accountNumber}
@@ -667,11 +694,21 @@ const Dashboard = () => {
                                     <img src="/Assets/Images/bagmoney.png" />
                                 </div>
                             </div>
+
                             <div className={styles.otherAccounts}>
                                 <h2>Other Accounts</h2>
                                 <div className={styles.accountsALl}>
-                                    {Object.keys(bankAccounts)?.map(
-                                        (accountNo, index) => {
+                                    {bankAccounts?.map((accountNo, index) => {
+                                        if (
+                                            acctInfoNum ===
+                                            accountNo.accountNumber
+                                        )
+                                            return null;
+                                        else if (
+                                            acctNum === accountNo.accountNumber
+                                        ) {
+                                            return null;
+                                        } else {
                                             return (
                                                 <>
                                                     <div
@@ -689,24 +726,17 @@ const Dashboard = () => {
                                                                         null
                                                                     ),
                                                                     setAcctNumm(
-                                                                        bankAccounts[
-                                                                            accountNo
-                                                                        ]
-                                                                            .accountNumber
+                                                                        accountNo.accountNumber
                                                                     );
                                                             }}
                                                         >
                                                             {
-                                                                bankAccounts[
-                                                                    accountNo
-                                                                ].accountNumber
+                                                                accountNo.accountNumber
                                                             }
                                                         </p>
                                                         <p>
                                                             {
-                                                                bankAccounts[
-                                                                    accountNo
-                                                                ].customerType
+                                                                accountNo.customerType
                                                             }{' '}
                                                             Account
                                                         </p>
@@ -719,13 +749,31 @@ const Dashboard = () => {
                                                 </>
                                             );
                                         }
-                                    )}
+                                    })}
                                     <div className={styles.otherAccountsDiv}>
                                         <button>+Add New</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <Slider {...settings}>
+                            <div>
+                                <img src="/Assets/Images/1.png" />
+                            </div>
+                            <div>
+                                <img src="/Assets/Images/2.png" />
+                            </div>
+                            <div>
+                                <img src="/Assets/Images/3.png" />
+                            </div>
+                            <div>
+                                <img src="/Assets/Images/4.png" />
+                            </div>
+                            <div>
+                                <img src="/Assets/Images/5.png" />
+                            </div>
+                        </Slider>
                         <div className={styles.btm}>
                             <div className={styles.btmII}>
                                 <div className={styles.btmIIp}>
@@ -779,31 +827,28 @@ const Dashboard = () => {
                                 ) : (
                                     tableDetails
                                         ?.filter((item) => {
-                                            const newDate = item.transactionDate.split(
-                                                'T'
-                                            );
+                                            const newDate =
+                                                item.transactionDate.split('T');
                                             return item;
                                         })
                                         ?.map((item, index) => {
-                                            const formatter = new Intl.NumberFormat(
-                                                'en-US',
-                                                {
+                                            const formatter =
+                                                new Intl.NumberFormat('en-US', {
                                                     style: 'currency',
                                                     currency: 'NGN',
                                                     currencyDisplay:
                                                         'narrowSymbol'
-                                                }
-                                            );
-                                            const formattedAmount = formatter.format(
-                                                item.transactionAmount
-                                            );
+                                                });
+                                            const formattedAmount =
+                                                formatter.format(
+                                                    item.transactionAmount
+                                                );
                                             let newBeneficiary;
                                             if (item.receiver === null) {
                                                 newBeneficiary = '';
                                             } else {
-                                                newBeneficiary = item?.receiver?.split(
-                                                    ' '
-                                                );
+                                                newBeneficiary =
+                                                    item?.receiver?.split(' ');
                                             }
                                             return (
                                                 <div key={index}>
@@ -910,6 +955,9 @@ const Dashboard = () => {
                                             );
                                         })
                                 )}
+                                <div className={styles.seeAll}>
+                                    <Link href="/Reports">See All</Link>
+                                </div>
                             </div>
                             {/* <div className={styles.btmIII}>
                             <p className={styles.paylink}>Other Accounts</p>

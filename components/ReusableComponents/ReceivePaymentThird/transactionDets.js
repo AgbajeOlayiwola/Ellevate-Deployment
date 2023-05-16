@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './styles.module.css';
 import EditSvg from '../editSvg';
 import { MdCancel } from 'react-icons/md';
@@ -10,6 +10,9 @@ import {
     lodgeDisputeSubGen
 } from '../../../redux/actions/actions';
 import OutsideClick from '../OutsideClick';
+import Lottie from 'react-lottie';
+import socialdata from '../../ReusableComponents/Lotties/loading.json';
+import Loader from '../Loader';
 const TransactionDets = ({
     paymentDirection,
     transactionAmmount,
@@ -39,6 +42,7 @@ const TransactionDets = ({
     const [selectedDisputeCategory, setSelectedDisputeCategory] = useState();
     const [complaintCategory, setComplaintCategory] = useState();
     const exportRef = useRef();
+    const [isLoading, setIsLoading] = useState(false);
     const {
         getDisputCategorySuccess,
         getDisputCategoryErrorMessage
@@ -52,24 +56,31 @@ const TransactionDets = ({
     );
     const disputesFunction = (event) => {
         dispatch(getDisputCategoryGen(event.target.value));
+        setIsLoading(true);
         setDisputeType(event.target.value);
         if (getDisputCategorySuccess) {
+            setIsLoading(false);
             setComplaintCategory(getDisputCategorySuccess);
             console.log(getDisputCategorySuccess);
         }
     };
     const complainCateFunction = (event) => {
+        setIsLoading(true);
         dispatch(getDisputCategorySubGen(event.target.value, disputeType));
         setSelectedDisputeCategory(event.target.value);
         if (getDisputCategorySubSuccess) {
+            setIsLoading(false);
             console.log(getDisputCategorySubSuccess);
         }
     };
     const complaintSubVateFunction = (event) => {
         setSelectedDisputeSubCategory(event.target.value);
     };
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState('');
+
     const lodgeTheComplaint = () => {
+        setLoading(true);
         const data = {
             accountId: accountId,
             caseCategory: selectedDisputeCategory,
@@ -78,10 +89,21 @@ const TransactionDets = ({
             description: `${disputeType} from USER about ${selectedDisputeCategory} regarding ${selectedDisputSubCategory}. With Transaction Id: ${transactionId} and Transaction Ref: ${transactionRef}. Amount involved: ${transactionAmmount}`
         };
         dispatch(lodgeDisputeSubGen(data));
+    };
+    useEffect(() => {
         if (lodgeDisputeErrorSubMessage) {
+            setLoading(false);
+        }
+    }, [lodgeDisputeErrorSubMessage]);
+
+    const socialOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: socialdata,
+        rendererSettings: {
+            preserveAspectRatio: 'xMidYMid slice'
         }
     };
-
     // console.log(disputeType);
     return (
         <div>
@@ -171,6 +193,13 @@ const TransactionDets = ({
                                             }
                                         />
                                     </div>
+                                    {isLoading ? (
+                                        <Lottie
+                                            options={socialOptions}
+                                            height={200}
+                                            width={200}
+                                        />
+                                    ) : null}
                                     {lodgeDisputeErrorSubMessage ? (
                                         <p className={styles.errors}>
                                             {
@@ -237,9 +266,13 @@ const TransactionDets = ({
                                             )}
                                         </select>
                                     </div>
-                                    <button onClick={lodgeTheComplaint}>
-                                        Submit
-                                    </button>
+                                    {loading ? (
+                                        <Loader />
+                                    ) : (
+                                        <button onClick={lodgeTheComplaint}>
+                                            Submit Dispute
+                                        </button>
+                                    )}
                                 </div>
                             </OutsideClick>
                         ) : null}
@@ -263,10 +296,26 @@ const TransactionDets = ({
                                             className={
                                                 transactionStatus === 'PENDING'
                                                     ? styles.pendingReciept
-                                                    : styles.success
+                                                    : transactionStatus ===
+                                                      'FAILED'
+                                                    ? styles.failedReciept
+                                                    : styles.successReciept
                                             }
                                         >
-                                            <h1>₦{transactionAmmount}</h1>
+                                            <h1>{transactionAmmount}</h1>
+                                            <h2
+                                                className={
+                                                    transactionStatus ===
+                                                    'PENDING'
+                                                        ? styles.statusText
+                                                        : transactionStatus ===
+                                                          'FAILED'
+                                                        ? styles.failedText
+                                                        : styles.successText
+                                                }
+                                            >
+                                                {transactionStatus}
+                                            </h2>
                                         </div>
                                         <div className={styles.recieptPad}>
                                             <div>

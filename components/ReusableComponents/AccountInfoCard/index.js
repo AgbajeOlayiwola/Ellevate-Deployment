@@ -32,7 +32,7 @@ const AccountsInfoCard = () => {
     const { balanceEnquiry, errorMessageBalanceEnquiry } = useSelector(
         (state) => state.balanceEnquiryReducer
     );
-    const [acctNum, setAcctNumm] = useState('Select An Account');
+    const [acctNum, setAcctNumm] = useState(accountPrimarys?.accountNumber);
     const [acctInfoNum, setAcctInfoNum] = useState();
     useEffect(() => {
         dispatch(bankAccountsData());
@@ -44,13 +44,13 @@ const AccountsInfoCard = () => {
             setUserProfileData(userProfile);
         }
     }, [userProfile]);
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'NGN',
+        currencyDisplay: 'narrowSymbol'
+    });
     useEffect(() => {
         if (balanceEnquiry !== null) {
-            const formatter = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'NGN',
-                currencyDisplay: 'narrowSymbol'
-            });
             const formattedAmount = formatter.format(
                 balanceEnquiry.availableBalance
             );
@@ -65,8 +65,13 @@ const AccountsInfoCard = () => {
         };
         dispatch(getBalanceEnquiry(balanceData));
         if (balanceEnquiry) {
-            setAccountBalanceTest(balanceEnquiry?.availableBalance);
+            setAccountBalanceTest(
+                formatter.format(balanceEnquiry?.availableBalance)
+            );
         }
+    }, [accountPrimarys]);
+    useEffect(() => {
+        setAcctNumm(accountPrimarys?.accountNumber);
     }, [accountPrimarys]);
 
     useEffect(() => {
@@ -240,8 +245,18 @@ const AccountsInfoCard = () => {
                                             strokeLinejoin="round"
                                         />
                                     </svg> */}
-                                    <div>{isCopied ? 'Copied!' : null}</div>
-                                    <IoMdCopy onClick={copyAccountNumber} />
+                                    <div>
+                                        {isCopied ? (
+                                            <div className={styles.coppied}>
+                                                Copied!
+                                            </div>
+                                        ) : null}
+                                    </div>
+
+                                    <IoMdCopy
+                                        className={styles.mdCopy}
+                                        onClick={copyAccountNumber}
+                                    />
                                 </div>
                                 {/* <p className={styles.accountNumber}>
                             {acctNumber.accountNumber}
@@ -257,30 +272,32 @@ const AccountsInfoCard = () => {
             <div className={styles.otherAccounts}>
                 <h2>Other Accounts</h2>
                 <div className={styles.accountsALl}>
-                    {Object.keys(bankAccounts)?.map((accountNo, index) => {
-                        return (
-                            <>
-                                <div key={index} className={styles.accntP}>
-                                    <p
-                                        onClick={(e) => {
-                                            setAccountBalanceTest(null),
-                                                setAcctInfoNum(null),
-                                                setAcctNumm(
-                                                    bankAccounts[accountNo]
-                                                        .accountNumber
-                                                );
-                                        }}
-                                    >
-                                        {bankAccounts[accountNo].accountNumber}
-                                    </p>
-                                    <p>
-                                        {bankAccounts[accountNo].customerType}{' '}
-                                        Account
-                                    </p>
-                                </div>
-                                <hr className={styles.accountHr} />
-                            </>
-                        );
+                    {bankAccounts?.map((accountNo, index) => {
+                        if (acctInfoNum === accountNo.accountNumber)
+                            return null;
+                        else if (acctNum === accountNo.accountNumber) {
+                            return null;
+                        } else {
+                            return (
+                                <>
+                                    <div key={index} className={styles.accntP}>
+                                        <p
+                                            onClick={(e) => {
+                                                setAccountBalanceTest(null),
+                                                    setAcctInfoNum(null),
+                                                    setAcctNumm(
+                                                        accountNo.accountNumber
+                                                    );
+                                            }}
+                                        >
+                                            {accountNo.accountNumber}
+                                        </p>
+                                        <p>{accountNo.customerType} Account</p>
+                                    </div>
+                                    <hr className={styles.accountHr} />
+                                </>
+                            );
+                        }
                     })}
                     <div className={styles.otherAccountsDiv}>
                         <button>+Add New</button>

@@ -59,10 +59,8 @@ const Payment = () => {
         (state) => state.transactionFeesReducer
     );
 
-    const {
-        internationalTransfer,
-        errorMessageinternationalTransfer
-    } = useSelector((state) => state.internationalTransferReducer);
+    const { internationalTransfer, errorMessageinternationalTransfer } =
+        useSelector((state) => state.internationalTransferReducer);
 
     const { verifyCurrency, errorMessageverifyCurrency } = useSelector(
         (state) => state.verifyCurrencyReducer
@@ -403,7 +401,7 @@ const Payment = () => {
                                 closeAction={handleClose}
                                 buttonText="Next"
                                 othersaction={(data) => {
-                                    //console.log(data);
+                                    console.log(data);
                                     if (data.bankName === 'ECOBANK') {
                                         setEcobank(true);
                                         setCount(count + 1);
@@ -429,19 +427,19 @@ const Payment = () => {
                                         dispatch(getTransactionFees(payload));
                                         setIsLoading(true);
                                     }
-                                    if (data.beneficiary === true) {
-                                        const beneficiaryData = {
-                                            beneficiaryName: data.accountName,
-                                            accountNumber: data.accountNumber,
-                                            bankName: data.bankName,
-                                            bankCode: data.bankName
-                                        };
-                                        dispatch(
-                                            postBeneficiariesData(
-                                                beneficiaryData
-                                            )
-                                        );
-                                    }
+                                    // if (data.beneficiary === true) {
+                                    //     const beneficiaryData = {
+                                    //         beneficiaryName: data.accountName,
+                                    //         accountNumber: data.accountNumber,
+                                    //         bankName: data.bankName,
+                                    //         bankCode: data.bankName
+                                    //     };
+                                    //     dispatch(
+                                    //         postBeneficiariesData(
+                                    //             beneficiaryData
+                                    //         )
+                                    //     );
+                                    // }
                                     setPaymentDetails(data);
                                 }}
                                 // scheduleLater={() => {
@@ -475,6 +473,21 @@ const Payment = () => {
                                 }}
                                 transferAction={(data) => {
                                     setIsLoading(true);
+                                    if (data.beneficiary === true) {
+                                        const beneficiaryData = {
+                                            beneficiaryName:
+                                                paymentDetails.accountName,
+                                            accountNumber:
+                                                paymentDetails.accountNumber,
+                                            bankName: paymentDetails.bankName,
+                                            bankCode: paymentDetails.bankName
+                                        };
+                                        dispatch(
+                                            postBeneficiariesData(
+                                                beneficiaryData
+                                            )
+                                        );
+                                    }
                                     const paymentData = {
                                         isEcobankToEcobankTransaction: ecobank,
                                         destinationBank:
@@ -501,6 +514,7 @@ const Payment = () => {
                                         narration: paymentDetails.narration,
                                         transactionPin: Object.values(data)
                                             .toString()
+                                            .replace('true', '')
                                             .replaceAll(',', ''),
                                         accountId: accountPrimarys.accountId
                                     };
@@ -687,10 +701,11 @@ const Payment = () => {
                                                               e.BeneName,
                                                           destinationAccountNo:
                                                               e.AccountNo,
-                                                          transactionAmount: parseInt(
-                                                              e.Amount,
-                                                              10
-                                                          ),
+                                                          transactionAmount:
+                                                              parseInt(
+                                                                  e.Amount,
+                                                                  10
+                                                              ),
                                                           narration: e.narration
                                                       };
                                                   })
@@ -748,11 +763,16 @@ const Payment = () => {
                                 statusbar={status}
                                 overlay={overlay}
                                 action={() => {
-                                    setCount(0);
-                                    setOverlay(false);
-                                    setFormType('');
-                                    localStorage.removeItem('number');
-                                    localStorage.removeItem('csvData');
+                                    if (status === 'error') {
+                                        setCount(count - 2);
+                                        setIsLoading(false);
+                                    } else {
+                                        setCount(0);
+                                        setOverlay(false);
+                                        setFormType('');
+                                        localStorage.removeItem('number');
+                                        localStorage.removeItem('csvData');
+                                    }
                                 }}
                                 successfulTrans={successfulTrans}
                                 failedTrans={failedTrans}
@@ -917,7 +937,8 @@ const Payment = () => {
                                             billerCode:
                                                 airtimeNetData.billerDetail
                                                     .billerCode,
-                                            billerId: airtimeNetData.billerDetail.billerID.toString(),
+                                            billerId:
+                                                airtimeNetData.billerDetail.billerID.toString(),
                                             productCode:
                                                 desiredPackageData.productCode,
                                             paymentDescription:
@@ -946,9 +967,15 @@ const Payment = () => {
                                 error={error}
                                 statusbar={status}
                                 action={() => {
-                                    setCount(0);
-                                    setOverlay(false);
-                                    setFormType('');
+                                    if (status === 'error') {
+                                        setCount(count - 2);
+                                        setIsLoading(false);
+                                    } else {
+                                        setCount(0);
+                                        setOverlay(false);
+                                        setFormType('');
+                                        setPaymentDetails({});
+                                    }
                                 }}
                                 title="Bill Payment"
                                 beneName={

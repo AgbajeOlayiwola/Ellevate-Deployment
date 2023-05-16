@@ -21,7 +21,11 @@ const ReceivePaymentSecond = ({
     data,
     info,
     payLinkData,
-    amountPaylink
+    amountPaylink,
+    share,
+    primary,
+    merchantCode,
+    terminalId
 }) => {
     const [destinationTrue, setDestinationTrue] = useState(true);
     const [addnew, setAddnew] = useState(false);
@@ -112,11 +116,7 @@ const ReceivePaymentSecond = ({
         'ellevate.com/qyweywbdbsdfsds/ei...'
     );
 
-    const [
-        ussData,
-        setUssdData
-    ] = useState(`https://recievepayment.netlify.app/Payments/ussd?data=
-    ${link}`);
+    const [ussData, setUssdData] = useState(link);
     // This is the function we wrote earlier
 
     async function copyTextToClipboard(text) {
@@ -129,7 +129,9 @@ const ReceivePaymentSecond = ({
     // onClick handler function for the copy button
     const copy = () => {
         // Asynchronously call copyTextToClipboard
-        copyTextToClipboard(ussData)
+        copyTextToClipboard(
+            `https://recievepayment.netlify.app/Payments/ussd?data=${link}&accountId=${primary}`
+        )
             .then(() => {
                 // If successful, update the isCopied state value
                 setIsCopied(true);
@@ -167,7 +169,9 @@ const ReceivePaymentSecond = ({
     const [qrUrlData, setQrUrlData] = useState(
         `https://recievepayment.netlify.app/Payments/qr?data=${encodeURIComponent(
             data?.data.data.dynamicQRBase64
-        )}?ref=${data?.data.data.ref}`
+        )}&ref=${
+            data?.data.data.ref
+        }&accountId=${primary}&merchantCode=${merchantCode}&terminalId=${terminalId}`
     );
 
     const copyQr = () => {
@@ -230,6 +234,9 @@ const ReceivePaymentSecond = ({
                                 <div className={styles.createdQr}>
                                     <input type="text" value={qrUrlData} />
                                 </div>
+                                <div className={styles.share} onClick={share}>
+                                    <p>Share</p>
+                                </div>
                             </div>
                         </>
                     ) : title === 'Payment Link Generated' ? (
@@ -260,7 +267,7 @@ const ReceivePaymentSecond = ({
                                 <input
                                     className={styles.inputBordr}
                                     type="text"
-                                    value={ussData}
+                                    value={link}
                                 />
                                 <button
                                     className={styles.copyBtn}

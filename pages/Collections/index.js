@@ -19,7 +19,8 @@ import {
     loadUserProfile,
     loadAccountPrimary,
     generateQrCodeDetails,
-    loadpaylinkGen
+    loadpaylinkGen,
+    getQrMerchantInfoGen
 } from '../../redux/actions/actions';
 // import ChartDiv from './chartDivStyled';
 // import ChartContent from './chartContentStyled';
@@ -449,6 +450,20 @@ const Collections = () => {
         }
         console.log(formType);
     }, [count]);
+    const {
+        getQrMerchnatInfoSuccess,
+        getQrMerchnatInfoErrorMessage
+    } = useSelector((state) => state.getQrMerchantInfoReducermport);
+    const [merchantInf, setMerchantInfo] = useState();
+    useEffect(() => {
+        dispatch(getQrMerchantInfoGen());
+        console.log(getQrMerchnatInfoSuccess);
+    }, []);
+    useEffect(() => {
+        if (getQrMerchnatInfoSuccess != null) {
+            setMerchantInfo(getQrMerchnatInfoSuccess);
+        }
+    }, [getQrMerchnatInfoSuccess]);
     const renderForm = () => {
         switch (formType) {
             case 'paylink':
@@ -517,6 +532,7 @@ const Collections = () => {
                                 buttonText="Send Paylink"
                                 type="Paylinks"
                                 closeAction={buttonHandleClose}
+                                primary={accountPrimarys.accountId}
                             />
                         );
 
@@ -596,6 +612,7 @@ const Collections = () => {
                                 type="USSD Code"
                                 closeAction={buttonHandleClose}
                                 info={paymentDetails.description}
+                                primary={accountPrimarys.accountId}
                             />
                         );
                     case 3:
@@ -616,7 +633,7 @@ const Collections = () => {
                                 type="USSD"
                                 closeAction={(data) => {
                                     //console.logdata);
-                                    setCount(count - 1);
+                                    setCount(count - 2);
                                 }}
                             />
                         );
@@ -668,13 +685,19 @@ const Collections = () => {
                                 title="Ecobank QR Code"
                                 action={buttonHandleClose}
                                 buttonText="Complete"
+                                merchantCode={merchantInf?.merchantCode}
+                                terminalId={merchantInf?.terminalId}
                                 allLink={(data) => {
                                     //console.logdata);
                                     setCount(count + 1);
                                 }}
+                                share={() => {
+                                    setCount(count + 2);
+                                }}
                                 data={generateQrCodeSuccess}
                                 type=" Ecobank QR Code"
                                 closeAction={buttonHandleClose}
+                                primary={accountPrimarys.accountId}
                             />
                         );
                     case 3:
@@ -689,6 +712,18 @@ const Collections = () => {
                                     //console.logdata);
                                     setCount(count - 1);
                                 }}
+                            />
+                        );
+                    case 4:
+                        return (
+                            <Share
+                                title="ecoQr"
+                                overlay={overlay}
+                                link={`https://recievepayment.netlify.app/Payments/qr?data=${encodeURIComponent(
+                                    generateQrCodeSuccess?.data.data
+                                        .dynamicQRBase64
+                                )}?ref=${generateQrCodeSuccess?.data.data.ref}`}
+                                action={handleClose}
                             />
                         );
                 }

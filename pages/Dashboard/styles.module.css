@@ -45,7 +45,11 @@
 }
 .assctDrop {
     display: flex;
+    gap: 10px;
     align-items: center;
+}
+.mdCopy {
+    cursor: pointer;
 }
 .filed {
     font-family: 'Inter';
@@ -56,6 +60,17 @@
     text-align: center;
     color: #394f5c !important;
     margin: 0px !important;
+}
+.seeAll {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}
+.seeAll a {
+    color: #102572;
+    cursor: pointer;
+    margin-bottom: 10px;
 }
 .pending {
     font-family: 'Inter';
@@ -78,7 +93,7 @@
 
     text-align: center !important;
 
-    color: #6ccf00 !important;
+    color: #af3800 !important;
     margin: 0px !important;
 }
 .Tpwhflex div {
@@ -92,7 +107,7 @@
     width: 100%;
     border-radius: 16px;
     color: white;
-    padding: 32px;
+    padding: 11px;
 }
 .Top {
     display: flex;
@@ -153,7 +168,7 @@
 }
 
 .success p {
-    color: #5dbe3f !important;
+    color: #af3800 !important;
 }
 
 .pending p {
@@ -430,7 +445,7 @@
     margin-top: 32px;
 }
 .btmI {
-    /* height: 352px; */
+    height: 552px;
     /* max-width: 478px; */
     background: #ffffff;
     box-shadow: 4px 14px 34px -11px #ededed;
@@ -441,7 +456,7 @@
 .btmItop {
     justify-content: space-between;
     margin-bottom: 29.1px;
-    height: 284px;
+    height: 497px;
     overflow: scroll;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none;
@@ -553,7 +568,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 8vh;
+    padding: 10px 0px;
 }
 .names {
     width: 35%;
@@ -564,6 +579,10 @@
 
 .money {
     width: 15%;
+}
+
+.money p {
+    margin: 0px;
 }
 
 .status {
@@ -580,6 +599,7 @@
 
 .statusColor p {
     font-size: 10px;
+    margin: 0px;
 }
 
 .names p {
@@ -680,16 +700,26 @@
 .moneyCont {
     width: 100%;
     background: #ffffff;
+    margin-bottom: 20px;
     border-radius: 16px;
-    padding: 32px 36px;
+    padding: 24px 36px;
     box-shadow: 0px 0px 74px -10px rgba(0, 0, 0, 0.08);
 }
-
+.coppied {
+    position: absolute;
+    top: 10px;
+    padding: 10px;
+    left: 40%;
+    background-color: #6ccf00;
+    color: white;
+    border-radius: 20px;
+}
 .moneyBody {
     background: rgba(255, 255, 255, 0.06);
     border-radius: 12px;
     width: 100%;
     padding: 16px 23px;
+    position: relative;
 }
 
 .moneybodyDiv {
@@ -704,7 +734,7 @@
 }
 
 .otherAccounts {
-    margin-top: 32px;
+    margin-top: 15px;
 }
 
 .otherAccounts h2 {
