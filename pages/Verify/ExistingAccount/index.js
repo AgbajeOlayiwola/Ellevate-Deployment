@@ -5,6 +5,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
 const ExistingAccount = () => {
+    const { accountStatus, errorMessages } = useSelector(
+        (state) => state.accountStatusReducer
+    );
     let user;
     let userId;
     if (typeof window !== 'undefined') {
@@ -17,21 +20,23 @@ const ExistingAccount = () => {
     }
     const dispatch = useDispatch();
     const router = useRouter();
-    const { accountStatus, errorMessages } = useSelector(
-        (state) => state.accountStatusReducer
-    );
+
     useEffect(() => {
         dispatch(accountStatusData(userId));
     }, []);
     const newAccountTest1 = () => {
-        console.log(accountStatus);
+        //console.logaccountStatus);
         if (errorMessages) {
             //  setError(errorMessages);
-            console.log(errorMessages);
+            //console.logerrorMessages);
         } else if (accountStatus.message === 'Try Again') {
-            setTimeout(() => {
-                dispatch(accountStatusData(userId));
-            }, 40000);
+            if (count >= 5) {
+                router.push('/Verify/Waiting');
+            } else {
+                setTimeout(() => {
+                    dispatch(accountStatusData(userId));
+                }, 40000);
+            }
         } else if (accountStatus.message === 'SUCCESS') {
             window.localStorage.setItem(
                 'accountNumber',

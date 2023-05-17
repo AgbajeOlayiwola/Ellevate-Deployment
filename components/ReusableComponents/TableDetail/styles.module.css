@@ -2,14 +2,16 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    padding: 24px 0px 58px 24px;
+    padding: 10px 0px 10px 24px;
+    border-bottom: 2px solid #f6f6f6;
+    align-items: center;
 }
 
-.TableDetailBody p {
+.TableDetailBody > p {
     color: #455a64;
     font-size: 14px;
     font-weight: 500;
-    line-height: 17%;
+    line-height: 100%;
     font-family: 'Inter', sans-serif;
     text-align: left;
 }
@@ -17,27 +19,39 @@
     font-size: 16px;
     color: #102572;
     width: 25%;
+    text-transform: capitalize !important;
 }
 
 .TableDetailBody .transfer {
     color: #2f2f2f;
-    width: 15%;
+    width: 20%;
 }
 
 .TableDetailBody .amount {
     font-weight: 700;
     color: #455a64;
-    width: 15%;
-}
-
-.bank {
-    width: 15%;
+    width: 22%;
 }
 
 .date {
-    width: 15%;
+    width: 14%;
 }
 
 .status {
-    width: 15%;
+    width: 14%;
+    color: #ff2e00 !important;
+}
+
+.pending {
+    width: 14%;
+    color: #ceb407 !important;
+}
+
+.success {
+    width: 14%;
+    color: #5dbe3f !important;
+}
+
+.more {
+    width: 5%;
 }

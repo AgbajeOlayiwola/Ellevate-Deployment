@@ -1,58 +1,89 @@
 import React, { useState } from 'react';
-import Card from '../../../components/layout/NotRegisteredForms/Card/index';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import styles from './styles.module.css';
 import { ButtonComp } from '../../../components';
+import LockSvg from '../../../components/ReusableComponents/ReusableSvgComponents/LockSvg';
+import Visbility from '../../../components/ReusableComponents/Eyeysvg';
 
-const ResetPassword = () => {
+const ResetPassword = ({ submit, forgotPasswordErrorMessages, loading }) => {
     const [activeBtn, setActiveBtn] = useState(true);
     const router = useRouter();
-    function handleSubmit() {
-        router.push('../../Auth/Login');
-    }
+    const [outType, setOutType] = useState();
+    const [outTypes, setOutTypes] = useState();
+    const types = (type) => {
+        setOutTypes(type);
+    };
+    const type = (type) => {
+        setOutType(type);
+    };
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors }
+    } = useForm();
     return (
-        <div className={styles.cov}>
-            <Card>
-                <div className={styles.create}>
-                    <div>
-                        <p>Create New Password</p>
-                    </div>
-                    <div>
-                        <p>
-                            Your new password must be different from previous
-                            passwords used.
-                        </p>
-                    </div>
-                </div>
-                <form className={styles.formCre}>
-                    <div>
-                        <label htmlFor="newPassword">New Password</label>
+        <div className={styles.covWrapper}>
+            <div className={styles.create}>
+                <h2>Create New Password</h2>
+                <p>
+                    Your new password must be different from previous passwords
+                    used.
+                </p>
+            </div>
+            <form className={styles.formCre} onSubmit={handleSubmit(submit)}>
+                {forgotPasswordErrorMessages ? (
+                    <p className={styles.errors}>
+                        {forgotPasswordErrorMessages}
+                    </p>
+                ) : null}
+                <div>
+                    <label htmlFor="newPassword">New Password</label>
+                    <div className={styles.divs}>
+                        <LockSvg />
                         <input
-                            type="text"
+                            type={outTypes ? 'text' : 'password'}
                             name="newPassword"
-                            placeholder="New Password"
+                            placeholder="Enter your Password"
+                            {...register('newPassword', {
+                                required: 'New Password is required'
+                            })}
                         />
+                        <Visbility typeSet={types} />
                     </div>
-                    <div>
-                        <label htmlFor="confnewPassword">
-                            Confirm New Password
-                        </label>
+                    <p className={styles.errors}>
+                        {errors.newPassword?.message}
+                    </p>
+                </div>
+                <div>
+                    <label htmlFor="confnewPassword">
+                        Confirm New Password
+                    </label>
+                    <div className={styles.divs}>
+                        <LockSvg />
                         <input
-                            type="text"
+                            type={outType ? 'text' : 'password'}
                             name="confnewPassword"
-                            placeholder="Confirm New Password"
+                            placeholder="Confirm your Password"
+                            {...register('confnewPassword', {
+                                required: 'Confirm Password is required'
+                            })}
                         />
+                        <Visbility typeSet={type} />
                     </div>
-                    <ButtonComp
-                        disabled={activeBtn}
-                        active={activeBtn ? 'active' : 'inactive'}
-                        onClick={handleSubmit}
-                        type="submit"
-                        text="Reset"
-                    />
-                </form>
-            </Card>
+                    <p className={styles.errors}>
+                        {errors.confnewPassword?.message}
+                    </p>
+                </div>
+                <ButtonComp
+                    disabled={activeBtn}
+                    active={activeBtn ? 'active' : 'inactive'}
+                    type="submit"
+                    text="Create New Password"
+                    loads={loading}
+                />
+            </form>
         </div>
     );
 };

@@ -16,10 +16,15 @@
     width: 100%;
     object-fit: scale-down;
 }
+.error {
+    color: red;
+    font-size: 12px;
+    /* margin-top: -1rem; */
+}
 
 .sectionII {
     flex: 1;
-    padding: 120px 0px 120px 131px;
+    padding: 70px 0px 120px 131px;
 }
 
 .bodyWrapper {
@@ -149,6 +154,10 @@
 }
 
 .singleFormGroup {
+    margin-top: 32px;
+}
+
+.singleFormGroup:last-child {
     margin-top: 24px;
 }
 
@@ -279,7 +288,7 @@
 .sign label {
     width: 32%;
     max-width: 95px;
-    background: #e6e6e6;
+    background: #6ccf00;
     border-radius: 8px;
     text-align: center;
     padding: 8px 0px;
@@ -289,7 +298,7 @@
     font-weight: 700;
     font-size: 12px;
     line-height: 15px;
-    color: #bdbdbd;
+    color: #ffffff;
     cursor: pointer;
 }
 
@@ -388,7 +397,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
-    color: #a5a5a5;
+    color: #1d1c1c;
 }
 
 .businessGroup {
@@ -411,5 +420,36 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
-    color: #a5a5a5;
+    color: #1d1c1c;
+}
+
+@media screen and (max-width: 1110px) {
+    .formGroup,
+    .formGroups {
+        width: 48%;
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-width: 901px) {
+    .businessCont {
+        height: unset;
+        overflow: unset;
+    }
+}
+
+@media screen and (max-width: 701px) {
+    .nameDiv,
+    .formCont {
+        flex-direction: column;
+    }
+
+    .formGroups,
+    .formGroup {
+        width: 100%;
+    }
+
+    .formGroup {
+        margin-top: 24px;
+    }
 }

@@ -3,7 +3,7 @@ import styles from './styles.module.css';
 import Link from 'next/link';
 import ButtonComp from '../Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { omniliteData } from '../../../redux/actions/actions';
+import { omniliteDataa } from '../../../redux/actions/actions';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import Loader from '../Loader';
@@ -35,12 +35,12 @@ const Omnilite = () => {
             username: data.username,
             password: data.password
         };
-        dispatch(omniliteData(postData));
+        dispatch(omniliteDataa(postData));
     };
 
     const OmniliteTest = () => {
-        console.log(omnilite);
-        console.log(errorMessage);
+        //console.logomnilite);
+        //console.logerrorMessage);
         if (errorMessage) {
             setError(errorMessage);
             setLoading(false);
@@ -87,6 +87,7 @@ const Omnilite = () => {
                     <label>Enter Your Omnilite Password</label>
                     <div className={styles.passwordEye}>
                         <input
+                            autoComplete="false"
                             placeholder="Omnilite Password"
                             className={styles.idInput}
                             {...register('password', {

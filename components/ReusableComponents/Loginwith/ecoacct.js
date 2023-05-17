@@ -7,6 +7,7 @@ import { accountNumberData } from '../../../redux/actions/actions';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import Loader from '../Loader';
+import Modal from 'react-modal';
 
 const Ecoacct = () => {
     const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const Ecoacct = () => {
         dispatch(accountNumberData(postData));
     };
     const acctTest = () => {
-        console.log(errorMessages);
+        //console.logerrorMessages);
         if (errorMessages === 'Account already exists with the phone') {
             router.push('/Auth/Login');
         } else if (errorMessages) {
@@ -48,6 +49,7 @@ const Ecoacct = () => {
             };
 
             window.localStorage.setItem('displayAccount', JSON.stringify(data));
+            // window.localStorage.removeItem('userId');
             if (accountNumber.data.email === null) {
                 accountNumber.data = {
                     ...accountNumber.data,
@@ -64,6 +66,21 @@ const Ecoacct = () => {
     useEffect(() => {
         acctTest();
     }, [accountNumber, errorMessages]);
+
+    const [modalIsOpen, setIsOpen] = React.useState(false);
+    function openModal() {
+        setIsOpen(true);
+    }
+
+    function afterOpenModal() {
+        // references are now sync'd and can be accessed.
+        subtitle.style.color = '#f00';
+    }
+
+    function closeModal() {
+        setIsOpen(false);
+    }
+
     return (
         <form onSubmit={handleSubmit(eccoacctSubmit)}>
             {error ? <p className={styles.error}>{error}</p> : null}
@@ -85,17 +102,15 @@ const Ecoacct = () => {
             </div>
             <div className={styles.btn}>
                 {/* <Link href="/Onboarding/ExistingProfileSetup"> */}
-                {loading ? (
-                    <Loader />
-                ) : (
-                    <ButtonComp
-                        disabled={activeBtn}
-                        active={activeBtn ? 'active' : 'inactive'}
-                        text="Login"
-                        type="submit"
-                    />
-                )}
-                {/* </Link> */}
+
+                <ButtonComp
+                    disabled={activeBtn}
+                    active={activeBtn ? 'active' : 'inactive'}
+                    text="Login"
+                    type="submit"
+                    loads={loading}
+                    err={errorMessages}
+                />
             </div>
         </form>
     );

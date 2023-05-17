@@ -9,15 +9,8 @@
 //         setHeight(document.documentElement.scrollHeight);
 //     }, []);
 
-//     console.log(height);
-//     const DashCont = styled.div`
-//         flex: 1;
-//         background-color: #f5f6fa;
-//         padding: 36px 32px 46px 32px;
-//         position: relative;
-//         height: 100vh;
-//         overflow-y: scroll;
-//     `;
+//     //console.log(height);
+//
 
 //     const mainOverlay = {
 //         height: height,
@@ -44,27 +37,72 @@
 
 // export default DashLayout;
 import React from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
 // import withAuth from '../../HOC/withAuth';
 import { Navbar, Sidebar } from '../../index';
 import styles from './styles.module.css';
-
-const DashLayout = ({ children }) => {
+import Idle from 'react-idle';
+import { useRouter } from 'next/router';
+import { logoutAction } from '../../../redux/actions/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import withAuth from '../../HOC/withAuth';
+const DashLayout = ({
+    children,
+    page,
+    text,
+    action,
+    preview,
+    previewSingle,
+    productAction
+}) => {
+    const [sideActive, setSideActive] = useState(false);
+    const [cornifyLoaded, setCornifyLoaded] = useState('');
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const preloadCornify = () => {
+        dispatch(logoutAction());
+        if (!localStorage.getItem('user')) {
+            router.replace('../Auth/Login');
+        }
+    };
     return (
         <div className={styles.dash}>
-            <Navbar />
-            <div className={styles.main}>{children}</div>
-            <Sidebar />
+            <div className={sideActive ? styles.sidebar : styles.sidebarActive}>
+                <Sidebar
+                    showSubnav={() => {
+                        setSideActive(false);
+                    }}
+                />
+            </div>
+            {/* <Idle
+                timeout={300000}
+                onChange={({ idle }) => {
+                    if (idle) {
+                        preloadCornify();
+                    }
+                }}
+            /> */}
+
+            {!sideActive ? (
+                <div className={styles.dashCont}>
+                    <Navbar
+                        page={page}
+                        text={text}
+                        action={action}
+                        preview={preview}
+                        previewSingle={previewSingle}
+                        productAction={productAction}
+                        sideAction={() => {
+                            setSideActive(true);
+                        }}
+                    />
+                    {children}
+                </div>
+            ) : null}
         </div>
-        // <div className={styles.dash}>
-        //     <Sidebar />
-        //     <DashCont>
-        //         <div style={overlay ? mainOverlay : null}></div>
-        //         <Navbar />
-        //         {children}
-        //     </DashCont>
-        // </div>
     );
 };
 
-// export default withAuth(DashLayout);
-export default DashLayout;
+export default withAuth(DashLayout);
+// export default DashLayout;

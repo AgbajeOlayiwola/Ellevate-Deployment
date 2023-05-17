@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import ButtonComp from '../Button';
 import styles from './styles.module.css';
 import { useForm } from 'react-hook-form';
-import { loadCountry } from '../../../redux/actions/actions';
-import { loadbank } from '../../../redux/actions/actions';
+import {
+    loadbank,
+    loadinternationalCountry,
+    getVerifyCurrency
+} from '../../../redux/actions/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Beneficiary from '../Beneficiary';
 import SourceSvg from '../ReusableSvgComponents/SourceSvg';
@@ -14,30 +17,47 @@ const ForeignTransfer = ({
     buttonText,
     type,
     action,
-    scheduleLater
+    scheduleLater,
+    bankAccounts,
+    formData,
+    setFormdata
 }) => {
     const [countrys, setCountry] = useState([]);
+    const [selectedCountry, setSelectedCountry] = useState('');
     const [bank, setBank] = useState([]);
+    const [currency, setCurrency] = useState([]);
     const dispatch = useDispatch();
-    const { countries } = useSelector((state) => state.countryReducer);
+    const { internationalCountry } = useSelector(
+        (state) => state.internationalCountryReducer
+    );
+    const { verifyCurrency } = useSelector(
+        (state) => state.verifyCurrencyReducer
+    );
     const { banks } = useSelector((state) => state.banksReducer);
 
     useEffect(() => {
-        dispatch(loadCountry());
-    }, []);
-    useEffect(() => {
-        if (countries !== null) {
-            setCountry(countries);
-        }
-    }, [countries]);
-    useEffect(() => {
+        dispatch(loadinternationalCountry());
         dispatch(loadbank('ENG'));
     }, []);
+    useEffect(() => {
+        dispatch(getVerifyCurrency(selectedCountry));
+    }, [selectedCountry]);
+    useEffect(() => {
+        if (internationalCountry !== null) {
+            setCountry(internationalCountry);
+        }
+    }, [internationalCountry]);
     useEffect(() => {
         if (banks !== null) {
             setBank(banks);
         }
     }, [banks]);
+    useEffect(() => {
+        if (verifyCurrency !== null) {
+            //console.logverifyCurrency.currencies);
+            setCurrency(verifyCurrency.currencies.currencies);
+        }
+    }, [verifyCurrency]);
     const [activeBtn, setActiveBtn] = useState(false);
     const {
         register,
@@ -49,11 +69,36 @@ const ForeignTransfer = ({
             {type === 'two' ? (
                 <form onSubmit={handleSubmit(secondAction)}>
                     <h2 className={styles.firstTitle}>{firstTitle}</h2>
-                    <div className={styles.source}>
-                        <h2>
-                            Source <span>- Marvelous N******</span>
-                        </h2>
-                        <SourceSvg />
+                    <div className={styles.narration}>
+                        <label>Source Account</label>
+                        <select
+                            name=""
+                            id=""
+                            {...register('sourceAccount')}
+                            onInput={(event) => {
+                                setFormdata({
+                                    ...formData,
+                                    accountNum: event.target.value
+                                });
+                            }}
+                            // value={formData.accountNum}
+                        >
+                            <option value="">Select Account To Use</option>
+                            {bankAccounts?.map((accounts, index) => {
+                                if (accounts.currency === 'NGN') {
+                                    return (
+                                        <option
+                                            value={accounts.accountNumber}
+                                            key={index}
+                                        >
+                                            {accounts.accountNumber}
+                                        </option>
+                                    );
+                                } else {
+                                    return null;
+                                }
+                            })}
+                        </select>
                     </div>
                     <div className={styles.foreignBodyTwo}>
                         <div className={styles.amountCont}>
@@ -96,12 +141,12 @@ const ForeignTransfer = ({
                             />
                         </div>
                         <button>Next</button>
-                        <p className={styles.schedule}>
+                        {/* <p className={styles.schedule}>
                             Not paying now?
                             <span onClick={scheduleLater}>
                                 Schedule for Later
                             </span>
-                        </p>
+                        </p> */}
                     </div>
                 </form>
             ) : (
@@ -109,17 +154,44 @@ const ForeignTransfer = ({
                     <h2 className={styles.firstTitle}>{firstTitle}</h2>
                     <div className={styles.foreignBody}>
                         <div className={styles.formGroup}>
-                            <label>Choose Transfer Currency</label>
-                            <select name="" id="">
-                                <option value="">Select Currency</option>
+                            <label>Choose Destination Country</label>
+                            <select
+                                name=""
+                                id=""
+                                onChange={(e) => {
+                                    setSelectedCountry(e.target.value);
+                                }}
+                            >
+                                <option value="">Select Country</option>
+                                {countrys?.map((country, index) => {
+                                    return (
+                                        <option
+                                            value={country.countryCode}
+                                            key={index}
+                                        >
+                                            {country.countryName}
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </div>
                         <div className={styles.formGroup}>
-                            <label>Choose Destination Country</label>
+                            <label>Choose Transfer Currency</label>
                             <select name="" id="">
-                                <option value="">Select Country</option>
+                                <option value="">Select Currency</option>
+                                {currency?.map((country, index) => {
+                                    return (
+                                        <option
+                                            value={country.currencyCode}
+                                            key={index}
+                                        >
+                                            {country.currencyName}
+                                        </option>
+                                    );
+                                })}
                             </select>
                         </div>
+
                         <button>Next</button>
                         <p className={styles.schedule}>
                             Not paying now?

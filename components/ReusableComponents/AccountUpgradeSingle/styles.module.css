@@ -1,16 +1,20 @@
 .accountUpgradeSingle {
     display: flex;
-    background: #fdfdfd;
-    box-shadow: 0px 0px 30px rgba(224, 224, 224, 0.71);
-    border-radius: 8px;
     padding: 16px 60px 16px 24px;
     width: 100%;
     align-items: center;
     justify-content: space-between;
     margin-top: 24px;
+    border-bottom: 2px solid #f6f6f6;
     cursor: pointer;
 }
 
+.accountUpgradeSingle:hover {
+    background: #f5f6fa;
+}
+.moreInfo{
+    color: #E7C161 !important;
+}
 .accountUpgradeSingleText {
     width: 50%;
 }
@@ -18,7 +22,7 @@
     width: 10%;
 }
 .accountUpgradeSingleChecked {
-    width: 30%;
+    width: 41%;
     display: flex;
     align-items: center;
 }
@@ -37,16 +41,21 @@
 .accountUpgradeSingleText div {
     display: flex;
 }
-
+.downLine{
+    font-size: 20px;
+}
 .accountUpgradeSingleText h2 {
     font-family: 'Inter', sans-serif;
     font-style: normal;
     font-weight: 600;
     font-size: 14px;
+    display: flex;
+    align-items: center;
     line-height: 17px;
     color: #303030;
     margin: 0px;
     margin-bottom: 4px;
+    cursor: pointer;
 }
 
 .accountUpgradeSingleText p {
@@ -58,4 +67,23 @@
     color: #455a64;
     margin: 0px;
     margin-right: 8px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 606px) {
+    .accountUpgradeSingle {
+        padding: 16px 24px 16px 24px;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    .accountUpgradeSingleChecked p {
+        margin-left: 8px;
+    }
+}
+
+@media screen and (max-width: 495px) {
+    .accountUpgradeSingleText h2 {
+        font-size: 12px;
+    }
 }

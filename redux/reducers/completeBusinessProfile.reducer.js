@@ -4,28 +4,28 @@ import { completeProfile } from '../types/actionTypes';
 const initialState = {
     isLoading: false,
     compBusprofile: null,
-    errorMessage: ''
+    comperrorMessage: ''
 };
 
 const completeBusinessprofileReducer = (
     state = initialState,
     { type, payload }
 ) => {
-    // console.log(payload);÷ss
+    //console.log(payload);÷ss
     switch (type) {
         case completeProfile.COMP_PROFILE_LOAD_SUCCESS:
             return {
                 ...state,
                 isLoading: true,
                 compBusprofile: payload,
-                errorMessage: null
+                comperrorMessage: null
             };
         case completeProfile.COMP_PROFILE_LOAD_ERROR:
             return {
                 ...state,
                 isLoading: true,
                 compBusprofile: null,
-                errorMessage: payload
+                comperrorMessage: payload
             };
         default:
             return state;

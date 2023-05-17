@@ -1,11 +1,16 @@
-.existingBody {
-    /* width: 43%;
-    margin: 100px auto 0px;
-    max-width: 644px; */
+.sections {
     background: #fefefe;
-    border: 1px solid rgba(219, 219, 219, 0.6);
     box-shadow: 0px 0px 74px -10px rgba(0, 0, 0, 0.08);
     border-radius: 50px;
+    width: 40%;
+    max-width: 600px;
+    padding: 80px 0px;
+}
+
+.existingBody {
+    width: 67%;
+    max-width: 400px;
+    margin: 0px auto;
 }
 
 .form div label {
@@ -16,6 +21,38 @@
     line-height: 19px;
     color: #3e3e3e;
 }
+.otpInps {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.otpInps input {
+    width: 15%;
+    font-size: 52px;
+    text-align: center;
+    /* padding: 29px 23px; */
+    height: 70px;
+    border: 1px solid #e6ebee;
+    transition: all 0.2s ease-in-out;
+    background-color: #ffffff;
+    border-radius: 8px;
+    color: #102572;
+    padding: 0px;
+}
+.otpInps input:focus {
+    border: 1px solid #6ccf00;
+    transition: all 0.2s ease-in-out;
+}
+
+.email {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    color: #3e3e3e;
+}
+
 .busAdd {
     background: #f8f8f8;
     border: 1px solid #dbdbdb;
@@ -34,12 +71,19 @@
     font-family: 'Inter', sans-serif;
     font-style: normal;
     font-weight: 500;
-    font-size: 16px;
-    line-height: 19px;
-    text-align: center;
-    color: #102572;
+    font-size: 12px;
+    line-height: 15px;
+    color: #a5a5a5;
     margin: 0px;
     cursor: pointer;
+}
+
+.resendFlex button {
+    padding-top: 0px;
+}
+
+.existingBody > button {
+    margin-top: 90px;
 }
 
 .busInp {
@@ -103,6 +147,20 @@
     height: 0;
     font-weight: 500;
 }
+
+.clr:hover {
+    width: 40px;
+    margin: 0px;
+    background-color: white;
+    width: 40px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #a5a5a5;
+}
+
 .header {
     font-family: 'Inter', sans-serif;
     font-style: normal;
@@ -365,7 +423,7 @@
 .error {
     color: red;
     font-size: 12px;
-    margin-top: -1rem;
+    /* margin-top: -1rem; */
 }
 .btns {
     display: flex;
@@ -433,17 +491,13 @@
 }
 
 .stepFour {
-    /* width: 67%; */
+    width: 67%;
     max-width: 500px;
     margin: 50px auto;
 }
 
 .stepFour button {
     margin-top: 64px;
-}
-
-.resendFlex button {
-    margin-top: 0px;
 }
 
 .body {
@@ -456,6 +510,15 @@
     justify-content: space-between;
 }
 
+.bodys {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #c6c6c6;
+}
+
 .sectionI {
     width: 37%;
     max-width: 470px;
@@ -463,9 +526,16 @@
 }
 
 .sectionII {
-    padding: 120px 0px;
+    height: fit-content;
+    margin-top: 80px;
+
+    padding: 70px 0px;
     max-width: 682px;
     width: 53%;
+    background: #fefefe;
+    border: 1px solid rgba(219, 219, 219, 0.6);
+    box-shadow: 0px 0px 74px -10px rgba(0, 0, 0, 0.08);
+    border-radius: 50px;
 }
 
 .formWrapper {
@@ -497,7 +567,7 @@
     font-weight: 600;
     font-size: 14px;
     line-height: 17px;
-    color: #3e3e3e;
+    /* color: #3e3e3e; */
 }
 
 .phone {
@@ -560,8 +630,7 @@
     margin-left: 12px;
 }
 
-.phoneDetails input,
-.phoneDetails input::placeholder {
+.phoneDetails input {
     font-family: 'Inter', sans-serif;
     font-style: normal;
     font-weight: 600;
@@ -688,7 +757,7 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
-    color: #a5a5a5;
+    color: #1d1c1c;
 }
 
 .businessGroup {
@@ -711,5 +780,74 @@
     font-weight: 400;
     font-size: 14px;
     line-height: 17px;
-    color: #a5a5a5;
+    color: #1d1c1c;
+}
+
+@media screen and (max-width: 1250px) {
+    .existingUserSingle {
+        width: 48%;
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-width: 1121px) {
+    .sectionII {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 990px) {
+    .body {
+        width: 95%;
+    }
+}
+
+@media screen and (max-width: 901px) {
+    .sectionI {
+        display: none;
+    }
+
+    .sectionII {
+        width: 100%;
+        max-width: 100%;
+        padding: 40px 0px;
+    }
+
+    .body {
+        height: unset;
+        overflow: unset;
+    }
+
+    .formWrapper {
+        height: unset;
+        overflow: unset;
+    }
+
+    .lastContainer {
+        height: unset;
+        overflow: unset;
+    }
+}
+
+@media screen and (max-width: 531px) {
+    .existingUserHead {
+        flex-direction: column;
+    }
+
+    .existingUserSingle {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 501px) {
+    .secondStepForm {
+        width: 80%;
+        max-width: 100%;
+    }
+}
+.livenes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }

@@ -9,6 +9,11 @@
     width: 100%;
 }
 
+.noRecent {
+    text-align: center;
+    margin: 20px 0px;
+}
+
 .tableHeader {
     width: 100%;
     display: flex;
@@ -61,7 +66,7 @@
 }
 
 .tableFilter select {
-    width: 103px;
+    width: 150px;
     margin: 0px;
     background-color: #005b82;
     border-radius: 8px;
@@ -73,7 +78,7 @@
     color: white;
     border: none;
     background-image: url(../../../public/Assets/Svgs/Vector\ 26.svg);
-    background-position-x: 74%;
+    background-position-x: 84%;
     background-position-y: 55%;
 }
 
@@ -86,7 +91,7 @@
     width: 100%;
     background: #f5f6fa;
     border-radius: 4px;
-    padding: 16px 0px 16px 24px;
+    padding: 10px 0px 10px 24px;
 }
 
 .TableDetailHeader p {
@@ -103,21 +108,52 @@
 }
 
 .type {
-    width: 15%;
+    width: 20%;
 }
 
 .amount {
-    width: 15%;
-}
-
-.bank {
-    width: 15%;
-}
-
-.date {
-    width: 15%;
+    width: 22%;
 }
 
 .status {
-    width: 15%;
+    width: 14%;
+}
+
+.more {
+    width: 5%;
+}
+
+.date {
+    width: 14%;
+}
+
+.paginationBtns {
+    display: flex;
+    width: 40%;
+    justify-content: space-between;
+    margin: 20px auto;
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+.paginationBtns li {
+    padding: 10px;
+    border-radius: 5px;
+    /* border: 1px solid #6ccf00; */
+    color: #6ccf00;
+    /* cursor: pointer; */
+    font-size: 15px;
+}
+
+.paginationBtns a {
+    cursor: pointer;
+}
+
+.paginationActive {
+    background-color: #6ccf00;
+    color: white;
+}
+
+.paginationActive a {
+    color: white;
 }
