@@ -48,6 +48,13 @@
     gap: 10px;
     align-items: center;
 }
+
+.assctDrop div:last-child {
+    cursor: pointer;
+    position: relative;
+    z-index: 20;
+}
+
 .mdCopy {
     cursor: pointer;
 }
@@ -93,7 +100,7 @@
 
     text-align: center !important;
 
-    color: #C28CAE!important;
+    color: #c28cae !important;
     margin: 0px !important;
 }
 .Tpwhflex div {
@@ -444,7 +451,7 @@
     width: 100%;
 }
 .btmI {
-    height: 552px;
+    height: 602px;
     /* max-width: 478px; */
     background: #ffffff;
     box-shadow: 4px 14px 34px -11px #ededed;
@@ -455,7 +462,7 @@
 .btmItop {
     justify-content: space-between;
     margin-bottom: 29.1px;
-    height: 497px;
+    height: 575px;
     overflow: scroll;
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none;
@@ -484,7 +491,13 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
 }
+.sliderImage{
+    margin-right: 40px;
+}
 
+.btmI div::-webkit-scrollbar {
+    display: none;
+}
 .btmI::-webkit-scrollbar {
     display: none;
 }
