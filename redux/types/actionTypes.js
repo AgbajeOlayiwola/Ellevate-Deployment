@@ -298,6 +298,16 @@ export const resetPassword = {
 
 //resetPassword action type ends
 
+//resetPassword action types
+
+export const resetPin = {
+    RESETPIN_LOAD_START: 'RESETPIN_LOAD_START',
+    RESETPIN_LOAD_SUCCESS: 'RESETPIN_LOAD_SUCCESS',
+    RESETPIN_LOAD_ERROR: 'RESETPIN_LOAD_ERROR'
+};
+
+//resetPassword action type ends
+
 //bankStatement action types
 
 export const bankStatement = {
@@ -934,3 +944,13 @@ export const disputSubCategoryType = {
 };
 
 //dispute Type action type end
+
+//Verify transactionpin action type start
+
+export const verifyTransactionPinType = {
+    VERIFY_TTRANSACTIONPIN_LOAD_START: 'VERIFY_TRANSACTIONPIN_LOAD_START',
+    VERIFY_TRANSACTIONPIN_LOAD_SUCCESS: 'VERIFY_TRANSACTIONPIN_LOAD_SUCCESS',
+    VERIFY_TRANSACTIONPIN_LOAD_ERROR: 'VERIFY_TRANSACTIONPIN_LOAD_ERROR'
+};
+
+//Verify transactionpin action type end

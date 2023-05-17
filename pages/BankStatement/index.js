@@ -100,7 +100,7 @@ const BankStatments = () => {
             ).toISOString();
         };
         const data = {
-            startDate: getDateXDaysAgo(365),
+            startDate: getDateXDaysAgo(183),
             endDate: todaysDate
         };
         dispatch(loadbankStatement(data));
@@ -218,6 +218,18 @@ const BankStatments = () => {
         <DashLayout page="Bank Statement">
             <div className={styles.statementCover}>
                 <div className={styles.chooseDate}>
+                    <select className={styles.accountNumbers}>
+                        <option>Select Account Number</option>
+                        {Object.keys(bankAccounts)?.map((accountNo, index) => {
+                            return (
+                                <>
+                                    <option key={index}>
+                                        {bankAccounts[accountNo].accountNumber}
+                                    </option>
+                                </>
+                            );
+                        })}
+                    </select>
                     <div
                         onClick={() => {
                             setDate(true);
@@ -303,12 +315,8 @@ const BankStatments = () => {
                                         onClick={() => {
                                             setLoading(true);
                                             const data = {
-                                                startDate: new Date(
-                                                    startDate
-                                                ).toISOString(),
-                                                endDate: new Date(
-                                                    endDate
-                                                ).toISOString(),
+                                                startRange: startDate,
+                                                endRange: endDate,
                                                 accountId: id
                                             };
                                             dispatch(getFullStatementGen(data));
@@ -338,7 +346,8 @@ const BankStatments = () => {
                 <div className={styles.table}>
                     <div className={styles.tableHeader}>
                         <h2>Transactions History</h2>
-                        <div className={styles.tableFilter}>
+                        <p>The Table Contains 50 Transactions</p>
+                        {/* <div className={styles.tableFilter}>
                             <div>
                                 <img src="../Assets/Svgs/search.svg" alt="" />
                                 <input
@@ -360,13 +369,13 @@ const BankStatments = () => {
                                 <option value="account">Account</option>
                                 <option value="type">Type</option>
                             </select>
-                            {/* <button>
+                            <button>
                         Filter
                         <span>
                             <img src="../Assets/Svgs/Vector 26.svg" alt="" />
                         </span>
-                    </button> */}
-                        </div>
+                    </button>
+                        </div> */}
                     </div>
                     <div className={styles.tableFilters}>
                         {/* <h2
@@ -462,7 +471,7 @@ const BankStatments = () => {
                             <p className={styles.beneficiary}>Beneficiary </p>
                             <p className={styles.amount}>Amount</p>
                             <p className={styles.type}>Type</p>
-                            <div className={styles.more}></div>
+                            {/* <div className={styles.more}></div> */}
                         </div>
                         {isLoading ? (
                             <Lottie
@@ -518,7 +527,7 @@ const BankStatments = () => {
                                             <p className={styles.transfer}>
                                                 {items.channel}
                                             </p>
-                                            <div className={styles.more}>
+                                            {/* <div className={styles.more}>
                                                 <MoreAction
                                                     type={items.channel}
                                                     transactionAmount={formatter.format(
@@ -526,7 +535,7 @@ const BankStatments = () => {
                                                     )}
                                                     disputes={disputes}
                                                 />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     );
                                 })

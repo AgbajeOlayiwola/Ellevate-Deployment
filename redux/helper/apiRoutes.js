@@ -68,6 +68,7 @@ const uploadBoardRes = '/account-upgrade/board-resolution/upload';
 const forgotPassword = '/authentication/forget-password';
 const forgotPasswordReset = '/authentication/reset-password';
 const resetOtp = '/authentication/otp/re-send';
+const resetPin = '/users/transaction-pin/reset';
 const viewBvn = '/users/bvn/view';
 const resetPassword = '/users/password';
 const bankStatement = '/transactions';
@@ -105,6 +106,7 @@ const complaintCategories = '/dispute-management/get-complaint-categories';
 const subComplaintCategories =
     '/dispute-management/get-complaint-sub-categories';
 const qrMerchantInfo = '/payment/qr/merchant-info';
+const verifyTransactionPin = '/users/transaction-pin/verify';
 export default {
     trackComplaint,
     lodgeComplaint,
@@ -210,5 +212,7 @@ export default {
     getMiniStatemnt,
     getFullStatement,
     qrMerchantInfo,
-    lodgeComplaint
+    lodgeComplaint,
+    resetPin,
+    verifyTransactionPin
 };
