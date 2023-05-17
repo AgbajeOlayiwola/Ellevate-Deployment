@@ -304,10 +304,12 @@ const Dashboard = () => {
             const newDate = transactionHistory.transactions[0]?.transactionDate?.split(
                 'T'
             );
-            if (newDate[0] == time) {
-                setDateState(true);
-            } else {
-                setDateState(false);
+            if (newDate) {
+                if (newDate[0] == time) {
+                    setDateState(true);
+                } else {
+                    setDateState(false);
+                }
             }
 
             // tableDetails.data?.map((item) => {
