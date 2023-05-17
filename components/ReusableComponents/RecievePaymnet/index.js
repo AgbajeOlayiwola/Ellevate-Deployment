@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { RecievePayment } from '../Data';
 import styles from './styles.module.css';
 import Link from 'next/link';
-import OutsideClick from '../OutsideClick';
 const RecievePaymentBtn = () => {
     const [showDrop, setShowDrop] = useState(false);
     return (
@@ -11,31 +10,25 @@ const RecievePaymentBtn = () => {
                 className={styles.rec}
                 onClick={() => setShowDrop(!showDrop)}
             >
-                Receive Payment
+                Recieve Payment
             </button>
-            <OutsideClick
-                onClickOutside={() => {
-                    setShowDrop(false);
-                }}
-            >
-                <div className={showDrop ? styles.dat : styles.dontshow}>
-                    {RecievePayment.map((item, index) => {
-                        return (
-                            <div className={styles.comp} key={index}>
-                                <p>{item.icon}</p>
-                                <Link
-                                    href={{
-                                        pathname: '/Collections',
-                                        query: { id: item.path }
-                                    }}
-                                >
-                                    {item.title}
-                                </Link>
-                            </div>
-                        );
-                    })}
-                </div>
-            </OutsideClick>
+            <div className={showDrop ? styles.dat : styles.dontshow}>
+                {RecievePayment.map((item, index) => {
+                    return (
+                        <div className={styles.comp} key={index}>
+                            <p>{item.icon}</p>
+                            <Link
+                                href={{
+                                    pathname: './Payment',
+                                    query: { id: item.path }
+                                }}
+                            >
+                                {item.title}
+                            </Link>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };

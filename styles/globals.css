@@ -1,6 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;700&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Work+Sans:wght@300;500;800;900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;700&display=swap');
 :root {
     --global-button-padding: 1.2rem 0rem 1.2rem 0rem;
     /* --global-button-padding: 1.2rem 12.568rem 1.2rem 12.568rem; */
@@ -14,6 +12,7 @@
     --global-select-backgroundColor: #f8f8f8;
     --global-select-color: #235b7f;
     --global-inputtext-padding: 1rem 1rem;
+
     --global-label-color: blue;
     /* --global-label-fontSize: 5rem; */
 }
@@ -23,42 +22,6 @@ body {
     margin: 0;
     padding: 0;
 }
-@font-face {
-    font-family: 'inter';
-    src: url('/Assets/Fonts/Inter/Inter-Regular.ttf');
-    font-weight: 500;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'inter';
-    src: url('/Assets/Fonts/Inter/Inter-SemiBold.ttf');
-    font-weight: 500;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'inter';
-    src: url('/Assets/Fonts/Inter/Inter-Bold.ttf');
-    font-weight: 500;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'inter';
-    src: url('/Assets/Fonts/Inter/Inter-Medium.ttf');
-    font-weight: 500;
-    font-style: normal;
-}
-/* @font-face {
-      font-family: 'Neue Power Trial';
-      src: url('/Assets/Font/NeuePowerTrial/NeuePowerTrial-Regular.ttf');
-      font-weight: 500;
-      font-style: normal;
-      }
-      @font-face {
-        font-family: 'olivier';
-        src: url('/Assets/Font/olivier_demo.ttf');
-        font-weight: 500;
-        font-style: normal;
-        } */
 html,
 * {
     /* padding: 0;
@@ -79,14 +42,15 @@ a {
 * {
     box-sizing: border-box;
 }
-label {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
+label{
 
-    color: #3e3e3e;
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+
+color: #3E3E3E;
 }
 select {
     border-radius: var(--global-select-borderRadius);
@@ -112,7 +76,7 @@ input {
     padding: var(--global-inputtext-padding);
     /* border-color: var(--global-select-borderColor); */
     border: 1px solid #dbdbdb;
-    color: var(--global-select-color) !important;
+    color: var(--global-select-color);
     position: relative;
     width: 100%;
     font-size: 14px;
@@ -123,11 +87,6 @@ input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
-::placeholder {
-    /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: #dcdcdc;
-    opacity: 1; /* Firefox */
 }
 button {
     padding: var(--global-button-padding);
@@ -146,27 +105,4 @@ button {
     line-height: 19px;
     text-align: center;
     color: #ffffff;
-    transition: all 0.5s ease-in-out;
-}
-button:hover {
-    transition: all 0.5s ease-in-out;
-    padding: var(--global-button-padding);
-    color: var(--global-button-color);
-    background-color: #305608;
-    border: var(--global-button-border);
-    border-radius: var(--global-button-borderRadius);
-    margin-top: 16px;
-    width: 100%;
-    cursor: pointer;
-    outline: none;
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 800;
-    font-size: 16px;
-    line-height: 19px;
-    text-align: center;
-    color: #ffffff;
-}
-table {
-    border-collapse: collapse;
 }

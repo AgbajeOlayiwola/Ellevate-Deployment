@@ -57,7 +57,7 @@ const StepFourCompProfile2BizDetails = ({
     } = useForm();
 
     // const sendOTP = (data) => {
-    //     //console.log(data);
+    //     console.log(data);
     // };
     const router = useRouter();
     const [activeBtn, setActiveBtn] = useState(true);
@@ -87,9 +87,7 @@ const StepFourCompProfile2BizDetails = ({
     const [businessCategory, setBusinessCategory] = useState([]);
     const [businessType, setBusinessType] = useState([]);
     const [business, setBusiness] = useState('');
-    const [loading, setLoading] = useState(false);
     const handleSubmitIII = () => {
-        setLoading(true);
         const commpleteProfileData = {
             businessName: formData.bussinessName,
             businessType: formData.businessType,
@@ -101,7 +99,7 @@ const StepFourCompProfile2BizDetails = ({
             city: formData.city,
             lga: formData.localGoverment
         };
-        //console.log(commpleteProfileData);
+        console.log(commpleteProfileData);
         dispatch(CompleteBusinessProfile(commpleteProfileData));
 
         const accountData = {
@@ -122,7 +120,7 @@ const StepFourCompProfile2BizDetails = ({
             city: formData.city,
             lga: formData.localGoverment
         };
-        //console.log(commpleteProfileData);
+        console.log(commpleteProfileData);
         dispatch(CompleteBusinessProfile(commpleteProfileData));
 
         const accountData = {
@@ -144,7 +142,7 @@ const StepFourCompProfile2BizDetails = ({
             city: formData.city,
             lga: formData.localGoverment
         };
-        //console.log(commpleteProfileData);
+        console.log(commpleteProfileData);
         dispatch(CompleteBusinessProfile(commpleteProfileData));
 
         const accountData = {
@@ -161,7 +159,7 @@ const StepFourCompProfile2BizDetails = ({
             newAccountErrorMessage ===
                 'You already have an account with us. Please contact us for more information'
         ) {
-            //console.log(errorMessages);
+            console.log(errorMessages);
             router.push('../Verify/Account/loading');
         } else if (accountStatus.message === 'Try Again') {
             router.push('../Verify/Account/loading');
@@ -187,7 +185,7 @@ const StepFourCompProfile2BizDetails = ({
         });
 
         // setProfileCont(profile.data);
-        //console.log(profileCont.isBusinessRegistered);
+        console.log(profileCont.isBusinessRegistered);
         // createCorp();
     }, [business, profile]);
 
@@ -229,7 +227,7 @@ const StepFourCompProfile2BizDetails = ({
             city: formData.city,
             lga: formData.localGoverment
         };
-        //console.log(commpleteProfileData);
+        console.log(commpleteProfileData);
         dispatch(CompleteBusinessProfile(commpleteProfileData));
 
         const accountData = {
@@ -239,13 +237,13 @@ const StepFourCompProfile2BizDetails = ({
         axiosInstance
             .post(`${apiRoutes.corpNewUser}`, accountData)
             .then((response) => {
-                //console.log('create New Account', response.data);
+                console.log('create New Account', response.data);
             })
             .catch((error) => {
-                //console.log(
-                //     'create new account Error:',
-                //     error.response.data.message
-                // );
+                console.log(
+                    'create new account Error:',
+                    error.response.data.message
+                );
                 setErrorMes(error.response.data.message);
             });
 

@@ -1,9 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Popup from '../../layout/Popup';
-import BeneUserSvg from '../ReusableSvgComponents/BeneUserSvg';
-import ThreeDotsSvg from '../ThreeDotSvg';
 import styles from './styles.module.css';
-import { FaTrash } from 'react-icons/fa';
 
 const ManageBene = ({ overlay, title, action, btnAction }) => {
     const [transfer, setTransfer] = useState(true);
@@ -184,18 +181,21 @@ const ManageBene = ({ overlay, title, action, btnAction }) => {
     );
 };
 
-const ManageBeneSingle = ({ beneAccount, beneName, index, deleteAction }) => {
+export default ManageBene;
+
+const ManageBeneSingle = ({ beneAccount, beneName, action, index }) => {
     return (
-        <div className={styles.manageBeneSingle} key={index}>
+        <div
+            className={styles.manageBeneSingle}
+            onClick={(e) => {
+                action(e);
+            }}
+            key={index}
+        >
             <div className={styles.manageBeneDetails}>
-                <BeneUserSvg />
-                <div>
-                    <h3>{beneName}</h3>
-                    <p>{beneAccount}</p>
-                </div>
+                <h2>{beneName}</h2>
+                <p>{beneAccount}</p>
             </div>
-            <FaTrash onClick={deleteAction} className={styles.trash} />
         </div>
     );
 };
-export default ManageBeneSingle;

@@ -34,9 +34,9 @@ const Ecocard = () => {
         setLoading(true);
         let temp = data.expiryDate.split('/');
         let newTemp = temp[1] + temp[0];
-        //console.logencrypt(data.cardNumber));
-        //console.logencrypt(data.cvv));
-        //console.lognewTemp);
+        console.log(encrypt(data.cardNumber));
+        console.log(encrypt(data.cvv));
+        console.log(newTemp);
         const postData = {
             pan: encrypt(data.cardNumber),
             affiliateCode: 'ENG',
@@ -49,14 +49,14 @@ const Ecocard = () => {
         //     expiry: '2504',
         //     cvv: 'zbM3LuiyTI0='
         // };
-        //console.logdata);
+        console.log(data);
 
         dispatch(cardLoginData(postData));
     };
 
     const CardTest = () => {
-        //console.logcardLogin);
-        //console.logerrorMessage);
+        console.log(cardLogin);
+        console.log(errorMessage);
         if (errorMessage) {
             setError(errorMessage);
             setLoading(false);
@@ -73,7 +73,7 @@ const Ecocard = () => {
                 JSON.stringify(cardLogin.data)
             );
             router.push('/Onboarding/ExistingProfileSetup');
-            //console.logcardLogin);
+            console.log(cardLogin);
         }
     };
 
@@ -104,7 +104,6 @@ const Ecocard = () => {
                             <input
                                 placeholder="MM/YY"
                                 className={styles.passwordInput}
-                                autoComplete="false"
                                 type="text"
                                 {...register('expiryDate', {
                                     required: 'Expiry Date is Required'
@@ -129,7 +128,6 @@ const Ecocard = () => {
                             <input
                                 placeholder="CVV"
                                 className={styles.passwordInput}
-                                autoComplete="false"
                                 maxLength="3"
                                 type="password"
                                 {...register('cvv', {

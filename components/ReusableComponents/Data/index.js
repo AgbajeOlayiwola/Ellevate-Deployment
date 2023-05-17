@@ -1,3 +1,5 @@
+import MoreSvg from '../MoreSvg';
+import PaymentSvg from '../PaymentSvg';
 import NairaSvg from '../NairaSvg';
 import BulkTransfer from '../BulkTransfSvg';
 import StarSharp from '../StarSharpSvg';
@@ -18,208 +20,116 @@ import Paylink2 from '../PaylinkSvg/paylink';
 import Ussd from '../UssdSvg';
 import MposSvg2 from '../mPOSSvg/Mpos';
 import EcobankQRSvg from '../EcobankQRSvg';
-import DashboardSvg from '../ReusableSvgComponents/DashboardSvg';
-import PaymentSvg from '../ReusableSvgComponents/PaymentSvg';
-import ToolSvg from '../ReusableSvgComponents/ToolSvg';
-import StorefrontSvg from '../ReusableSvgComponents/StorefrontSvg';
-import SettingsSvg from '../ReusableSvgComponents/SettingsSvg';
-import PaymentActiveSvg from '../ReusableSvgComponents/PaymentActiveSvg';
-import ToolsActiveSvg from '../ReusableSvgComponents/toolsActiveSvg';
-import StorefrontActiveSvg from '../ReusableSvgComponents/StorefrontActiveSvg';
-import SettingsActiveSvg from '../ReusableSvgComponents/SettingsActiveSvg';
-import { BsFillCollectionFill, BsPiggyBankFill } from 'react-icons/bs';
-import { HiBanknotes } from 'react-icons/hi';
+
 export const SidebarData = [
     {
         title: 'Dashboard',
         path: '/Dashboard',
-        icon: <DashboardSvg fill="none" stroke="black" />,
-        iconActive: <DashboardSvg fill="#6CCF00" stroke="none" />,
+
+        icon: <MdIcons.MdDashboard />,
+        iconActive: <MdIcons.MdDashboard />,
         iconClosed: <RiIcons.RiArrowDownSLine />,
         iconOpened: <RiIcons.RiArrowUpSLine />
     },
 
     {
+        // <MdIcons.MdOutlinePayments />
         title: 'Payment',
         path: '/Payment',
-        // modal: 'show',
-        icon: <PaymentSvg />,
-        iconActive: <PaymentActiveSvg />,
+        modal: 'show',
+        icon: <PaymentSvg fillColor={false} />,
+        iconActive: <PaymentSvg fillColor={true} />,
+        iconClosed: <RiIcons.RiArrowDownSLine />,
+        iconOpened: <RiIcons.RiArrowUpSLine />,
+        subNavTitles: ['Receive Payment', 'Make Payment'],
+        subNav: [
+            {
+                title: 'Paylink',
+                path: 'Paylink',
+                icon: <BiIcons.BiLinkAlt />,
+                subNavTitle: 'Receive Payment'
+            },
+            {
+                title: 'USSD',
+                path: 'USSD only',
+                icon: <StarSharp />,
+                subNavTitle: 'Receive Payment'
+            },
+            {
+                title: 'Ecobank QR',
+                path: 'Ecobank QR Only',
+                icon: <BiIcons.BiScan />,
+                subNavTitle: 'Receive Payment'
+            },
+            {
+                title: 'mPOS',
+                path: 'Phone Pos',
+                icon: <HiIcons.HiOutlineCreditCard />,
+                subNavTitle: 'Receive Payment'
+            },
+            {
+                title: 'Single Transfer',
+                path: 'Single Transfer',
+                icon: <BiIcons.BiTransfer />,
+                subNavTitle: 'Make Payment'
+            },
+            {
+                title: 'Bulk Transfer',
+                path: 'Bulk Transfer',
+                icon: <BulkTransfer />,
+                subNavTitle: 'Make Payment'
+            },
+            {
+                title: 'Bill Payment',
+                path: 'Bills Payment',
+                icon: <NairaSvg />,
+                subNavTitle: 'Make Payment'
+            },
+            {
+                title: 'FX Transfer',
+                path: 'FX Transfer ',
+                icon: <FaIcons.FaHandHoldingUsd />,
+                subNavTitle: 'Make Payment'
+            }
+        ]
+    },
+    {
+        title: 'Transactions',
+        path: '/Transactions',
+        icon: <CgIcons.CgMoreO />,
+        iconActive: <CgIcons.CgMoreO />,
         iconClosed: <RiIcons.RiArrowDownSLine />,
         iconOpened: <RiIcons.RiArrowUpSLine />
-        // subNav: [
-        //     {
-        //         title: 'Collections',
-        //         path: '/Collections',
-        //         icon: <BiIcons.BiTransfer />
-        //     },
-        //     {
-        //         title: 'Payment',
-        //         path: '/Payment',
-        //         icon: <BiIcons.BiTransfer />
-        //     },
-        //     {
-        //         title: 'Reports',
-        //         path: '/Reports',
-        //         icon: <BiIcons.BiTransfer />
-        //     }
-        // ]
     },
 
     {
-        title: 'Collections',
-        path: '/Collections',
-        // modal: 'show',
-        icon: <BsFillCollectionFill />,
-        iconActive: <BsFillCollectionFill style={{ color: '#69940d' }} />,
-        iconClosed: <RiIcons.RiArrowDownSLine />,
-        iconOpened: <RiIcons.RiArrowUpSLine />
-        // subNav: [
-        //     {
-        //         title: 'Collections',
-        //         path: '/Collections',
-        //         icon: <BiIcons.BiTransfer />
-        //     },
-        //     {
-        //         title: 'Payment',
-        //         path: '/Payment',
-        //         icon: <BiIcons.BiTransfer />
-        //     },
-        //     {
-        //         title: 'Reports',
-        //         path: '/Reports',
-        //         icon: <BiIcons.BiTransfer />
-        //     }
-        // ]
-    },
-
-    {
-        title: 'Transaction Reports',
-        path: '/Reports',
-        // modal: 'show',
-        icon: <PaymentSvg />,
-        iconActive: <PaymentActiveSvg />,
-        iconClosed: <RiIcons.RiArrowDownSLine />,
-        iconOpened: <RiIcons.RiArrowUpSLine />
-        // subNav: [
-        //     {
-        //         title: 'Collections',
-        //         path: '/Collections',
-        //         icon: <BiIcons.BiTransfer />
-        //     },
-        //     {
-        //         title: 'Payment',
-        //         path: '/Payment',
-        //         icon: <BiIcons.BiTransfer />
-        //     },
-        //     {
-        //         title: 'Reports',
-        //         path: '/Reports',
-        //         icon: <BiIcons.BiTransfer />
-        //     }
-        // ]
-    },
-    {
-        title: 'Bank Statement',
-        path: '/BankStatement',
-        // modal: 'show',
-        icon: <BsPiggyBankFill />,
-        iconActive: <BsPiggyBankFill style={{ color: '#69940d' }} />,
-        iconClosed: <RiIcons.RiArrowDownSLine />,
-        iconOpened: <RiIcons.RiArrowUpSLine />
-        // subNav: [
-        //     {
-        //         title: 'Collections',
-        //         path: '/Collections',
-        //         icon: <BiIcons.BiTransfer />
-        //     },
-        //     {
-        //         title: 'Payment',
-        //         path: '/Payment',
-        //         icon: <BiIcons.BiTransfer />
-        //     },
-        //     {
-        //         title: 'Reports',
-        //         path: '/Reports',
-        //         icon: <BiIcons.BiTransfer />
-        //     }
-        // ]
-    },
-    // {
-    //     title: 'Tools',
-    //     path: '/Tools',
-    //     icon: <ToolSvg />,
-    //     iconActive: <ToolsActiveSvg />,
-    //     iconClosed: <RiIcons.RiArrowDownSLine />,
-    //     iconOpened: <RiIcons.RiArrowUpSLine />,
-    //     subNav: [
-    //         {
-    //             title: 'Analysis',
-    //             path: '/Analysis',
-    //             icon: <BiIcons.BiTransfer />
-    //         },
-    //         {
-    //             title: 'Inventory',
-    //             path: '/Inventory',
-    //             icon: <BulkTransfer />
-    //         },
-    //         {
-    //             title: 'e invoice',
-    //             path: '/invoice',
-    //             icon: <NairaSvg />
-    //         },
-    //         {
-    //             title: 'Others',
-    //             path: '/others',
-    //             icon: <FaIcons.FaHandHoldingUsd />
-    //         }
-    //     ]
-    // },
-    // {
-    //     title: 'Storefront',
-    //     path: '/Storefront',
-    //     icon: <StorefrontSvg />,
-    //     iconActive: <StorefrontActiveSvg />,
-    //     iconClosed: <RiIcons.RiArrowDownSLine />,
-    //     iconOpened: <RiIcons.RiArrowUpSLine />
-    // },
-    // {
-    //     title: 'Dispute ',
-    //     path: '/Dispute',
-    //     icon: <StorefrontSvg />,
-    //     iconActive: <StorefrontActiveSvg />,
-    //     iconClosed: <RiIcons.RiArrowDownSLine />,
-    //     iconOpened: <RiIcons.RiArrowUpSLine />
-    // },
-
-    {
-        title: 'Settings',
-        path: '',
-        icon: <SettingsSvg />,
-        iconActive: <SettingsActiveSvg />,
+        title: 'Tools',
+        path: '/Tools',
+        icon: <FiIcons.FiSettings />,
+        iconActive: <FiIcons.FiSettings />,
         iconClosed: <RiIcons.RiArrowDownSLine />,
         iconOpened: <RiIcons.RiArrowUpSLine />,
         subNav: [
             {
-                title: 'Profile Management',
-                path: '/Profile',
+                title: 'Analysis',
+                path: '',
                 icon: <BiIcons.BiTransfer />
             },
-            // {
-            //     title: 'Customer Care Service',
-            //     path: '/Customer',
-            //     icon: <BulkTransfer />
-            // },
             {
-                title: 'Security',
-                path: '/Security',
+                title: 'Inventory',
+                path: '',
+                icon: <BulkTransfer />
+            },
+            {
+                title: 'e invoice',
+                path: '',
                 icon: <NairaSvg />
+            },
+            {
+                title: 'Others',
+                path: '',
+                icon: <FaIcons.FaHandHoldingUsd />
             }
-            // {
-            //     title: 'Legal Terms & Conditions',
-            //     path: '/Legal',
-            //     icon: <FaIcons.FaHandHoldingUsd />
-            // }
         ]
     }
 ];
@@ -307,13 +217,13 @@ export const MakePayment = [
         title: 'Bulk Transfer',
         path: 'Bulk Transfer',
         icon: <BulkTransfer />
-    }
+    },
 
-    // {
-    //     title: 'FX Transfer',
-    //     path: 'FX Transfer ',
-    //     icon: <FaIcons.FaHandHoldingUsd />
-    // }
+    {
+        title: 'FX Transfer',
+        path: 'FX Transfer ',
+        icon: <FaIcons.FaHandHoldingUsd />
+    }
 ];
 export const OtherAccounts = [
     {
@@ -330,45 +240,38 @@ export const PaymentData = {
     make: [
         {
             icon: <BillTransfer />,
-            text: 'Bills Payment',
-            summary: 'Pay for your TV bills, electricity e.t.c'
+            text: 'Bills Payment'
         },
         {
             icon: <SingleTrans />,
-            text: 'Single Transfer',
-            summary: 'Send money to any nigerian bank'
+            text: 'Single Transfer'
         },
         {
             icon: <BulkTransfer2 />,
-            text: 'Bulk Transfer',
-            summary: 'Send money to multiple nigerian banks at once'
+            text: 'Bulk Transfer'
         },
 
         {
             icon: <FxTrans />,
-            text: 'FX Transfer'
+            text: 'FX Transfer '
         }
     ],
     receive: [
         {
             icon: <EcobankQRSvg />,
-            text: 'Ecobank QR Only',
-            summary: 'Recieve payment using your phone camera'
-        },
-        {
-            icon: <Paylink2 />,
-            text: 'Paylink',
-            summary: 'Pay for your TV bills, electricity e.t.c'
-        },
-        {
-            icon: <Ussd />,
-            text: 'USSD only',
-            summary: 'Pay for your TV bills, electricity e.t.c'
+            text: 'Ecobank QR Only'
         },
         {
             icon: <MposSvg2 />,
-            text: 'Phone POS',
-            summary: 'Pay for your TV bills, electricity e.t.c'
+            text: 'Phone POS'
+        },
+        {
+            icon: <Ussd />,
+            text: 'USSD only'
+        },
+        {
+            icon: <Paylink2 />,
+            text: 'Paylink'
         }
     ]
 };
@@ -1369,31 +1272,5 @@ export const location = [
             { lgaName: 'Kwali', lgaCode: 'FC005' },
             { lgaName: 'Abuja Municipal Area Council', lgaCode: 'FC006' }
         ]
-    }
-];
-export const dateData = [
-    {
-        date: '28:12:2022',
-        cash: '1000'
-    },
-    {
-        date: '12:12:2022',
-        cash: '1500'
-    },
-    {
-        date: '13:12:2022',
-        cash: '200'
-    },
-    {
-        date: '21:12:2022',
-        cash: '21000'
-    },
-    {
-        date: '21:12:2022',
-        cash: '2000'
-    },
-    {
-        date: '21:12:2022',
-        cash: '2000'
     }
 ];

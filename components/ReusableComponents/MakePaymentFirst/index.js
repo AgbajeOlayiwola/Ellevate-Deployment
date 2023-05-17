@@ -6,11 +6,6 @@ import BillPayment from './billpayment';
 import SingleTransfer from './singletransfer';
 import Overlay from '../Overlay';
 import CloseButton from '../CloseButtonSvg';
-import {
-    bankAccountsData,
-    getBeneficiariesData
-} from '../../../redux/actions/actions';
-import { useDispatch, useSelector } from 'react-redux';
 
 const MakePaymentFirst = ({
     firstTitle,
@@ -25,11 +20,7 @@ const MakePaymentFirst = ({
     dataAction,
     airtimeAction,
     type,
-    secondAction,
-    isLoading,
-    payload,
-    formData,
-    setFormdata
+    secondAction
 }) => {
     const myref = useRef();
     useEffect(() => {
@@ -37,72 +28,41 @@ const MakePaymentFirst = ({
         window.scrollTo(0, 0);
     }, []);
 
-    const dispatch = useDispatch();
-    const [bankAccount, setBankAccount] = useState([]);
-    const [beneficiaries, setBeneficiaries] = useState([]);
-    const { getBeneficiaries } = useSelector(
-        (state) => state.getBeneficiariesReducer
-    );
-    const { bankAccounts } = useSelector((state) => state.bankAccountsReducer);
-    useEffect(() => {
-        dispatch(bankAccountsData());
-        dispatch(getBeneficiariesData());
-    }, []);
-    useEffect(() => {
-        if (bankAccounts !== null) {
-            setBankAccount(bankAccounts);
-        }
-    }, [bankAccounts]);
-    useEffect(() => {
-        if (getBeneficiaries !== null) {
-            setBeneficiaries(getBeneficiaries);
-        }
-    }, [getBeneficiaries]);
     return (
         <Overlay overlay={overlay}>
             <div className={styles.firstDiv} ref={myref}>
-                <div className={styles.firstBody}>
+                <div
+                    className={
+                        firstTitle === 'Bulk Payments'
+                            ? styles.bulkBody
+                            : styles.firstBody
+                    }
+                >
                     {firstTitle === 'Single Transfer Payment' ? (
                         <SingleTransfer
-                            formData={formData}
-                            setFormdata={setFormdata}
                             selfaction={selfaction}
                             othersaction={othersaction}
                             firstTitle="Single Transfer Payment"
                             buttonText={buttonText}
                             scheduleLater={scheduleLater}
-                            isLoading={isLoading}
-                            bankAccounts={bankAccount}
-                            beneficiaries={beneficiaries}
-                            payload={payload}
                         />
                     ) : firstTitle === 'Foreign Transfer' ? (
                         <ForeignTransfer
-                            formData={formData}
-                            setFormdata={setFormdata}
                             action={action}
                             firstTitle={firstTitle}
                             buttonText={buttonText}
                             type={type}
                             secondAction={secondAction}
                             scheduleLater={scheduleLater}
-                            bankAccounts={bankAccount}
                         />
                     ) : firstTitle === 'Bulk Payments' ? (
                         <BulkTransfer
-                            formData={formData}
-                            setFormdata={setFormdata}
                             action={action}
                             firstTitle={firstTitle}
                             buttonText={buttonText}
-                            bankAccounts={bankAccount}
-                            payload={payload}
-                            isLoading={isLoading}
                         />
                     ) : (
                         <BillPayment
-                            formData={formData}
-                            setFormdata={setFormdata}
                             action={action}
                             firstTitle={firstTitle}
                             buttonText={buttonText}
@@ -110,8 +70,6 @@ const MakePaymentFirst = ({
                             scheduleLater={scheduleLater}
                             dataAction={dataAction}
                             airtimeAction={airtimeAction}
-                            bankAccounts={bankAccount}
-                            isLoading={isLoading}
                         />
                     )}
                 </div>

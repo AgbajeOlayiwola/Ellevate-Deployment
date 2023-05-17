@@ -2,12 +2,12 @@ import { omnilite } from '../types/actionTypes';
 
 const initialState = {
     isLoading: false,
-    omniliteData: [],
+    omnilite: [],
     errorMessage: ''
 };
 
 const omniliteReducer = (state = initialState, { type, payload }) => {
-    //console.log(payload);÷ss
+    // console.log(payload);÷ss
     switch (type) {
         case omnilite.OMNILITE_LOAD_START:
             return {
@@ -20,7 +20,7 @@ const omniliteReducer = (state = initialState, { type, payload }) => {
             return {
                 ...state,
                 isLoading: false,
-                omniliteData: payload
+                omnilite: payload
             };
         case omnilite.OMNILITE_LOAD_ERROR:
             return {

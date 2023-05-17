@@ -4,7 +4,7 @@ import CloseButton from '../CloseButtonSvg';
 import Overlay from '../Overlay';
 import styles from './styles.module.css';
 
-const PaymentRepeat = ({ overlay, closeAction, type }) => {
+const PaymentRepeat = ({ overlay, closeAction }) => {
     return (
         <Overlay overlay={overlay}>
             <div className={styles.repeatCont}>
@@ -16,7 +16,7 @@ const PaymentRepeat = ({ overlay, closeAction, type }) => {
                     />
                 </div>
                 <div className={styles.repeatHeader}>
-                    <img
+                    <Image
                         src="/Assets/Images/repeatClock.png"
                         width="100%"
                         height="100%"
@@ -31,8 +31,10 @@ const PaymentRepeat = ({ overlay, closeAction, type }) => {
                 </div>
                 <div className={styles.repeatBody}>
                     <div className={styles.formGroup}>
-                        <label> Transfer Type</label>
-                        <input type="text" value={type} />
+                        <label>Choose Transfer Type</label>
+                        <select name="" id="">
+                            <option value="">Single Transfer</option>
+                        </select>
                     </div>
                     <div className={styles.formGroup}>
                         <label>Set Time</label>
@@ -48,10 +50,6 @@ const PaymentRepeat = ({ overlay, closeAction, type }) => {
                         <label>Set Frequency</label>
                         <select>
                             <option value="">Select Frequency</option>
-                            <option value="Daily">Daily</option>
-                            <option value="Weekly">Weekly</option>
-                            <option value="Bi-Weekly">Bi-Weekly</option>
-                            <option value="Monthly">Monthly</option>
                         </select>
                     </div>
                     <button>Save</button>

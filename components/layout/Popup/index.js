@@ -8,11 +8,11 @@ const PopupStyle = styled.div`
     max-width: 600px;
     background-color: white;
     border-radius: 20px;
-    margin: 0px auto;
+    margin: 32px auto;
     display: flex;
     position: absolute;
     top: 10%;
-    left: 33%;
+    left: 40%;
     z-index: 10;
 `;
 

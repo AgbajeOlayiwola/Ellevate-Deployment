@@ -2,24 +2,13 @@ import React from 'react';
 import LeftArrowSvg from '../LeftArrowSvg';
 import styles from './styles.module.css';
 
-const ProfileSingle = ({
-    profileText,
-    icon,
-    action,
-    index,
-    color,
-    activeText
-}) => {
+const ProfileSingle = ({ profileText, icon, action, index }) => {
     return (
         <div
-            className={
-                profileText === 'Delete Account'
-                    ? styles.profileSingleDelete
-                    : activeText === profileText
-                    ? styles.profileSingleActive
-                    : styles.profileSingle
-            }
-            onClick={action}
+            className={styles.profileSingle}
+            onClick={(e) => {
+                action(e);
+            }}
             key={index}
         >
             <div className={styles.profileIcon}>{icon}</div>
@@ -27,7 +16,7 @@ const ProfileSingle = ({
                 <p>{profileText}</p>
             </div>
             <div className={styles.profileArrow}>
-                <LeftArrowSvg color={color} />
+                <LeftArrowSvg />
             </div>
         </div>
     );

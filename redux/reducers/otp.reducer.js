@@ -1,8 +1,8 @@
-import { otp, otpType } from '../types/actionTypes';
+import { otp } from '../types/actionTypes';
 
 const initialState = {
     Loading: false,
-    otpActData: null,
+    otp: null,
     otpErrorMessage: null
 };
 // useEffect(() => {
@@ -17,25 +17,18 @@ const initialState = {
 
 const otpReducer = (state = initialState, { type, payload }) => {
     switch (type) {
-        case otpType.OTP_LOAD_START:
+        case otp.OTP_LOAD_SUCCESS:
             return {
                 ...state,
                 Loading: true,
-                otpActData: null,
+                otp: null,
                 otpErrorMessage: null
             };
-        case otpType.OTP_LOAD_SUCCESS:
-            return {
-                ...state,
-                Loading: true,
-                otpActData: payload,
-                otpErrorMessage: null
-            };
-        case otpType.OTP_LOAD_ERROR:
+        case otp.OTP_LOAD_ERROR:
             return {
                 ...state,
                 Loading: false,
-                otpActData: null,
+                otp: null,
                 otpErrorMessage: payload
             };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const LoginCircleSvg = ({ action, circleStatus }) => {
+const LoginCircleSvg = () => {
     return (
         <svg
             width="17"
@@ -8,7 +8,6 @@ const LoginCircleSvg = ({ action, circleStatus }) => {
             viewBox="0 0 17 17"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            onClick={action}
         >
             <rect
                 x="1"
@@ -16,7 +15,7 @@ const LoginCircleSvg = ({ action, circleStatus }) => {
                 width="14.6897"
                 height="14.8687"
                 rx="7.34485"
-                fill={circleStatus === true ? '#6CCF00' : '#F8F8F8'}
+                fill="#F8F8F8"
                 stroke="#A5A5A5"
                 strokeWidth="2"
             />

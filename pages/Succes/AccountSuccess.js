@@ -15,7 +15,7 @@ const AccountSuccess = () => {
                 </div>
                 <div className={styles.successBody}>
                     <h2 className={styles.h2}>
-                        Your profile has been successfully created
+                        You already have an account with us.
                     </h2>
                     <Link href="/Dashboard">
                         <ButtonComp

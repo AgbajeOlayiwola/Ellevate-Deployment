@@ -8,10 +8,7 @@ import {
     createAccountData,
     accountStatusData,
     statesData,
-    businessCategoriesData,
-    CompleteBusinessProfile,
-    ExCreateBusProfileSetup,
-    getRCDetails
+    businessCategoriesData
 } from '../../../redux/actions/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../ReusableComponents/Loader';
@@ -25,26 +22,17 @@ import SearchSvg from '../../ReusableComponents/ReusableSvgComponents/SearchSvg'
 import DropdownSvg from '../../ReusableComponents/ReusableSvgComponents/DropdownSvg';
 import ProfileSetupSide from '../../ReusableComponents/ProfileSetupSide';
 
-const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
+const StepFour = ({ title, action }) => {
     const dispatch = useDispatch();
     const router = useRouter();
-    // const account = localStorage.getItem('meta');
-    // const accountDetails = JSON.parse(account);
+    const account = localStorage.getItem('meta');
+    const accountDetails = JSON.parse(account);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { existingUserProfile, errorMessage } = useSelector(
         (state) => state.existingUserProfileReducer
     );
-
-    const {
-        cacName,
-        cacNameError,
-        getCacName,
-        getCacNameError,
-        existingProfileSetupPay,
-        existingProfileSetupError
-    } = useSelector((state) => state.existReducer);
     const { accountStatus, errorMessages } = useSelector(
         (state) => state.accountStatusReducer
     );
@@ -54,162 +42,139 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
     const { businessCategories, errorDatas } = useSelector(
         (state) => state.businessCategoriesReducer
     );
-    const { compBusprofile, comperrorMessage } = useSelector(
-        (state) => state.completeBusinessprofileReducer
-    );
-    const { getRC, getRCErrorMessage } = useSelector(
-        (state) => state.getRCReducer
-    );
 
     const {
         register,
         handleSubmit,
         formState: { errors }
     } = useForm();
-    const [businessCategory, setBusinessCategory] = useState([]);
-    const [businessType, setBusinessType] = useState([]);
-    const [business, setBusiness] = useState('');
-    const [businesses, setBusinesses] = useState('');
-    const [localGovernment, setLocalGovernment] = useState('');
-    const [businessTest, setBusinessTest] = useState(false);
-    const [businessText, setBusinessText] = useState(false);
-    const [getRCFirst, setGetRCFirst] = useState(false);
-    const { states } = useSelector((state) => state.statesReducer);
-    const [businessName, setBusinessName] = useState('');
-    const [refferalCode, setRefferalCode] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [streetName, setStreetName] = useState('');
-    const [state, setState] = useState('');
-    const [city, setCity] = useState('');
-    const [localGoverment, setLocalGoverment] = useState('');
-    const [localState, setLocalState] = useState('');
-    const [file, setFile] = useState(null);
-    const [fileName, setFileName] = useState('');
-    const [regNo, setRegNo] = useState('');
-    const [refferee, setRefferee] = useState();
-    //console.loglocalGoverment);
-    const [phones, setPhones] = useState();
-
-    //console.logformData.type);
-    useEffect(() => {
-        if (getRC !== null) {
-            setBusinessName(getRC.companyName);
-        }
-    }, [getRC, getRCErrorMessage]);
-    const saveFile = (e) => {
-        setFile(e.target.files[0]);
-        setFileName(e.target.files[0].name);
-
-        //console.logformData.type);
-    };
-    useEffect(() => {
-        if (window.typeof !== 'undefined') {
-            setPhones(JSON.parse(window.localStorage.getItem('account')));
-        }
-    }, []);
-    const [profileInfo, setProfileInfo] = useState([]);
-    const account = localStorage.getItem('account');
-    const accountDetails = JSON.parse(account);
 
     const onSubmitNew = (data) => {
-        setLoading((prev) => !prev);
-        const userData = {
-            isRegistered: 'true',
-            businessName: businessName,
-            businessCategory: business,
-            businessType: businesses,
-            referralCode: refferalCode,
-            countryCode: '+234',
-            businessPhoneNumber: profileInfo.phoneNumber,
-            street: streetName,
-            state: localState,
-            city: city,
-            lga: localGoverment,
-            refereeCode: refferalCode
-            // signature: ''
-        };
-        dispatch(CompleteBusinessProfile(userData));
-        //console.logexistingProfileSetupPay, existingProfileSetupError);
+        setLoading(true);
+        console.log(data);
+
+        dispatch(existingUserProfileData(accountDetails));
     };
     const profileTest = () => {
-        //console.log(compBusprofile, comperrorMessage);
-        setLoading((prev) => !prev);
-        if (compBusprofile) {
-            //console.logerrorMessages);
-            router.push('/Verify/ExistingSuccess');
+        if (errorMessage === 'Account already exists') {
+            router.push('/Succes/AccountSuccess');
+        } else if (errorMessage) {
+            setError(errorMessage);
+            console.log(errorMessage);
+            setLoading(false);
         } else if (
-            comperrorMessage.message === 'your have already setup your business'
+            existingUserProfile.message === 'User account created succesfully'
         ) {
-            router.push('/Verify/ExistingSuccess');
-        }
-
-        if (businessCategories !== null) {
-            setBusinessCategory(businessCategories);
+            setLoading(false);
+            router.push('/Succes/Success');
         }
     };
     useEffect(() => {
         profileTest();
-    }, [compBusprofile, comperrorMessage]);
-
+    }, [errorMessage, existingUserProfile]);
     const onSubmit = (data) => {
+        setLoading(true);
+        let name;
+        accountDetails.fullName === null
+            ? name === null
+            : (name = accountDetails.fullName.split(' '));
         const userData = {
-            registerationNumber: regNo,
-            isRegistered: 'true',
-            businessName: businessName,
-            businessCategory: business,
-            businessType: businesses,
-            referralCode: refferalCode,
-            countryCode: '+234',
-            businessPhoneNumber: profileInfo.phoneNumber,
-            street: streetName,
-            state: localState,
-            city: city,
-            lga: localGoverment,
-            refereeCode: refferalCode
-            // signature: ''
+            affiliateCode: 'ENG',
+            firstName: name === undefined ? 'Akinfe' : name[0],
+            middleName:
+                name === undefined
+                    ? 'I'
+                    : name[2] === undefined
+                    ? 'I'
+                    : name[2],
+            lastName: name === undefined ? 'Temitope' : name[1],
+            password: accountDetails.password,
+            dob: '1998-08-10',
+            id_type: 'IDCD',
+            idNo: '1234TTZN14',
+            idIssuingDate: '2022-06-27',
+            idExpiryDate: '2029-06-05',
+            phoneNumber:
+                accountDetails.phoneNumber === undefined
+                    ? accountDetails.phone
+                    : accountDetails.phoneNumber,
+            email:
+                accountDetails.email === null
+                    ? 'topeakinfe@gmail.com'
+                    : accountDetails.email,
+            gender: 'MALE',
+            address1: 'AKure',
+            address2: 'IKORODU',
+            countryCode: 'NG',
+            custType: 'I',
+            custCategory: 'INDIVIDUAL',
+            brnCode: 'A01',
+            ccy: 'NGN',
+            flexCustId: '',
+            accountClass: 'GHSABP'
         };
-        dispatch(ExCreateBusProfileSetup(userData));
-        //console.log(existingProfileSetupPay, existingProfileSetupError);
+        dispatch(createAccountData(userData));
     };
 
-    useEffect(() => {
-        //console.log(existingProfileSetupPay, existingProfileSetupError);
-        setLoading((prev) => !prev);
-
-        if (existingProfileSetupPay) {
-            //console.log(existingProfileSetupPay, existingProfileSetupError);
-            if (existingProfileSetupPay.data.message === 'Successful') {
-                if (formData.type !== 'true') {
-                    router.push('/Verify/ExistingSuccess');
-                } else {
-                    router.push('/Verify/CorportateAccount');
-                }
-            }
-        } else if (existingProfileSetupError) {
-            if (
-                existingProfileSetupError.response.data.message ===
-                'your have already setup your business'
-            ) {
-                if (formData.type !== 'true') {
-                    router.push('/Verify/ExistingSuccess');
-                } else {
-                    router.push('/Verify/CorportateAccount');
-                }
-            }
+    const newAccountTest = () => {
+        console.log(createAccount);
+        if (errorData === 'User already Exists') {
+            router.push('/Succes/AccountSuccess');
+        } else if (errorData) {
+            setError(errorData);
+            console.log(errorData);
+            setLoading(false);
+        } else if (createAccount.statusCode === 200) {
+            console.log(createAccount);
+            dispatch(accountStatusData(createAccount.data.userId));
+            localStorage.setItem(
+                'userId',
+                JSON.stringify(createAccount.data.userId)
+            );
+            localStorage.setItem(
+                'token',
+                JSON.stringify(createAccount.data.token)
+            );
         }
-    }, [
-        existingProfileSetupPay,
-        existingProfileSetupError,
-        compBusprofile,
-        comperrorMessage
-    ]);
+    };
+    useEffect(() => {
+        newAccountTest();
+    }, [errorData, createAccount]);
+
+    const newAccountTest1 = () => {
+        console.log(accountStatus);
+        if (errorMessages) {
+            setError(errorMessages);
+            console.log(errorMessages);
+            setLoading(false);
+        } else if (accountStatus.message === 'Try Again') {
+            router.push('/Verify/ExistingAccount');
+        } else if (accountStatus.message === 'SUCCESS') {
+            window.localStorage.setItem(
+                'accountNumber',
+                JSON.stringify(accountStatus.data)
+            );
+            router.push('/Verify/ExistingSuccess');
+        }
+    };
+    useEffect(() => {
+        newAccountTest1();
+    }, [errorMessages, accountStatus]);
 
     const types = (type) => {
         setOutType(type);
     };
     const [activeBtn, setActiveBtn] = useState(true);
     const [location, setLocation] = useState([]);
-
+    const [localState, setLocalState] = useState('');
+    const [localGovernment, setLocalGovernment] = useState('');
+    const [businessCategory, setBusinessCategory] = useState([]);
+    const [businessType, setBusinessType] = useState([]);
+    const [business, setBusiness] = useState('');
+    const [businesses, setBusinesses] = useState('');
+    const [businessTest, setBusinessTest] = useState(false);
+    const [businessText, setBusinessText] = useState(false);
+    const { states } = useSelector((state) => state.statesReducer);
     useEffect(() => {
         dispatch(statesData());
     }, []);
@@ -231,25 +196,11 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
     useEffect(() => {
         dispatch(businessCategoriesData());
     }, []);
-
     useEffect(() => {
-        if (accountDetails.profile !== undefined) {
-            setProfileInfo(accountDetails.profile);
-        } else if (accountDetails.user !== undefined) {
-            setProfileInfo(accountDetails.user.profile);
-        }
-        //console.logprofileInfo);
         if (businessCategories !== null) {
             setBusinessCategory(businessCategories);
         }
     }, [businessCategories]);
-    useEffect(() => {
-        if (title === 'New') {
-            setBusinessName(
-                `${profileInfo?.lastName} ${profileInfo?.firstName}`
-            );
-        }
-    }, [profileInfo]);
     useEffect(() => {
         Object.keys(businessCategory)?.filter((item) => {
             if (item === business) {
@@ -265,10 +216,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
             <section className={styles.sectionII}>
                 <div className={styles.lastStep}>
                     <div className={styles.cardHeading}>
-                        <ArrowBackSvg action={action} color="#102572" />
-                        <p>
-                            {comperrorMessage ? comperrorMessage.message : null}
-                        </p>
+                        <ArrowBackSvg action={action} />
                         <div>
                             <h3 className={styles.LeftHeading}>
                                 Complete your Profile
@@ -282,29 +230,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                     <p className={styles.error}>{error}</p>
                                 ) : null}
                                 <div className={styles.existingUserHead}>
-                                    {/* <div className={styles.existingUserCont}>
-                                        <label>TIN </label>
-                                        <div className={styles.addressNumber}>
-                                            <input type="text" required />
-                                        </div>
-                                    </div> */}
                                     <div className={styles.existingUserSingle}>
-                                        <div
-                                            className={styles.existingUserCont}
-                                        >
-                                            <label>Enter Business Name</label>
-                                            <input
-                                                type="text"
-                                                placeholder="Enter Business  Name"
-                                                value={businessName}
-                                                onChange={(e) =>
-                                                    setBusinessName(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled
-                                            />
-                                        </div>
                                         <div
                                             className={styles.existingUserCont}
                                         >
@@ -322,7 +248,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                         );
                                                     }}
                                                 >
-                                                    <SearchSvg color="#005B82" />
+                                                    <SearchSvg />
                                                     {business ? (
                                                         <p>{business}</p>
                                                     ) : (
@@ -390,12 +316,6 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                 <input
                                                     type="text"
                                                     placeholder="Enter Street Name"
-                                                    value={streetName}
-                                                    onChange={(e) =>
-                                                        setStreetName(
-                                                            e.target.value
-                                                        )
-                                                    }
                                                 />
                                             </div>
                                         </div>
@@ -405,13 +325,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                             <label>
                                                 Local Government Area (LGA)
                                             </label>
-                                            <select
-                                                onChange={(e) => {
-                                                    setLocalGoverment(
-                                                        e.target.value
-                                                    );
-                                                }}
-                                            >
+                                            <select>
                                                 <option value="">
                                                     Select Local Government
                                                 </option>
@@ -443,73 +357,6 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                             className={styles.existingUserCont}
                                         >
                                             <label>
-                                                Enter Business Phone Number
-                                            </label>
-                                            <div className={styles.phone}>
-                                                <div
-                                                    className={
-                                                        styles.phoneHeader
-                                                    }
-                                                >
-                                                    <span>
-                                                        <img
-                                                            src={
-                                                                countryNames
-                                                                    .flags.svg
-                                                            }
-                                                            alt=""
-                                                        />
-                                                    </span>
-                                                    <p>
-                                                        {
-                                                            countryNames.baseCurrency
-                                                        }
-                                                    </p>
-                                                </div>
-                                                <div
-                                                    className={
-                                                        styles.phoneDetails
-                                                    }
-                                                >
-                                                    {/* <p>{countryNames.countryCode}</p> */}
-                                                    <input
-                                                        type="number"
-                                                        placeholder="812 345 6789"
-                                                        // value={
-                                                        //     phones.phoneNumber
-                                                        // }
-                                                        // {...register(
-                                                        //     'countryCode_number',
-                                                        //     {
-                                                        //         required:
-                                                        //             'Phone Number is required',
-                                                        //         minLength: {
-                                                        //             value: 9,
-                                                        //             message:
-                                                        //                 'Min length is 9'
-                                                        //         }
-                                                        //     }
-                                                        // )}
-                                                        // value={phoneNumber}
-                                                        onChange={(e) =>
-                                                            setPhoneNumber(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        value={
-                                                            profileInfo.phoneNumber
-                                                                ? profileInfo.phoneNumber
-                                                                : phoneNumber
-                                                        }
-                                                        disabled
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            className={styles.existingUserCont}
-                                        >
-                                            <label>
                                                 Select your Business Type
                                             </label>
                                             <div className={styles.businessCat}>
@@ -523,7 +370,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                         );
                                                     }}
                                                 >
-                                                    <SearchSvg color="#005B82" />
+                                                    <SearchSvg />
                                                     {businesses ? (
                                                         <p>{businesses}</p>
                                                     ) : (
@@ -608,10 +455,6 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                             <input
                                                 type="text"
                                                 placeholder="Enter City"
-                                                value={city}
-                                                onChange={(e) =>
-                                                    setCity(e.target.value)
-                                                }
                                             />
                                         </div>
                                     </div>
@@ -625,23 +468,23 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                     <input
                                         placeholder="Enter  Code"
                                         className={styles.textInput}
-                                        value={refferalCode}
-                                        onChange={(e) =>
-                                            setRefferalCode(e.target.value)
-                                        }
                                     />{' '}
-                                    {/* {loading ? <Loader /> : null} */}
-                                    <ButtonComp
-                                        disabled={activeBtn}
-                                        active={
-                                            activeBtn ? 'active' : 'inactive'
-                                        }
-                                        loads={loading}
-                                        err={comperrorMessage}
-                                        text="Save and Continue"
-                                        type="submit"
-                                        // onClick={handleShowFourthStep}
-                                    />
+                                    {loading ? (
+                                        <Loader />
+                                    ) : (
+                                        <ButtonComp
+                                            disabled={activeBtn}
+                                            active={
+                                                activeBtn
+                                                    ? 'active'
+                                                    : 'inactive'
+                                            }
+                                            text="Save and Continue"
+                                            type="submit"
+                                            // onClick={handleShowSuccessStep}
+                                            // onClick={handleShowFourthStep}
+                                        />
+                                    )}
                                 </div>
                                 {/* <div>
                                     <div className={styles.terms}>
@@ -667,140 +510,14 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                         <div
                                             className={styles.existingUserCont}
                                         >
-                                            {/* {getCacNameError?getCacNameError.response.data.message:null} */}
                                             <label>
-                                                Enter your RC /Business
+                                                Enter your RC Number/Business
                                                 Registration Number
                                             </label>
                                             <input
                                                 type="text"
                                                 placeholder="Your RC Number"
-                                                name="rcNumber"
-                                                {...register('rcNumber', {
-                                                    required:
-                                                        'RC Number is required',
-                                                    minLength: {
-                                                        message:
-                                                            'Min length is 10'
-                                                    },
-                                                    pattern: {
-                                                        value: /^[A-Za-z0-9 ]+$/i,
-                                                        message:
-                                                            'Only Alphabelts/Number allowed'
-                                                    }
-                                                })}
-                                                onChange={(e) => {
-                                                    setRegNo(e.target.value);
-                                                    if (
-                                                        e.target.value
-                                                            .length === 9
-                                                    ) {
-                                                        setGetRCFirst(true);
-                                                        const data = {
-                                                            registerationNumber:
-                                                                e.target.value
-                                                        };
-                                                        dispatch(
-                                                            getRCDetails(data)
-                                                        );
-                                                    } else {
-                                                        setBusinessName('');
-                                                        setGetRCFirst(false);
-                                                    }
-                                                }}
-                                                value={regNo}
                                             />
-
-                                            <p className={styles.error}>
-                                                {errors.rcNumber?.message}
-                                            </p>
-                                        </div>
-
-                                        <div
-                                            className={styles.existingUserCont}
-                                        >
-                                            <label>TIN </label>
-                                            <div
-                                                className={styles.addressNumber}
-                                            >
-                                                <input type="text" required />
-                                            </div>
-                                        </div>
-                                        <div
-                                            className={styles.existingUserCont}
-                                        >
-                                            <label>
-                                                Enter your Business Phone Number
-                                            </label>
-                                            <div className={styles.phone}>
-                                                <div
-                                                    className={
-                                                        styles.phoneHeader
-                                                    }
-                                                >
-                                                    <span>
-                                                        <img
-                                                            src={
-                                                                countryNames
-                                                                    .flags.svg
-                                                            }
-                                                            alt=""
-                                                        />
-                                                    </span>
-                                                    {/* <p>
-                                                        {
-                                                            countryNames.baseCurrency
-                                                        }
-                                                    </p> */}
-                                                </div>
-                                                <div
-                                                    className={
-                                                        styles.phoneDetails
-                                                    }
-                                                >
-                                                    {/* <p>{countryNames.countryCode}</p> */}
-                                                    <input
-                                                        type="number"
-                                                        placeholder="812 345 6789"
-                                                        // {...register(
-                                                        //     'phoneNumber',
-                                                        //     {
-                                                        //         required:
-                                                        //             'Phone Number is required',
-                                                        //         minLength: {
-                                                        //             value: 9,
-                                                        //             message:
-                                                        //                 'Min length is 9'
-                                                        //         }
-                                                        //     }
-                                                        // )}
-                                                        onChange={(e) =>
-                                                            setPhoneNumber(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        value={
-                                                            profileInfo.phoneNumber
-                                                                ? profileInfo.phoneNumber
-                                                                : phoneNumber
-                                                        }
-                                                        disabled
-                                                        // onChange={(e) =>
-                                                        //     setPhoneNumber(
-                                                        //         e.target.value
-                                                        //     )
-                                                        // }
-                                                        // value={
-                                                        //     profileInfo.phoneNumber
-                                                        //         ? profileInfo.phoneNumber
-                                                        //         : phoneNumber
-                                                        // }
-                                                    />
-                                                </div>
-                                            </div>
-                                            <p className={styles.error}>
-                                                {errors.phoneNumber?.message}
-                                            </p>
                                         </div>
                                         <div
                                             className={styles.existingUserCont}
@@ -819,7 +536,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                         );
                                                     }}
                                                 >
-                                                    <SearchSvg color="#005B82" />
+                                                    <SearchSvg />
                                                     {businesses ? (
                                                         <p>{businesses}</p>
                                                     ) : (
@@ -875,28 +592,6 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                             className={styles.existingUserCont}
                                         >
                                             <label>
-                                                Enter your Business Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                placeholder={
-                                                    getRCFirst
-                                                        ? 'Fetching'
-                                                        : 'Enter Your Business Name'
-                                                }
-                                                value={businessName}
-                                                onChange={(e) =>
-                                                    setBusinessName(
-                                                        e.target.value
-                                                    )
-                                                }
-                                                disabled
-                                            />
-                                        </div>
-                                        <div
-                                            className={styles.existingUserCont}
-                                        >
-                                            <label>
                                                 Select your Business Category
                                             </label>
                                             <div className={styles.businessCat}>
@@ -910,7 +605,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                         );
                                                     }}
                                                 >
-                                                    <SearchSvg color="#005B82" />
+                                                    <SearchSvg />
                                                     {business ? (
                                                         <p>{business}</p>
                                                     ) : (
@@ -982,12 +677,6 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                 <input
                                                     type="text"
                                                     placeholder="Enter Street Name"
-                                                    value={streetName}
-                                                    onChange={(e) =>
-                                                        setStreetName(
-                                                            e.target.value
-                                                        )
-                                                    }
                                                 />
                                             </div>
                                         </div>
@@ -997,13 +686,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                             <label>
                                                 Local Government Area (LGA)
                                             </label>
-                                            <select
-                                                onChange={(e) => {
-                                                    setLocalGoverment(
-                                                        e.target.value
-                                                    );
-                                                }}
-                                            >
+                                            <select>
                                                 <option value="">
                                                     Select Local Government
                                                 </option>
@@ -1066,10 +749,6 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                             <input
                                                 type="text"
                                                 placeholder="Enter City"
-                                                value={city}
-                                                onChange={(e) =>
-                                                    setCity(e.target.value)
-                                                }
                                             />
                                         </div>
                                     </div>
@@ -1083,24 +762,23 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                     <input
                                         placeholder="Enter  Code"
                                         className={styles.textInput}
-                                        value={refferalCode}
-                                        onChange={(e) =>
-                                            setRefferalCode(e.target.value)
-                                        }
-                                    />
-                                    {/* {loading ? <Loader /> : null} */}
-                                    <ButtonComp
-                                        disabled={activeBtn}
-                                        active={
-                                            activeBtn ? 'active' : 'inactive'
-                                        }
-                                        text="Save and Continue"
-                                        type="submit"
-                                        loads={loading}
-                                        err={existingProfileSetupError}
-                                        // onClick={handleShowSuccessStep}
-                                        // onClick={handleShowFourthStep}
-                                    />
+                                    />{' '}
+                                    {loading ? (
+                                        <Loader />
+                                    ) : (
+                                        <ButtonComp
+                                            disabled={activeBtn}
+                                            active={
+                                                activeBtn
+                                                    ? 'active'
+                                                    : 'inactive'
+                                            }
+                                            text="Save and Continue"
+                                            type="submit"
+                                            // onClick={handleShowSuccessStep}
+                                            // onClick={handleShowFourthStep}
+                                        />
+                                    )}
                                 </div>
                             </form>
                         </div>
@@ -1112,3 +790,362 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
 };
 
 export default StepFour;
+
+//   <div className={styles.bord}>
+//       <div className={styles.inps}>
+//           {errors.businessName?.message}
+//           <label>Enter Business Name</label>
+
+//           <br />
+
+//           <input
+//               placeholder="Enter Business Name"
+//               className={styles.textInput}
+//               required
+//               {...register('businessName', {
+//                   required: 'Business Name is Required',
+//                   pattern: {
+//                       // eslint-disable-next-line
+//                       value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+//                       message: 'Invalid email address'
+//                   }
+//               })}
+//           />
+//       </div>
+//       <div className={styles.inps}>
+//                                     <label>
+//                                         Enter TIN <i>(optional)</i>{' '}
+//                                     </label>
+//                                     <br />
+
+//                                     <input
+//                                         placeholder="Enter Tin"
+//                                         className={styles.textInput}
+//                                         required
+//                                         {...register('tin', {
+//                                             required: 'Tin is Required'
+//                                             // pattern: {
+//                                             //     // eslint-disable-next-line
+//                                             //     value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+//                                             //     message: 'Invalid email address'
+//                                             // }
+//                                         })}
+//                                     />
+//                                 </div>
+
+//       <div className={styles.inps}>
+//           <label>Select Your Business Type </label>
+//           {errors.email?.message}
+//           <br />
+
+//           <select>
+//               <option value="">Search Your Business Type</option>
+
+//               <option value="Retail business">Retail business</option>
+//               <option value="Perishable business">Perishable business</option>
+//           </select>
+//       </div>
+//       <p className={styles.ent}>Enter Business Address</p>
+//       <div className={styles.busAdd}>
+//           <div className={styles.inps}>
+//               <label>Address </label>
+//               {errors.streetName?.message}
+//               <br />
+
+//               <input
+//                   placeholder="407  Bornoway"
+//                   className={styles.textInput}
+//                   required
+//                   {...register('streetName', {
+//                       required: 'Address is Required',
+//                       pattern: {
+//                           // eslint-disable-next-line
+//                           value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+//                           message: 'Invalid email address'
+//                       }
+//                   })}
+//               />
+//           </div>
+//           <div className={styles.inps}>
+//               <label>State </label>
+//               {errors.email?.message}
+//               <br />
+
+//               <select
+//                   className={styles.busInp}
+//                   onChange={(event) => {
+//                       setLocalState(event.target.value);
+//                   }}
+//               >
+//                   <option>Enter State</option>
+//                   {location?.map((item, index) => {
+//                       return (
+//                           <option value={item.state} key={index}>
+//                               {item.state}
+//                           </option>
+//                       );
+//                   })}
+//               </select>
+//           </div>
+//           <div className={styles.inps}>
+//               <label>Select Your Local Government </label>
+//               {errors.email?.message}
+//               <br />
+
+//               <select className={styles.busInp}>
+//                   <option value="">Select Local Government</option>
+//                   {localGovernment
+//                       ? localGovernment?.map((item, index) => {
+//                             return (
+//                                 <option value={item.lgaName} key={index}>
+//                                     {item.lgaName}
+//                                 </option>
+//                             );
+//                         })
+//                       : null}
+//               </select>
+//           </div>
+//           <div className={styles.inps}>
+//               <label>City </label>
+//               {errors.city?.message}
+//               <br />
+
+//               <input
+//                   placeholder="Enter City"
+//                   className={styles.textInput}
+//                   {...register('city', {
+//                       required: 'City is Required',
+//                       pattern: {
+//                           // eslint-disable-next-line
+//                           value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+//                           message: 'Invalid email address'
+//                       }
+//                   })}
+//               />
+//           </div>
+//       </div>
+//   </div>;
+{
+    /* <div className={styles.bord}>
+                                    <div className={styles.inps}>
+                                        <label>
+                                            Enter RC Number/Business
+                                            Registration Number
+                                        </label>
+
+                                        <br />
+
+                                        <input
+                                            placeholder="Enter RC Number"
+                                            className={styles.textInput}
+                                            {...register('rcNumber', {
+                                                required:
+                                                    'RC Number is Required'
+                                                maxLength: {
+                                                    value: 15,
+                                                    message:
+                                                        'RC Number  cannot be more than 15 digits'
+                                                },
+                                                minLength: {
+                                                    value: 15,
+                                                    message:
+                                                        'RC Number  cannot be more than 15 digits'
+                                                }
+                                                pattern: {
+                                                    // eslint-disable-next-line
+                                                    value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                                    message: 'Invalid email address'
+                                                }
+                                            })}
+                                            type="text"
+                                        />
+                                        <p className={styles.error}>
+                                            {errors.rcNumber?.message}
+                                        </p>
+                                    </div>
+                                    <div className={styles.inps}>
+                                        <label>
+                                            Enter TIN <i>(optional)</i>{' '}
+                                        </label>
+                                        <br />
+
+                                        <input
+                                            placeholder="Enter Tin"
+                                            className={styles.textInput}
+                                        />
+                                    </div>
+
+                                    <div className={styles.inps}>
+                                <label>Select Your Business Category </label>
+
+                                <br />
+
+                                <select
+                                    onChange={(e) => {
+                                        setBusiness(e.target.value);
+                                    }}
+                                >
+                                    <option>
+                                        Search Your Business Category
+                                    </option>
+                                    {Object.keys(businessCategory)?.map(
+                                        (business, index) => {
+                                            return (
+                                                <option
+                                                    value={business}
+                                                    key={index}
+                                                >
+                                                    {business}
+                                                </option>
+                                            );
+                                        }
+                                    )}
+                                </select>
+                            </div>
+                            <div className={styles.inps}>
+                                <label>Select Your Business Type </label>
+
+                                <br />
+
+                                <select>
+                                    <option>Select Your Business Type</option>
+                                    {businessType?.map((business, index) => {
+                                        return (
+                                            <option
+                                                value={business}
+                                                key={index}
+                                            >
+                                                {business}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                                    <BusinessCategory />
+                                    <p className={styles.ent}>
+                                        Enter Business Address
+                                    </p>
+                                    <div className={styles.busAdd}>
+                                        <div className={styles.inps}>
+                                            <label>Address </label>
+
+                                            <br />
+
+                                            <input
+                                                type="text"
+                                                placeholder="407  Bornoway"
+                                                className={styles.textInput}
+                                            />
+                                        </div>
+                                        <div className={styles.inps}>
+                                            <label>State </label>
+
+                                            <br />
+
+                                            <select
+                                                className={styles.busInp}
+                                                onChange={(event) => {
+                                                    setLocalState(
+                                                        event.target.value
+                                                    );
+                                                }}
+                                            >
+                                                <option>Enter State</option>
+                                                {location?.map(
+                                                    (item, index) => {
+                                                        return (
+                                                            <option
+                                                                value={
+                                                                    item.state
+                                                                }
+                                                                key={index}
+                                                            >
+                                                                {item.state}
+                                                            </option>
+                                                        );
+                                                    }
+                                                )}
+                                            </select>
+                                        </div>
+                                        <div className={styles.inps}>
+                                            <label>
+                                                Select Your Local Government{' '}
+                                            </label>
+                                            {errors.email?.message}
+                                            <br />
+
+                                            <select className={styles.busInp}>
+                                                <option value="">
+                                                    Select Local Government
+                                                </option>
+                                                {localGovernment
+                                                    ? localGovernment?.map(
+                                                          (item, index) => {
+                                                              return (
+                                                                  <option
+                                                                      value={
+                                                                          item.lgaName
+                                                                      }
+                                                                      key={
+                                                                          index
+                                                                      }
+                                                                  >
+                                                                      {
+                                                                          item.lgaName
+                                                                      }
+                                                                  </option>
+                                                              );
+                                                          }
+                                                      )
+                                                    : null}
+                                            </select>
+                                        </div>
+                                        <div className={styles.inps}>
+                                            <label>City </label>
+
+                                            <br />
+
+                                            <input
+                                                type="text"
+                                                placeholder="Enter City"
+                                                className={styles.textInput}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={styles.inps}>
+                                    <label>
+                                        Enter Referal Code <i>(optional)</i>{' '}
+                                    </label>
+
+                                    <br />
+
+                                    <input
+                                        placeholder="Enter Referal Code"
+                                        className={styles.textInput}
+                                        {...register('email', {
+                                            required: 'Business Address is Required',
+                                            pattern: {
+                                                // eslint-disable-next-line
+                                                value: /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                                message: 'Invalid email address'
+                                            }
+                                        })}
+                                    />
+                                </div>
+                                <div>
+                                    <div className={styles.terms}>
+                                        <CircleSvg
+                                            action={() => {
+                                                setActiveBtn(!activeBtn);
+                                            }}
+                                            circleStatus={activeBtn}
+                                        />
+                                        <label>
+                                            I agree with Ellevate App
+                                            <span>Terms and Conditions</span>
+                                        </label>
+                                    </div>
+                                </div> */
+}

@@ -12,8 +12,7 @@ if (loginToken === null) {
 }
 
 const axiosInstance = axios.create({
-    baseURL: 'https://testvate.live'
-    // baseURL: '//https://testvate.live> /'
+    baseURL: 'https://ellevate-app.herokuapp.com/'
 });
 
 export default axiosInstance;

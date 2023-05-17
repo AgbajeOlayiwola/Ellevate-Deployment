@@ -12,27 +12,30 @@ import Image from 'next/image';
 import Overlay from '../../components/ReusableComponents/Overlay';
 import SchedulePayment from '../../components/ReusableComponents/Schedulepayment';
 import Visbility from '../../components/ReusableComponents/Eyeysvg';
-import { RWebShare } from 'react-web-share';
 import {
     postAirtime,
     postInterBank,
-    getTransactionFees,
     postBills,
+    loadbillerPlan,
+    postInternalBank,
+    postInterBankEnquiry,
     getBalanceEnquiry,
     getBulkTransfer,
-    loadUserProfile,
+    getInternationalTransfer,
+    getVerifyCurrency,
+    getverifyBank,
     postBeneficiariesData,
-    loadAccountPrimary,
-    bankAccountsData
+    loadbank
 } from '../../redux/actions/actions';
-// import ChartDiv from './chartDivStyled';
-// import ChartContent from './chartContentStyled';
+import ChartDiv from './chartDivStyled';
+import ChartContent from './chartContentStyled';
 import PaymentSingleBody from '../../components/ReusableComponents/PaymentSingleBody';
 import PaymentCard from '../../components/ReusableComponents/PaymentCard';
 // import PaymentError from '../../components/ReusableComponents/PaymentError';
 import { useRouter } from 'next/router';
 import { PaymentData } from '../../components/ReusableComponents/Data';
-import AccountsInfoCard from '../../components/ReusableComponents/AccountInfoCard';
+import CloseButton from '../../components/ReusableComponents/CloseButtonSvg';
+import PaymentRepeat from '../../components/ReusableComponents/PaymentRepeat';
 
 const Payment = () => {
     const router = useRouter();
@@ -40,14 +43,17 @@ const Payment = () => {
     const { airtime, errorMessageAirtime } = useSelector(
         (state) => state.airtimeReducer
     );
-    const { accountPrimarys, accountPrimaryError } = useSelector(
-        (state) => state.accountPrimaryReducer
-    );
     const { bills, errorMessageBills } = useSelector(
         (state) => state.billsReducer
     );
+    const { internalBank, errorMessageInternalBank } = useSelector(
+        (state) => state.internalBankReducer
+    );
     const { interBank, errorMessageInterBank } = useSelector(
         (state) => state.interBankReducer
+    );
+    const { interBankEnquiry, errorMessageInterBankEnquiry } = useSelector(
+        (state) => state.interBankEnquiryReducer
     );
     const { balanceEnquiry, errorMessageBalanceEnquiry } = useSelector(
         (state) => state.balanceEnquiryReducer
@@ -55,151 +61,42 @@ const Payment = () => {
     const { bulkTransfer, errorMessagebulkTransfer } = useSelector(
         (state) => state.bulkTransferReducer
     );
-    const { transactionFees, errorMessageTransactionFees } = useSelector(
-        (state) => state.transactionFeesReducer
+    const {
+        internationalTransfer,
+        errorMessageinternationalTransfer
+    } = useSelector((state) => state.internationalTransferReducer);
+    const { verifyBank, errorMessageverifyBank } = useSelector(
+        (state) => state.verifyBankReducer
     );
-
-    const { internationalTransfer, errorMessageinternationalTransfer } =
-        useSelector((state) => state.internationalTransferReducer);
-
     const { verifyCurrency, errorMessageverifyCurrency } = useSelector(
         (state) => state.verifyCurrencyReducer
     );
+    const { billerPlan } = useSelector((state) => state.billerPlanReducer);
 
     const { postBeneficiaries } = useSelector(
         (state) => state.postBeneficiariesReducer
     );
-    const { userProfile } = useSelector((state) => state.userProfileReducer);
-    const { bankAccounts, bankAccountErrorMessages } = useSelector(
-        (state) => state.bankAccountsReducer
-    );
+    const { banks } = useSelector((state) => state.banksReducer);
 
     const dispatch = useDispatch();
-    const [acctNum, setAcctNumm] = useState('');
     const [formType, setFormType] = useState('');
-    const [formData, setFormdata] = useState({ accountNum: '' });
-    const [ecobank, setEcobank] = useState('true');
     const [overlay, setOverlay] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [count, setCount] = useState(0);
     const [active, setActive] = useState(true);
     const [outType, setOutType] = useState();
-    const [transactionFee, setTransactionFee] = useState(0);
     const [paymentDetails, setPaymentDetails] = useState({});
-    const [balance, setBalance] = useState('₦ 0.00');
-    const [sum, setSum] = useState(0);
+    const [interEnquiry, setInterEnquiry] = useState({});
+    const [balance, setBalance] = useState('000000.00');
     const [error, setError] = useState('');
     const [status, setStatus] = useState('');
     const [link, setLink] = useState('');
-    const [csvData, setCsvData] = useState([]);
     const [bill, setBill] = useState('');
     const [senderDetails, setSenderDetails] = useState({});
-    const [userProfileData, setUserProfileData] = useState({});
-    const [successfulTrans, setSuccessfulTrans] = useState([]);
-    const [failedTrans, setFailedTrans] = useState([]);
-    const [acctNummber, setAcctNumber] = useState('');
-    const [errorQr, setErrorQr] = useState('');
-
-    let airtimeData;
-    let airtimeNetData = {};
-    if (typeof window !== 'undefined') {
-        airtimeData = window.localStorage.getItem('Airtime');
-        airtimeNetData = JSON.parse(airtimeData);
-    }
-    let desiredPackage;
-    let desiredPackageData = {};
-    if (typeof window !== 'undefined') {
-        desiredPackage = window.localStorage.getItem('DesiredPackage');
-        desiredPackageData = JSON.parse(desiredPackage);
-    }
-    let csvType = [];
-    useEffect(() => {
-        csvType = JSON.parse(localStorage.getItem('csvData'));
-        setCsvData(csvType);
-        let x = csvType?.slice(2).reduce((a, b) => {
-            return a + b.Amount;
-        }, 0);
-        setSum(x);
-    }, [count]);
-    // useEffect(() => {
-    //     if (items) {
-    //         setCsvData(items);
-
-    //         console.log(items);
-    //     } else {
-    //         // alert('Hello');
-    //     }
-    //     return () => {
-    //         setCsvData(items);
-    //     };
-    // }, [items, count]);
-
-    let number;
-    let numberofBene = {};
-    if (typeof window !== 'undefined') {
-        number = window.localStorage.getItem('number');
-        numberofBene = JSON.parse(number);
-    }
-    useEffect(() => {
-        dispatch(bankAccountsData());
-        dispatch(loadAccountPrimary());
-        dispatch(loadUserProfile());
-    }, []);
-    useEffect(() => {
-        console.log(accountPrimarys);
-        if (userProfile !== null) {
-            setUserProfileData(userProfile);
-        }
-    }, [userProfile]);
-    useEffect(() => {
-        Object.keys(bankAccounts)?.map((accountNo) => {
-            if (bankAccounts[accountNo].accountNumber === acctNum) {
-                setAcctNumber(accountPrimarys);
-                let balanceData;
-                balanceData = {
-                    accountId: bankAccounts[accountNo].accountId
-                };
-                dispatch(getBalanceEnquiry(balanceData));
-            } else {
-                setAcctNumber('Pending');
-            }
-        });
-    }, [acctNum]);
-    useEffect(() => {
-        if (balanceEnquiry !== null) {
-            const formatter = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'NGN',
-                currencyDisplay: 'narrowSymbol'
-            });
-            const formattedAmount = formatter.format(
-                balanceEnquiry.availableBalance
-            );
-            setBalance(formattedAmount);
-        }
-    }, [balanceEnquiry]);
-    //where i need to work on
-    useEffect(() => {
-        console.log(accountPrimarys);
-        console.log(bankAccounts);
-        console.log(formData.accountNum);
-        Object.keys(bankAccounts)?.map((accountNo) => {
-            if (bankAccounts[accountNo].accountNumber == formData.accountNum) {
-                // setAcctNumber(accountPrimarys);
-                let balanceData;
-                balanceData = {
-                    accountId: bankAccounts[accountNo].accountId
-                };
-                // console.log(senderDetails.accountId);
-                dispatch(getBalanceEnquiry(balanceData));
-            } else {
-                setAcctNumber('Pending');
-            }
-        });
-    }, [formData.accountNum]);
+    const [bank, setBank] = useState({});
     const interBankCheck = () => {
         if (interBank !== null) {
-            //console.loginterBank);
+            console.log(interBank);
             setCount((count) => count + 1);
             setIsLoading(false);
             setStatus('success');
@@ -215,7 +112,7 @@ const Payment = () => {
     }, [interBank, errorMessageInterBank]);
     const billsCheck = () => {
         if (bills !== null) {
-            //console.logbills);
+            console.log(bills);
             setCount((count) => count + 1);
             setIsLoading(false);
             setStatus('success');
@@ -229,39 +126,12 @@ const Payment = () => {
     useEffect(() => {
         billsCheck();
     }, [bills, errorMessageBills]);
-    const transactionFeesCheck = () => {
-        if (transactionFees !== null) {
-            setTransactionFee(transactionFees.data.transactionFee);
-            setCount((count) => count + 1);
-            setIsLoading(false);
-            setEcobank(false);
-        } else if (errorMessageTransactionFees !== null) {
-            setCount((count) => count + 2);
-            setIsLoading(false);
-            setError(errorMessageTransactionFees);
-            setStatus('error');
-        }
-    };
-    useEffect(() => {
-        transactionFeesCheck();
-    }, [transactionFees, errorMessageTransactionFees]);
     const bulkcheck = () => {
         if (bulkTransfer !== null) {
-            //console.log(bulkTransfer);
-            if (bulkTransfer.failedTranscations.length !== 0) {
-                setCount((count) => count + 1);
-                setIsLoading(false);
-                // setError(
-                //     'Some or all of the transactions failed. Please check the Payment history for more details'
-                // );
-                setStatus('error');
-            } else if (bulkTransfer.successfulTranscations.length !== 0) {
-                setCount((count) => count + 1);
-                setIsLoading(false);
-                setStatus('success');
-            }
-            setSuccessfulTrans(bulkTransfer.successfulTranscations);
-            setFailedTrans(bulkTransfer.failedTranscations);
+            console.log(bulkTransfer);
+            setCount((count) => count + 1);
+            setIsLoading(false);
+            setStatus('success');
         } else if (errorMessagebulkTransfer !== null) {
             setCount((count) => count + 1);
             setIsLoading(false);
@@ -274,12 +144,12 @@ const Payment = () => {
     }, [bulkTransfer, errorMessagebulkTransfer]);
     const airtimeCheck = () => {
         if (airtime !== null) {
-            //console.logairtime);
+            console.log(airtime);
             setCount((count) => count + 1);
             setIsLoading(false);
             setStatus('success');
         } else if (errorMessageAirtime !== null) {
-            //console.logerrorMessageAirtime);
+            console.log(errorMessageAirtime);
             setCount((count) => count + 1);
             setIsLoading(false);
             setError(errorMessageAirtime);
@@ -289,6 +159,56 @@ const Payment = () => {
     useEffect(() => {
         airtimeCheck();
     }, [airtime, errorMessageAirtime]);
+    const internalBankCheck = () => {
+        if (internalBank !== null) {
+            console.log(internalBank);
+            setCount((count) => count + 1);
+            setIsLoading(false);
+            setStatus('success');
+        } else if (errorMessageInternalBank !== null) {
+            setCount((count) => count + 1);
+            setIsLoading(false);
+            setError(errorMessageInternalBank);
+            setStatus(error);
+        }
+    };
+    useEffect(() => {
+        internalBankCheck();
+    }, [internalBank, errorMessageInternalBank]);
+
+    useEffect(() => {
+        dispatch(getBalanceEnquiry());
+    }, []);
+    // useEffect(() => {
+    //     dispatch(loadbank('ENG'));
+    // }, []);
+    // useEffect(() => {
+    //     if (banks !== null) {
+    //         setBank(banks);
+    //     }
+    // }, [banks]);
+    useEffect(() => {}, [interBank, errorMessageInterBank]);
+
+    useEffect(() => {
+        if (balanceEnquiry !== null) {
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'NGN',
+                currencyDisplay: 'narrowSymbol'
+            });
+            const formattedAmount = formatter.format(
+                balanceEnquiry[0].availableBalance
+            );
+            setBalance(formattedAmount);
+            setSenderDetails(balanceEnquiry[0]);
+        }
+    }, [balanceEnquiry]);
+
+    useEffect(() => {
+        if (interBankEnquiry !== null) {
+            setInterEnquiry(interBankEnquiry);
+        }
+    }, [interBankEnquiry]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -305,225 +225,254 @@ const Payment = () => {
 
     useEffect(() => {
         if (link !== undefined) {
-            if (userProfileData.hasSetTransactionPin === false) {
-                if (userProfileData.createdFromEcobankCred === false) {
-                    router.push({
-                        pathname: '/AccountUpgrade',
-                        query: { id: 'Transaction Pin' }
-                    });
-                } else if (userProfileData.createdFromEcobankCred === true) {
-                    router.push({
-                        pathname: '/Profile',
-                        query: { id: 'Transaction Pin' }
-                    });
-                }
-            } else if (userProfileData.hasSetTransactionPin === true) {
-                setFormType(link.toLowerCase());
-                setOverlay(true);
-            }
+            setFormType(link.toLowerCase());
+            setOverlay(true);
         }
     }, [link]);
     const handleFormChange = (formTitle) => {
-        if (userProfileData.hasSetTransactionPin === false) {
-            console.log(userProfileData.createdFromEcobankCred);
-            if (userProfileData.createdFromEcobankCred === false) {
-                router.push({
-                    pathname: '/AccountUpgrade',
-                    query: { id: 'Transaction Pin' }
-                });
-            } else if (userProfileData.createdFromEcobankCred === true) {
-                router.push({
-                    pathname: '/Profile',
-                    query: { id: 'Transaction Pin' }
-                });
-            }
-        } else if (userProfileData.hasSetTransactionPin === true) {
-            setFormType(formTitle);
-            setOverlay(true);
-        }
+        setFormType(formTitle);
+        setOverlay(true);
     };
     const handleClose = () => {
         setOverlay(false);
         setFormType('');
         setCount(0);
-        setIsLoading(false);
-        setPaymentDetails({});
-        setError([]);
-        setErrorQr([]);
     };
 
     const buttonHandleClose = () => {
-        setOverlay(false);
-        setFormType('');
-        setCount(0);
-        setPaymentDetails({});
-        setError([]);
-        setErrorQr([]);
-    };
-    console.log(csvData);
-    console.log(sum);
-
-    useEffect(() => {
-        setSum(
-            csvData?.slice(2).reduce((a, b) => {
-                return a + b.Amount;
-            }, 0)
-        );
-    }, [csvData]);
-    const [randomString, setRandomString] = useState('');
-    function generateRandomString() {
-        const characters =
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        for (let i = 0; i < 10; i++) {
-            result += characters.charAt(
-                Math.floor(Math.random() * characters.length)
-            );
+        if (formType === 'mpos') {
+            setCount(count + 1);
+        } else {
+            setOverlay(false);
+            setFormType('');
+            setCount(0);
         }
-        return result;
-    }
+    };
+
     const renderForm = () => {
         switch (formType) {
+            case 'paylink':
+                switch (count) {
+                    case 0:
+                        return (
+                            <ReceivePaymentFirst
+                                overlay={overlay}
+                                firstTitle="Create Payment Link"
+                                buttonText="Next"
+                                closeAction={handleClose}
+                                action={(data) => {
+                                    console.log(data);
+                                    setCount(count + 1);
+                                }}
+                            />
+                        );
+                    case 1:
+                        return (
+                            <ReceivePaymentSecond
+                                overlay={overlay}
+                                title="Payment Link Generated"
+                                action={buttonHandleClose}
+                                buttonText="Send Paylink"
+                                type="Paylinks"
+                                closeAction={buttonHandleClose}
+                            />
+                        );
+                }
+
+            case 'ussd only':
+                switch (count) {
+                    case 0:
+                        return (
+                            <ReceivePaymentFirst
+                                overlay={overlay}
+                                firstTitle="Create USSD Payment Code"
+                                buttonText="Next"
+                                closeAction={handleClose}
+                                action={(data) => {
+                                    console.log(data);
+                                    setCount(count + 1);
+                                }}
+                            />
+                        );
+                    case 1:
+                        return (
+                            <ReceivePaymentSecond
+                                overlay={overlay}
+                                title=" USSD "
+                                action={buttonHandleClose}
+                                buttonText="Share USSD Code"
+                                type="USSD Code"
+                                closeAction={buttonHandleClose}
+                            />
+                        );
+                }
+            case 'ecobank qr only':
+                switch (count) {
+                    case 0:
+                        return (
+                            <ReceivePaymentFirst
+                                overlay={overlay}
+                                firstTitle="Create Ecobank QR Code"
+                                buttonText="Next"
+                                closeAction={handleClose}
+                                action={(data) => {
+                                    console.log(data);
+                                    setCount(count + 1);
+                                }}
+                            />
+                        );
+                    case 1:
+                        return (
+                            <ReceivePaymentSecond
+                                overlay={overlay}
+                                title=" Ecobank QR Code"
+                                action={buttonHandleClose}
+                                buttonText="Next"
+                                type=" Ecobank QR Codes"
+                                closeAction={buttonHandleClose}
+                            />
+                        );
+                }
+            case 'phone pos':
+                switch (count) {
+                    case 0:
+                        return (
+                            <ReceivePaymentFirst
+                                overlay={overlay}
+                                firstTitle="Use Mobile POS"
+                                buttonText="Next"
+                                closeAction={handleClose}
+                                action={(data) => {
+                                    console.log(data);
+                                    setCount(count + 1);
+                                }}
+                            />
+                        );
+                    case 1:
+                        return (
+                            <ReceivePaymentSecond
+                                overlay={overlay}
+                                title="Confirm mPOS Payment Details"
+                                action={buttonHandleClose}
+                                buttonText="Activate NFC Scanner"
+                                closeAction={buttonHandleClose}
+                            />
+                        );
+                    case 2:
+                        return (
+                            <Overlay overlay={overlay}>
+                                <div className={styles.NFCScanner}>
+                                    <h2>
+                                        Complete Transaction on Mobile Phone
+                                    </h2>
+                                    <p>
+                                        Note that this will be completed on your
+                                        mobile phone which is serving as your
+                                        POS.
+                                    </p>
+                                    <button onClick={buttonHandleClose}>
+                                        Activate NFC Scanner
+                                    </button>
+                                </div>
+                            </Overlay>
+                            // <SchedulePayment />
+                        );
+                }
+
             case 'single transfer':
                 switch (count) {
                     case 0:
                         return (
                             <MakePaymentFirst
                                 overlay={overlay}
-                                payload={paymentDetails}
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 firstTitle="Single Transfer Payment"
-                                isLoading={isLoading}
                                 closeAction={handleClose}
                                 buttonText="Next"
                                 othersaction={(data) => {
-                                    console.log(data);
-                                    setSenderDetails(data.sourceAccount);
-                                    console.log(senderDetails);
-                                    if (data.bankName === 'ECOBANK') {
-                                        setEcobank(true);
-                                        setCount(count + 1);
-                                    } else if (
-                                        data.bankNameBene === 'ECOBANK'
-                                    ) {
-                                        setEcobank(true);
-                                        setCount(count + 1);
-                                    } else {
-                                        const payload = {
-                                            accountId: data.sourceAccount,
-                                            destinationBankCode:
-                                                data.bankName === ''
-                                                    ? data.bankNameBene
-                                                    : data.bankName,
-                                            transactionAmount: parseInt(
-                                                data.amount,
-                                                10
-                                            ),
-                                            transactionType: 'INTERBANK'
+                                    if (data.bankName !== 'Ecobank') {
+                                        const enquiry = {
+                                            destinationBankCode: data.bankName,
+                                            beneficiaryAccountNo:
+                                                data.accountNumber
                                         };
-                                        dispatch(getTransactionFees(payload));
-                                        setIsLoading(true);
+                                        dispatch(postInterBankEnquiry(enquiry));
                                     }
-                                    // if (data.beneficiary === true) {
-                                    //     const beneficiaryData = {
-                                    //         beneficiaryName: data.accountName,
-                                    //         accountNumber: data.accountNumber,
-                                    //         bankName: data.bankName,
-                                    //         bankCode: data.bankName
-                                    //     };
-                                    //     dispatch(
-                                    //         postBeneficiariesData(
-                                    //             beneficiaryData
-                                    //         )
-                                    //     );
-                                    // }
+
+                                    console.log(data);
                                     setPaymentDetails(data);
+                                    setCount(count + 1);
                                 }}
-                                // scheduleLater={() => {
-                                //     setCount(count + 4);
-                                // }}
+                                scheduleLater={() => {
+                                    setCount(count + 4);
+                                }}
                             />
                         );
                     case 1:
                         return (
                             <MakePaymentSecond
                                 closeAction={handleClose}
-                                formData={formData}
-                                setFormData={setFormdata}
                                 isLoading={isLoading}
-                                title="Single Transfer"
-                                charges={transactionFee}
-                                amount={
-                                    parseInt(paymentDetails.amount, 10) +
-                                    parseInt(transactionFee, 10)
-                                }
-                                recieverName={paymentDetails.accountName}
-                                sender={`${userProfileData.lastName} ${userProfileData.firstName}`}
-                                recieverBank={
-                                    paymentDetails.bankName === ''
-                                        ? paymentDetails.bankNameBene
-                                        : paymentDetails.bankName
-                                }
+                                amount={paymentDetails.amount}
+                                recieverName={paymentDetails.accountNumber}
+                                sender={paymentDetails.accountName}
+                                recieverBank={paymentDetails.bankName}
                                 overlay={overlay}
-                                backAction={() => {
-                                    setCount(count - 1);
-                                }}
-                                transferAction={(data) => {
+                                transferAction={() => {
                                     setIsLoading(true);
-                                    if (data.beneficiary === true) {
-                                        const beneficiaryData = {
-                                            beneficiaryName:
-                                                paymentDetails.accountName,
+                                    if (paymentDetails.bene === true) {
+                                        const newBene = {
+                                            name: interEnquiry.accountName,
                                             accountNumber:
-                                                paymentDetails.accountNumber,
-                                            bankName: paymentDetails.bankName,
+                                                interEnquiry.accountNo,
+                                            bankName:
+                                                // bank.filter(
+                                                //     (item) => {
+                                                //         if (
+                                                //             item.institutionId ===
+                                                //             paymentDetails.bankName
+                                                //         ) {
+                                                //             return item.institutionName;
+                                                //         }
+                                                //     }
+                                                // )
+                                                'Zenith Bank',
                                             bankCode: paymentDetails.bankName
                                         };
                                         dispatch(
-                                            postBeneficiariesData(
-                                                beneficiaryData
-                                            )
+                                            postBeneficiariesData(newBene)
                                         );
                                     }
-                                    const paymentData = {
-                                        isEcobankToEcobankTransaction: ecobank,
-                                        destinationBank:
-                                            paymentDetails.bankName === ''
-                                                ? paymentDetails.bankNameBene
-                                                : paymentDetails.bankName,
-                                        destinationBankCode:
-                                            paymentDetails.bankName === ''
-                                                ? paymentDetails.bankNameBene
-                                                : paymentDetails.bankName,
-                                        beneficiaryName:
-                                            paymentDetails.accountName,
-                                        destinationAccountNo:
-                                            paymentDetails.accountNumber === ''
-                                                ? paymentDetails.accountNumberBene
-                                                : paymentDetails.accountNumber,
-                                        //change back to int
-                                        transactionAmount: (
-                                            parseInt(
-                                                paymentDetails.amount,
-                                                10
-                                            ) + parseInt(transactionFee, 10)
-                                        ).toString(),
-                                        narration: paymentDetails.narration,
-                                        transactionPin:
-                                            data.beneficiary === true
-                                                ? Object.values(data)
-                                                      .toString()
-                                                      .replace('true', '')
-                                                      .replaceAll(',', '')
-                                                : Object.values(data)
-                                                      .toString()
-                                                      .replace('false', '')
-                                                      .replaceAll(',', ''),
-                                        accountId: senderDetails
-                                    };
+                                    if (paymentDetails.bankName === 'Ecobank') {
+                                        const paymentData = {
+                                            debitAccountNo:
+                                                senderDetails.accountNo,
+                                            debitAccountType: 'A',
+                                            creditAccountNo: '1382002892',
+                                            creditAccountType: 'A',
+                                            amount: paymentDetails.amount,
+                                            ccy: senderDetails.ccy
+                                        };
+                                        dispatch(postInternalBank(paymentData));
+                                    } else {
+                                        console.log(interEnquiry);
 
-                                    dispatch(postInterBank(paymentData));
+                                        const paymentData = {
+                                            destinationBankCode:
+                                                paymentDetails.bankName,
+                                            senderAccountNo: '',
+                                            senderAccountType: 'A',
+                                            senderName: 'Aderohunmu Matthew',
+                                            senderPhone: '2348039219191',
+                                            beneficiaryAccountNo:
+                                                interEnquiry.accountNumber,
+                                            beneficiaryName:
+                                                interEnquiry.accountName,
+                                            narration: paymentDetails.narration,
+                                            amount: paymentDetails.amount,
+                                            ccy: senderDetails.ccy
+                                        };
+                                        dispatch(postInterBank(paymentData));
+                                    }
                                 }}
                             />
                         );
@@ -531,53 +480,39 @@ const Payment = () => {
                         return (
                             <PaymentSuccess
                                 statusbar={status}
-                                accountNumber={
-                                    paymentDetails.accountNumber === ''
-                                        ? paymentDetails.accountNumberBene
-                                        : paymentDetails.accountNumber
-                                }
-                                narration={paymentDetails.narration}
-                                senderName={`${userProfileData.lastName} ${userProfileData.firstName}`}
                                 error={error}
                                 overlay={overlay}
                                 action={() => {
-                                    if (status === 'error') {
-                                        setCount(count - 2);
-                                        setIsLoading(false);
-                                    } else {
-                                        setCount(0);
-                                        setOverlay(false);
-                                        setFormType('');
-                                        setPaymentDetails({});
-                                    }
+                                    setCount(0);
+                                    setOverlay(false);
+                                    setFormType('');
                                 }}
                                 title="Single Transfer Payment"
                                 amount={paymentDetails.amount}
-                                beneName={paymentDetails.accountName}
-                                // repeatAction={() => {
-                                //     setCount(count + 1);
-                                // }}
+                                beneName={paymentDetails.accountNumber}
+                                repeatAction={() => {
+                                    setCount(count + 1);
+                                }}
                             />
                         );
-                    // case 3:
-                    //     return (
-                    //         <PaymentRepeat
-                    //             overlay={overlay}
-                    //             closeAction={handleClose}
-                    //             type="Single Transfer"
-                    //         />
-                    //     );
-                    // case 4:
-                    // return (
-                    //     <SchedulePayment
-                    //         overlay={overlay}
-                    //         action={() => {
-                    //             setCount(count - 4);
-                    //             // setFormType('');
-                    //         }}
-                    //         closeAction={handleClose}
-                    //     />
-                    // );
+                    case 3:
+                        return (
+                            <PaymentRepeat
+                                overlay={overlay}
+                                closeAction={handleClose}
+                            />
+                        );
+                    case 4:
+                        return (
+                            <SchedulePayment
+                                overlay={overlay}
+                                action={() => {
+                                    setCount(0);
+                                    setFormType('');
+                                }}
+                                closeAction={handleClose}
+                            />
+                        );
                 }
 
             case 'bulk transfer':
@@ -585,17 +520,42 @@ const Payment = () => {
                     case 0:
                         return (
                             <MakePaymentFirst
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 overlay={overlay}
                                 firstTitle="Bulk Payments"
                                 closeAction={handleClose}
                                 buttonText="Send Now"
-                                payload={paymentDetails.details}
                                 action={(data) => {
+                                    // const enquiry1 = {
+                                    //     destinationBankCode: data.bankName1,
+                                    //     beneficiaryAccountNo:
+                                    //         data.accountNumber1
+                                    // };
+                                    // dispatch(postInterBankEnquiry(enquiry1));
+                                    // const enquiry2 = {
+                                    //     destinationBankCode: data.bankName2,
+                                    //     beneficiaryAccountNo:
+                                    //         data.accountNumber2
+                                    // };
+                                    // dispatch(postInterBankEnquiry(enquiry1));
+                                    // if (
+                                    //     paymentDetails.accountNumber3 !== '' &&
+                                    //     paymentDetails.bankName3 !== ''
+                                    // ) {
+                                    //     const enquiry3 = {
+                                    //         destinationBankCode: data.bankName3,
+                                    //         beneficiaryAccountNo:
+                                    //             data.accountNumber3
+                                    //     };
+                                    //     dispatch(
+                                    //         postInterBankEnquiry(enquiry3)
+                                    //     );
+                                    // }
+                                    // dispatch(postInterBankEnquiry(enquiry1));
+                                    // dispatch(postInterBankEnquiry(enquiry2));
+
                                     setPaymentDetails(data);
-                                    setSenderDetails(data.sourceAccount);
-                                    //console.log(data);
+
+                                    console.log(data);
                                     setCount(count + 1);
                                 }}
                             />
@@ -603,159 +563,59 @@ const Payment = () => {
                     case 1:
                         return (
                             <MakePaymentSecond
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 isLoading={isLoading}
                                 closeAction={handleClose}
-                                amount={
-                                    csvData !== null
-                                        ? 'sum'
-                                        : paymentDetails.amount === ''
-                                        ? paymentDetails.details.reduce(
-                                              (a, b) => {
-                                                  return a + +b.amount;
-                                              },
-                                              0
-                                          )
-                                        : paymentDetails.amount *
-                                          numberofBene.length
-                                }
-                                title="Bulk Payments"
-                                // charges={csvData === null?: csvData.slice(2).map((item)=>{
-
-                                // })}
-                                // recieverName={paymentDetails.accountNumber}
-                                sender={`${userProfileData.lastName} ${userProfileData.firstName}`}
-                                // recieverBank={paymentDetails.bankName}
+                                amount={paymentDetails.amount}
+                                recieverName={paymentDetails.accountNumber}
+                                sender={paymentDetails.accountName}
+                                recieverBank={paymentDetails.bankName}
                                 overlay={overlay}
-                                number={
-                                    csvData !== null
-                                        ? csvData.slice(2).length
-                                        : numberofBene?.length
-                                }
-                                backAction={() => {
-                                    setCount(count - 1);
-                                }}
-                                transferAction={(data) => {
+                                transferAction={() => {
                                     setIsLoading(true);
                                     const paymentData = {
-                                        accountId: senderDetails,
-                                        transactionPin: Object.values(data)
-                                            .toString()
-                                            .replaceAll(',', ''),
-                                        transactions:
-                                            csvData !== null
-                                                ? csvData.slice(2).map((e) => {
-                                                      return {
-                                                          isEcobankToEcobankTransaction:
-                                                              e.bankName ===
-                                                              'Ecobank'
-                                                                  ? true
-                                                                  : false,
-                                                          destinationBank:
-                                                              e.Bank,
-                                                          destinationBankCode:
-                                                              e.Bank ===
-                                                              'ACCESS BANK'
-                                                                  ? '999044'
-                                                                  : e.Bank ===
-                                                                    'Citi Bank'
-                                                                  ? 'CITI-ACC'
-                                                                  : e.Bank ===
-                                                                    'Fidelity Bank'
-                                                                  ? 'FIDELITY-ACC'
-                                                                  : e.Bank ===
-                                                                    'First Bank of Nigeria'
-                                                                  ? 'FIRST-ACC'
-                                                                  : e.Bank ===
-                                                                    'First City Monument Bank'
-                                                                  ? 'FCMB-ACC'
-                                                                  : e.Bank ===
-                                                                    'GT Bank Plc'
-                                                                  ? 'GUARANTY-ACC'
-                                                                  : e.Bank ===
-                                                                    'Heritage'
-                                                                  ? 'HERITAGE-ACC'
-                                                                  : e.Bank ===
-                                                                    'Stanbic IBTC Bank'
-                                                                  ? 'STANBIC-IBTC-ACC'
-                                                                  : e.Bank ===
-                                                                    'Standard Chartered'
-                                                                  ? 'STANDARD-CHARTERED'
-                                                                  : e.Bank ===
-                                                                    'Sterling Bank'
-                                                                  ? 'STERLING-ACC'
-                                                                  : e.Bank ===
-                                                                    'Union Bank'
-                                                                  ? 'UNION-ACC'
-                                                                  : e.Bank ===
-                                                                    'United Bank for Africa'
-                                                                  ? 'UNITED-ACC'
-                                                                  : e.Bank ===
-                                                                    'Unity Bank'
-                                                                  ? 'UNITY-ACC'
-                                                                  : e.Bank ===
-                                                                    'Wema Bank'
-                                                                  ? 'WEMA-ACC'
-                                                                  : e.Bank ===
-                                                                    'Zenith Bank'
-                                                                  ? 'ZENITH-ACC'
-                                                                  : null,
-                                                          beneficiaryName:
-                                                              e.BeneName,
-                                                          destinationAccountNo:
-                                                              e.AccountNo,
-                                                          transactionAmount:
-                                                              parseInt(
-                                                                  e.Amount,
-                                                                  10
-                                                              ).toString(),
-                                                          narration: e.narration
-                                                      };
-                                                  })
-                                                : paymentDetails.details?.map(
-                                                      (details, index) => {
-                                                          if (
-                                                              details.accountNumber ===
-                                                              ''
-                                                          ) {
-                                                              return null;
-                                                          } else {
-                                                              return {
-                                                                  isEcobankToEcobankTransaction:
-                                                                      details.bankName ===
-                                                                      'Ecobank'
-                                                                          ? true
-                                                                          : false,
-                                                                  destinationBank:
-                                                                      details.bankName,
-                                                                  destinationBankCode:
-                                                                      details.bankName,
-                                                                  beneficiaryName:
-                                                                      numberofBene[
-                                                                          index
-                                                                      ].number
-                                                                          .accountName,
-                                                                  destinationAccountNo:
-                                                                      details.accountNumber,
-                                                                  transactionAmount:
-                                                                      paymentDetails.amount ===
-                                                                      ''
-                                                                          ? parseInt(
-                                                                                details.amount,
-                                                                                10
-                                                                            ).toString()
-                                                                          : parseInt(
-                                                                                paymentDetails.amount,
-                                                                                10
-                                                                            ).toString(),
-                                                                  narration: ''
-                                                              };
-                                                          }
-                                                      }
-                                                  )
+                                        senderAccountNo: '1823020500',
+                                        senderAccountType: 'A',
+                                        senderName: 'Aderohunmu Matthew',
+                                        senderPhone: '2348039219191',
+                                        destinations: [
+                                            {
+                                                destinationBankCode:
+                                                    'ZENITH-ACC',
+                                                beneficiaryAccountNo:
+                                                    '2252999745',
+                                                beneficiaryName:
+                                                    'CHIJIOKE NWANKWO',
+                                                narration: 'salary',
+                                                // amount: paymentDetails.amount,
+                                                amount: '1.00',
+                                                ccy: 'NGN'
+                                            },
+                                            {
+                                                destinationBankCode:
+                                                    'ZENITH-ACC',
+                                                beneficiaryAccountNo:
+                                                    '2252999740',
+                                                beneficiaryName:
+                                                    'CHIJIOKE NWANKWO',
+                                                narration: 'salary',
+                                                amount: '2.00',
+                                                ccy: 'NGN'
+                                            }
+                                        ]
                                     };
-
+                                    if (
+                                        paymentDetails.accountNumber3 !== '' &&
+                                        paymentDetails.bankName3 !== ''
+                                    ) {
+                                        paymentData.destinations.push({
+                                            destinationBankCode: 'ZENITH-ACC',
+                                            beneficiaryAccountNo: '2252999740',
+                                            beneficiaryName: 'CHIJIOKE NWANKWO',
+                                            narration: 'salary',
+                                            amount: '3.00',
+                                            ccy: 'NGN'
+                                        });
+                                    }
                                     dispatch(getBulkTransfer(paymentData));
                                 }}
                             />
@@ -767,39 +627,12 @@ const Payment = () => {
                                 statusbar={status}
                                 overlay={overlay}
                                 action={() => {
-                                    if (status === 'error') {
-                                        setCount(count - 2);
-                                        setIsLoading(false);
-                                    } else {
-                                        setCount(0);
-                                        setOverlay(false);
-                                        setFormType('');
-                                        localStorage.removeItem('number');
-                                        localStorage.removeItem('csvData');
-                                    }
+                                    setCount(0);
+                                    setOverlay(false);
+                                    setFormType('');
                                 }}
-                                successfulTrans={successfulTrans}
-                                failedTrans={failedTrans}
-                                number={
-                                    csvData !== null
-                                        ? csvData.slice(2).length
-                                        : paymentDetails?.details?.length
-                                }
                                 title="Bulk Payment"
-                                amount={
-                                    csvData === null
-                                        ? paymentDetails.amount === ''
-                                            ? paymentDetails.details.reduce(
-                                                  (a, b) => {
-                                                      return a + +b.amount;
-                                                  },
-                                                  0
-                                              )
-                                            : paymentDetails.amount *
-                                              numberofBene.length
-                                        : sum
-                                }
-                                senderName={`${userProfileData.lastName} ${userProfileData.firstName}`}
+                                amount={paymentDetails.amount}
                             />
                         );
                 }
@@ -809,8 +642,6 @@ const Payment = () => {
                     case 0:
                         return (
                             <MakePaymentFirst
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 overlay={overlay}
                                 firstTitle="Bill Payment"
                                 closeAction={handleClose}
@@ -828,36 +659,38 @@ const Payment = () => {
                     case 1:
                         return (
                             <MakePaymentFirst
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 overlay={overlay}
                                 firstTitle={bill}
                                 buttonText="Send Now"
                                 closeAction={handleClose}
-                                isLoading={isLoading}
                                 // dataAction={(data) => {
                                 // setCount(count + 1);
                                 //     setPaymentDetails(data);
                                 // }}
                                 airtimeAction={(data) => {
+                                    setCount(count + 1);
                                     setPaymentDetails(data);
-                                    setSenderDetails(data.sourceAccount);
-                                    const payload = {
-                                        accountId: data.sourceAccount,
-                                        billerCode:
-                                            bill === 'AIRTIME'
-                                                ? airtimeNetData.code
-                                                : airtimeNetData?.billerDetail
-                                                      ?.billerCode,
-                                        transactionAmount: parseInt(
-                                            data.amount,
-                                            10
-                                        ),
-                                        transactionType: 'BILLPAY'
+                                    const billerdata = {
+                                        amount: '100.00',
+                                        ccy: 'NGN',
+                                        billerCode: 'Glo TOPUP',
+                                        billerID: '3280',
+                                        sourceAccount: '8100467021',
+                                        sourceAccountType: 'X',
+                                        productCode: 'GLO-ANY',
+                                        mobileNo: '2348111380591',
+                                        formDataValue: [
+                                            {
+                                                fieldName: 'BEN_PHONE_NO',
+                                                fieldValue: '2348111380591',
+                                                dataType: 'string'
+                                            }
+                                        ],
+                                        beneficiaryName: 'optional',
+                                        paymentDescription: 'optional'
                                     };
-                                    dispatch(getTransactionFees(payload));
-                                    setIsLoading(true);
-                                    //console.logdata);
+
+                                    dispatch(postAirtime(billerdata));
                                 }}
                                 // scheduleLater={() => {
                                 //     setCount(count + 3);
@@ -867,98 +700,113 @@ const Payment = () => {
                     case 2:
                         return (
                             <MakePaymentSecond
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 isLoading={isLoading}
                                 closeAction={handleClose}
-                                recieverName={
-                                    bill === 'AIRTIME'
-                                        ? paymentDetails.phoneNumber === ''
-                                            ? paymentDetails.phoneNumberBene
-                                            : paymentDetails.phoneNumber
-                                        : 'UTILITIES'
-                                }
-                                amount={
-                                    parseInt(paymentDetails.amount, 10) +
-                                    parseInt(transactionFee, 10)
-                                }
+                                recieverName={paymentDetails.billerType}
+                                amount={paymentDetails.amount}
+                                number={paymentDetails.phoneNumber}
                                 title="Bills Payment"
-                                charges={transactionFee}
-                                recieverBank={
-                                    bill === 'AIRTIME'
-                                        ? airtimeNetData.name
-                                        : airtimeNetData.billerDetail.billerName
-                                }
-                                sender={`${userProfileData.lastName} ${userProfileData.firstName}`}
+                                recieverBank={paymentDetails.billerCategory}
+                                sender={paymentDetails.billerPlan}
+                                refNuber={paymentDetails.billerDetail}
                                 overlay={overlay}
-                                transferAction={(data) => {
+                                transferAction={() => {
                                     setIsLoading(true);
-                                    if (bill === 'AIRTIME') {
+                                    if (
+                                        paymentDetails.billerType === 'AIRTIME'
+                                    ) {
                                         setIsLoading(true);
-                                        const billerdata = {
-                                            amount: parseInt(
-                                                paymentDetails.amount,
-                                                10
-                                            ),
-                                            transactionPin: Object.values(data)
-                                                .toString()
-                                                .replaceAll(',', ''),
-                                            accountId: senderDetails,
-                                            billerCode: airtimeNetData.code,
-                                            billerId: airtimeNetData.id,
-                                            // productCode: airtimeNetData.name,
-                                            productCode:
-                                                airtimeNetData.name ===
-                                                'MTN Nigeria'
-                                                    ? 'MTN-ANY'
-                                                    : airtimeNetData.name ===
-                                                      'GLO Nigeria'
-                                                    ? 'GLO-ANY'
-                                                    : airtimeNetData.name ===
-                                                      'Airtel Nigeria'
-                                                    ? 'AIRTEL-ANY'
-                                                    : airtimeNetData.name ===
-                                                      'Etisalat Nigeria'
-                                                    ? 'ETISALAT-ANY'
-                                                    : null,
-                                            mobileNo:
-                                                paymentDetails.phoneNumber ===
-                                                ''
-                                                    ? paymentDetails.phoneNumberBene
-                                                    : paymentDetails.phoneNumber
-                                        };
-
-                                        dispatch(postAirtime(billerdata));
+                                        dispatch(
+                                            loadbillerPlan(
+                                                paymentDetails.billerCategory
+                                            )
+                                        );
+                                        if (billerPlan !== null) {
+                                            console.log(
+                                                billerPlan.billerDetail.billerID
+                                            );
+                                            const billerData = {
+                                                amount: paymentDetails.amount,
+                                                ccy:
+                                                    billerPlan
+                                                        .billerProductInfo[0]
+                                                        .ccy,
+                                                billerCode:
+                                                    billerPlan.billerDetail
+                                                        .billerCode,
+                                                billerID: String(
+                                                    billerPlan.billerDetail
+                                                        .billerID
+                                                ),
+                                                sourceAccount: '1382002892',
+                                                sourceAccountType: 'A',
+                                                productCode:
+                                                    billerPlan
+                                                        .billerProductInfo[0]
+                                                        .productCode,
+                                                customerName: String(
+                                                    paymentDetails.acountDebit
+                                                ),
+                                                mobileNo: '2348111380591',
+                                                formDataValue: [
+                                                    {
+                                                        fieldName:
+                                                            'BEN_PHONE_NO',
+                                                        fieldValue:
+                                                            paymentDetails.phoneNumber,
+                                                        dataType: 'string'
+                                                    }
+                                                ]
+                                            };
+                                            dispatch(postAirtime(billerData));
+                                        }
                                     } else {
-                                        const billerData = {
-                                            accountId: senderDetails,
-                                            transactionPin: Object.values(data)
-                                                .toString()
-                                                .replaceAll(',', ''),
-                                            transactionAmount:
-                                                paymentDetails.amount,
-                                            billerCode:
-                                                airtimeNetData.billerDetail
-                                                    .billerCode,
-                                            billerId:
-                                                airtimeNetData.billerDetail.billerID.toString(),
-                                            productCode:
-                                                desiredPackageData.productCode,
-                                            paymentDescription:
-                                                desiredPackageData.productDescription,
-                                            formDataValue: [
-                                                {
-                                                    fieldName:
-                                                        airtimeNetData
-                                                            .billFormData[0]
-                                                            .fieldTitle,
-                                                    fieldValue:
-                                                        paymentDetails.paymentDescription,
-                                                    dataType: 'string'
-                                                }
-                                            ]
-                                        };
-                                        dispatch(postBills(billerData));
+                                        dispatch(
+                                            loadbillerPlan(
+                                                paymentDetails.billerCategory
+                                            )
+                                        );
+                                        if (billerPlan !== null) {
+                                            const billerData = {
+                                                amount: paymentDetails.amount,
+                                                ccy:
+                                                    billerPlan
+                                                        .billerProductInfo[0]
+                                                        .ccy,
+                                                billerCode:
+                                                    billerPlan.billerDetail
+                                                        .billerCode,
+                                                billerID: String(
+                                                    billerPlan.billerDetail
+                                                        .billerID
+                                                ),
+                                                sourceAccount:
+                                                    senderDetails.accountNo,
+                                                sourceAccountType: 'A',
+                                                productCode:
+                                                    billerPlan
+                                                        .billerProductInfo[0]
+                                                        .productCode,
+                                                customerName: String(
+                                                    paymentDetails.acountDebit
+                                                ),
+                                                customerRefNo: String(
+                                                    paymentDetails.billerDetail
+                                                ),
+                                                paymentDescription: 'Testing',
+                                                mobileNo: '2348111380591',
+                                                formDataValue: [
+                                                    {
+                                                        fieldName:
+                                                            'BEN_PHONE_NO',
+                                                        fieldValue:
+                                                            paymentDetails.phoneNumber,
+                                                        dataType: 'string'
+                                                    }
+                                                ]
+                                            };
+                                            dispatch(postBills(billerData));
+                                        }
                                     }
                                 }}
                             />
@@ -970,48 +818,27 @@ const Payment = () => {
                                 error={error}
                                 statusbar={status}
                                 action={() => {
-                                    if (status === 'error') {
-                                        setCount(count - 2);
-                                        setIsLoading(false);
-                                    } else {
-                                        setCount(0);
-                                        setOverlay(false);
-                                        setFormType('');
-                                        setPaymentDetails({});
-                                    }
+                                    setCount(0);
+                                    setOverlay(false);
+                                    setFormType('');
                                 }}
                                 title="Bill Payment"
-                                beneName={
-                                    bill === 'AIRTIME'
-                                        ? paymentDetails.phoneNumber
-                                        : paymentDetails?.desiredPackage
-                                }
-                                accountNumber={
-                                    bill === 'AIRTIME'
-                                        ? paymentDetails.phoneNumber
-                                        : paymentDetails.paymentDescription
-                                }
                                 paymentType={paymentDetails.billerType}
-                                number={
-                                    paymentDetails.phoneNumber === ''
-                                        ? paymentDetails.phoneNumberBene
-                                        : paymentDetails.phoneNumber
-                                }
+                                number={paymentDetails.phoneNumber}
                                 amount={paymentDetails.amount}
-                                senderName={`${userProfileData.lastName} ${userProfileData.firstName}`}
                             />
                         );
-                    // case 4:
-                    //     return (
-                    //         <SchedulePayment
-                    //             overlay={overlay}
-                    //             action={() => {
-                    //                 setCount(0);
-                    //                 setFormType('');
-                    //             }}
-                    //             closeAction={handleClose}
-                    //         />
-                    //     );
+                    case 4:
+                        return (
+                            <SchedulePayment
+                                overlay={overlay}
+                                action={() => {
+                                    setCount(0);
+                                    setFormType('');
+                                }}
+                                closeAction={handleClose}
+                            />
+                        );
                 }
 
             case 'fx transfer ':
@@ -1019,14 +846,12 @@ const Payment = () => {
                     case 0:
                         return (
                             <MakePaymentFirst
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 overlay={overlay}
                                 firstTitle="Foreign Transfer"
                                 closeAction={handleClose}
                                 buttonText="Send Now"
                                 action={(data) => {
-                                    //console.logdata);
+                                    console.log(data);
                                     setCount(count + 1);
                                 }}
                                 scheduleLater={() => {
@@ -1037,15 +862,13 @@ const Payment = () => {
                     case 1:
                         return (
                             <MakePaymentFirst
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 overlay={overlay}
                                 type={'two'}
                                 firstTitle="Foreign Transfer"
                                 closeAction={handleClose}
                                 buttonText="Send Now"
                                 secondAction={(data) => {
-                                    //console.logdata);
+                                    console.log(data);
                                     setCount(count + 1);
                                 }}
                                 scheduleLater={() => {
@@ -1056,12 +879,10 @@ const Payment = () => {
                     case 2:
                         return (
                             <MakePaymentSecond
-                                formData={formData}
-                                setFormdata={setFormdata}
                                 overlay={overlay}
                                 closeAction={handleClose}
                                 transferAction={(data) => {
-                                    //console.logdata);
+                                    console.log(data);
                                     setCount(count + 1);
                                 }}
                             />
@@ -1099,13 +920,12 @@ const Payment = () => {
         setOutType(type);
     };
     return (
-        <DashLayout page="Payments">
-            <div className={styles.statementCover}>
-                {/* {active && (
+        <DashLayout>
+            {active && (
                 <div className={styles.greencard}>
                     <div className={styles.greencardDetails}>
                         <div>
-                            <img
+                            <Image
                                 src="/Assets/Images/clock.png"
                                 width="47px"
                                 height="55px"
@@ -1129,40 +949,58 @@ const Payment = () => {
                         classes={styles.closeButton}
                     />
                 </div>
-            )} */}
-                <div className={styles.allTypes}>
-                    <div className={styles.cov}>
-                        <AccountsInfoCard />
-                        {/* <div className={styles.balanceButtons}>
+            )}
+
+            <div className={styles.cov}>
+                <div className={styles.whiteboard}>
+                    <div className={styles.balance}>
+                        <div>
+                            <div className={styles.visibility}>
+                                <p className={styles.thousand}>
+                                    {outType ? '*******' : balance}
+                                </p>
+                                <Visbility color="green" typeSet={types} />
+                            </div>
+                            <p className={styles.avail}>Available Balance</p>
+                        </div>
+                        <div className={styles.balanceButtons}>
                             <div className={styles.first}>
                                 <p>Scheduled Payments</p>
                             </div>
                             <div className={styles.second}>
                                 <p>Repeat Payments</p>
                             </div>
-                        </div> */}
-                    </div>
-                    <div className={styles.cov}>
-                        <PaymentCard title="Make Payments" type="make">
-                            {PaymentData.make.map((payType, index) => (
-                                <PaymentSingleBody
-                                    data={payType}
-                                    key={index}
-                                    type="make"
-                                    handleFormChange={handleFormChange}
-                                />
-                            ))}
-                        </PaymentCard>
+                        </div>
                     </div>
                 </div>
-                <PaymentTable
-                    title="Payment History"
-                    test={count}
-                    page="Payments"
-                />
-
-                {renderForm()}
             </div>
+
+            <div className={styles.cov}>
+                <PaymentCard title="Receive Payments" type="receive">
+                    {PaymentData.receive.map((payType, index) => (
+                        <PaymentSingleBody
+                            data={payType}
+                            key={index}
+                            type="receive"
+                            handleFormChange={handleFormChange}
+                        />
+                    ))}
+                </PaymentCard>
+                <PaymentCard title="Make Payments" type="make">
+                    {PaymentData.make.map((payType, index) => (
+                        <PaymentSingleBody
+                            data={payType}
+                            key={index}
+                            type="make"
+                            handleFormChange={handleFormChange}
+                        />
+                    ))}
+                </PaymentCard>
+            </div>
+
+            <PaymentTable title="Payment History" />
+
+            {renderForm()}
         </DashLayout>
     );
 };

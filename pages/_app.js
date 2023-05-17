@@ -1,28 +1,15 @@
 import { Layout } from '../components';
-import React, { useEffect, useState } from 'react';
 import '../styles/globals.css';
-
 import { AnimatePresence, motion } from 'framer-motion';
 import { wrapper, store } from '../store';
 import { Provider } from 'react-redux';
 
 function MyApp({ Component, pageProps, router }) {
     const variants = {
-        hidden: { background: 0, x: 200, y: 0 },
+        hidden: { opacity: 0, x: 200, y: 0 },
         enter: { opacity: 1, x: 0, y: 0 },
         exit: { opacity: 0, x: 0, y: -200 }
     };
-    const [previous, setPrevious] = useState();
-    // if (
-    //     typeof window !== 'undefined' &&
-    //     typeof window.navigator !== 'undefined' &&
-    //     typeof navigator !== 'undefined' &&
-    //     navigator.userAgent
-    // ) {
-    //     const disableDevtool = require('disable-devtool');
-    //     disableDevtool();
-    // }
-
     // const pageMotionProps = {
     //     initial: 'pageInitial',
     //     animate: 'pageAnimate',

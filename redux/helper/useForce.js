@@ -7,5 +7,3 @@ const UseForce = () => {
 };
 
 export default UseForce;
-
-// dead code

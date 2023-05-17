@@ -10,7 +10,7 @@ export const encrypt = (content) => {
     });
     return encryptResult.toString();
 };
-//console.log(encrypt('password'));
+// console.log(encrypt('password'))
 
 export const decrypt = (content) => {
     var key = CryptoJS.enc.Utf8.parse('TheBestSecretKey');
@@ -22,5 +22,3 @@ export const decrypt = (content) => {
     const decryptResult = bytes.toString(CryptoJS.enc.Utf8);
     return decryptResult.toString();
 };
-
-// dead code

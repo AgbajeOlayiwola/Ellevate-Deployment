@@ -6,10 +6,8 @@
     margin: 0px auto;
     display: flex;
     position: absolute;
-    height: 80vh;
-
     top: 3.7%;
-    left: 25%;
+    left: 33%;
     z-index: 10;
 }
 .firstDivs {
@@ -55,13 +53,6 @@
 .firstBody,
 .bulkBody {
     width: 70%;
-    overflow: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-}
-.firstBody::-webkit-scrollbar,
-.bulkBody::-webkit-scrollbar {
-    display: none;
 }
 
 .firstBody > div {
@@ -112,7 +103,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
 }
 
 .beneficiaryHeader h2 {
@@ -139,48 +129,6 @@
 .beneficiaryBody {
     margin-top: 12px;
     width: 100%;
-    height: 15vh;
-    overflow: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-}
-
-.beneficiaryBodyNo {
-    margin-top: 12px;
-    width: 100%;
-}
-
-.beneficiaryBody::-webkit-scrollbar {
-    display: none;
-}
-
-.beneficiaryBody h2,
-.beneficiaryBodyNo h2 {
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 15px;
-    color: #7a7978;
-    margin: 0px;
-    margin-top: 8px;
-}
-
-.beneficiarySearch {
-    width: 50%;
-    display: flex;
-    border-radius: 8px;
-    /* border: 1px solid #dae1ff; */
-    background-color: #f7f7f7;
-    padding-left: 12px;
-}
-
-.beneficiarySearch input {
-    border: none !important;
-    padding: 8px 16px !important;
-    box-sizing: border-box;
-    overflow: hidden;
-    background-color: transparent !important;
 }
 
 .beneficiarySingle:first-child {
@@ -188,11 +136,10 @@
 }
 
 .beneficiarySingle {
-    width: 30%;
-    max-width: 100px;
-    margin-left: 40px;
+    width: 15%;
+    max-width: 60px;
+    margin-left: 24px;
     display: inline-block;
-    cursor: pointer;
 }
 
 .beneficiarySingle svg {
@@ -200,7 +147,7 @@
     display: block;
 }
 
-/* .beneficiarySingle div {
+.beneficiarySingle div {
     width: 50px;
     height: 50px;
     border-radius: 50px;
@@ -208,18 +155,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-} */
-
-.beneficiarySingle div img {
-    margin: auto;
 }
 
-.beneficiaryIcon {
-    height: 50px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.beneficiarySingle div img {
     margin: auto;
 }
 
@@ -244,7 +182,6 @@
     margin: 0px;
     margin-top: 2px;
     color: #a4a4a4;
-    text-align: center;
 }
 
 .source {
@@ -303,7 +240,6 @@
 
 .firstBody input[type='number'] {
     -moz-appearance: textfield;
-    appearance: textfield;
 }
 
 .firstBody input[type='text'] {
@@ -318,7 +254,7 @@
 .firstBody input::placeholder {
     font-size: 14px;
     font-family: 'Inter', sans-serif;
-    color: rgba(62, 62, 62, 0.15);
+    color: #3e3e3e;
     font-weight: 400;
 }
 
@@ -431,10 +367,6 @@
 
 .beneCheck input:checked ~ span i {
     left: 24px;
-}
-
-.beneCheck input:checked ~ span {
-    background: #6ccf00;
 }
 
 .saveBene p {
@@ -573,19 +505,8 @@
     color: #7a7978;
 }
 
-.beneTitle {
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 17px;
-    line-height: 15px;
-    display: block;
-    margin-top: 16px;
-    color: #102572;
-}
-
 .addedFormCont div {
-    width: 47%;
+    width: 49%;
 }
 
 .oldForm {
@@ -625,56 +546,7 @@
     color: #a5a5a5;
 }
 
-.other {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 24px;
-}
-
-.other .otherActive {
-    width: 50%;
-    background: #6ccf00;
-    text-align: center;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 12px 0px;
-}
-
-.other .otherActive p {
-    margin: 0px;
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 12px;
-    line-height: 15px;
-    color: #ffffff;
-}
-
-.otherDiv {
-    width: 50%;
-    background: #f4f4f4;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    padding: 12px 0px;
-}
-
-.otherDiv p {
-    margin: 0px;
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 15px;
-    color: #a5a5a5;
-}
-
-.displayNone {
-    display: none;
-}
-
-.plus {
+.formCont .plus {
     width: 50px;
     height: 50px;
     margin-left: 5px;
@@ -688,28 +560,9 @@
     margin-top: 5px;
 }
 
-.minus {
-    width: 50px;
-    height: 50px;
-    margin-left: 5px;
-    padding: 0px;
-    color: white;
-    font-size: 45px;
-    background: red;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin-top: 5px;
-}
-
 .uploadCsv {
     padding-bottom: 16px;
     border-bottom: 2px solid #f6f6f6;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .uploadCsv p {
@@ -720,40 +573,12 @@
     font-size: 12px;
     line-height: 15px;
     color: #a5a5a5;
-    margin-top: 0px;
 }
 
-.uploadCsvs {
-    padding-bottom: 16px;
-    border-bottom: 2px solid #f6f6f6;
-    display: flex;
-    justify-content: space-between;
-}
-
-.uploadCsvs p {
-    margin: 0px;
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 15px;
-    color: #a5a5a5;
-    margin-top: 0px;
-}
-
-.uploadCsvs p span {
+.uploadCsv p span {
     font-weight: 700;
     color: #102572;
     cursor: pointer;
-    margin: 0px;
-}
-
-.uploadCsvs input {
-    display: none;
-}
-
-.actionButtons {
-    display: flex;
 }
 
 .amountDiv {
@@ -855,18 +680,9 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    opacity: 0.3;
 }
 
-.networkSingle .greye {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    background-color: rgba(165, 165, 165, 0.8);
-    border-radius: 50%;
-}
-
-.networkSingle .networkContent {
+.networkSingle div {
     width: 90%;
     height: 90%;
     display: flex;
@@ -882,7 +698,7 @@
     background-color: #102572;
 }
 
-.networkActive .networkContent {
+.networkActive div {
     width: 90%;
     height: 90%;
     display: flex;
@@ -890,10 +706,6 @@
 
 .networkForm {
     margin-top: 24px;
-}
-
-.networkForm .formGroup {
-    width: 100%;
 }
 
 .networkForm button {

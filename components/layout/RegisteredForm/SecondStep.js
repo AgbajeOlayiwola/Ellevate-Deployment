@@ -12,20 +12,8 @@ import Loader from '../../ReusableComponents/Loader';
 import Progressbar from '../../ReusableComponents/Progressbar';
 import ArrowBackSvg from '../../ReusableComponents/ArrowBackSvg';
 import ProfileSetupSide from '../../ReusableComponents/ProfileSetupSide';
-import { setCookie } from 'cookies-next';
 
-const RegisteredForm = ({
-    handleShowSecondStep,
-    action,
-    move,
-    formData,
-    setFormData,
-    loading,
-    setLoading,
-    loads,
-    err
-    // errorMessage
-}) => {
+const RegisteredForm = ({ handleShowSecondStep, onSubmit, action }) => {
     const dispatch = useDispatch();
     const {
         register,
@@ -33,42 +21,28 @@ const RegisteredForm = ({
         formState: { errors }
     } = useForm();
 
-    const account = localStorage.getItem('account');
+    const account = localStorage.getItem('displayAccount');
     const accountDetails = JSON.parse(account);
-    //console.log(accountDetails);
     const sendAccount = localStorage.getItem('account');
     const sendAccounts = JSON.parse(sendAccount);
     const [activeBtn, setActiveBtn] = useState(true);
     const [password, setPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
     const [passwordMatch, setPasswordMatch] = useState('');
-    // const [userId, setUserId] = useState('');
     const [errorMessages, setErrorMessages] = useState('');
-    // const [loading, setLoading] = useState(false);
-    const [emailData, setEmailData] = useState('');
-    const { existingUserProfilee, errorMessage } = useSelector(
+    const [loading, setLoading] = useState(false);
+    const { existingUserProfile, errorMessage } = useSelector(
         (state) => state.existingUserProfileReducer
     );
-    //console.log(existingUserProfilee);
     const handlePaswword = (e) => {
         setCount(e.target.value.length);
         setConfPassword(e.target.value);
-        setFormData({
-            ...formData,
-            confPassword: e.target.value
-        });
         if (password != confPassword) {
             setPasswordMatch('Passwords do not match');
         }
     };
-    //how to write states in functional componenet in reactjs
-
     const handlePwd = (e) => {
         setCount(e.target.value.length);
-        setFormData({
-            ...formData,
-            password: e.target.value
-        });
         if (
             validator.isStrongPassword(e.target.value, {
                 minLength: 8,
@@ -96,40 +70,42 @@ const RegisteredForm = ({
         if (e.target.value === '') {
             setErrorMessages('');
         }
-        // let meta = sendAccounts;
-        // meta = { ...meta, password: e.target.value };
-        // window.localStorage.setItem('meta', JSON.stringify(meta));
+        let meta = sendAccounts;
+        meta = { ...meta, password: e.target.value };
+        window.localStorage.setItem('meta', JSON.stringify(meta));
     };
-    //console.log(profileInfo);
-    let accounts = window.localStorage.getItem('account');
-    var newAccounts = JSON.parse(accounts);
-    //console.log(newAccounts);
-    //console.log('payload', emailData, password, confPassword);
 
-    useEffect(() => {
-        if (newAccounts.userId) {
-            setFormData({ ...formData, userId: newAccounts.userId });
-        } else if (newAccounts.user.userId) {
-            setFormData({ ...formData, userId: newAccounts.user.userId });
-        }
+    // const onSubmit = (data) => {
+    // setLoading(true);
+    // console.log(data);
 
-        //console.log(formData.userId);
-    }, []);
-    const types = (types) => {
-        setOutTypes(types);
-    };
-    const type = (type) => {
+    // const userData = {
+    //     email: data.email,
+    //     password: password,
+    //     confirmPassword: confPassword
+    // };
+    // dispatch(existingUserProfileData(userData));
+    // };
+
+    // const profileTest = () => {
+    //     if (errorMessage) {
+    // setError(errorMessage);
+    // console.log(errorMessage);
+    // setLoading(false);
+    // } else if (existingUserProfile.message === 'SUCCESS') {
+    //     alert('Success');
+    //     setLoading(false);
+    // router.push('/Onboarding/ExistingProfileSetup');
+    //     }
+    // };
+    // useEffect(() => {
+    //     profileTest();
+    // }, [errorMessage, existingUserProfile]);
+    const types = (type) => {
         setOutType(type);
     };
-    useEffect(() => {
-        setLoading((prev) => !prev);
-    }, [errorMessage]);
-
     const [count, setCount] = useState([]);
     const [outType, setOutType] = useState();
-    const [outTypes, setOutTypes] = useState();
-
-    //console.log(existingUserProfilee);
     return (
         <div className={styles.body}>
             <section className={styles.sectionI}>
@@ -138,40 +114,27 @@ const RegisteredForm = ({
             <section className={styles.sectionII}>
                 <div className={styles.secondStepForm}>
                     <div className={styles.cardHeading}>
-                        <ArrowBackSvg action={action} color="#102572" />
+                        <ArrowBackSvg action={action} />
                         <div>
-                            {errorMessage ? (
-                                <p className={styles.error}>
-                                    {errorMessage?.response?.data?.message}
-                                </p>
-                            ) : null}
                             <h3 className={styles.LeftHeading}>
                                 Profile Setup
                             </h3>
                         </div>
                     </div>
-                    <form onSubmit={handleSubmit(move)}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         {/* include validation with required or other standard HTML validation rules */}
                         <div className={styles.textInput}>
-                            <label>Email Address </label>
+                            <label>Email Address/ Phone Number </label>
                             {errors.email?.message}
                             <input
                                 placeholder="Enter Your Email"
                                 className={styles.textInput}
                                 required
-                                // readOnly
+                                readOnly
                                 value={
-                                    newAccounts.email
-                                        ? newAccounts.email
-                                        : newAccounts.user
-                                        ? newAccounts.user.email
-                                        : formData.emailData
-                                }
-                                onChange={(event) =>
-                                    setFormData({
-                                        ...formData,
-                                        emailData: event.target.value
-                                    })
+                                    accountDetails.email === null
+                                        ? accountDetails.phoneNumber
+                                        : accountDetails.email.toLowerCase()
                                 }
                             />
                         </div>
@@ -183,8 +146,7 @@ const RegisteredForm = ({
                                     placeholder="Enter your Password"
                                     className={styles.textInput}
                                     required
-                                    autoComplete="false"
-                                    type={outTypes ? 'text' : 'password'}
+                                    type={outType ? 'text' : 'password'}
                                     onChange={handlePwd}
                                 />
                                 <Visbility typeSet={types} />
@@ -214,28 +176,28 @@ const RegisteredForm = ({
                                 <input
                                     placeholder="Confirm your Password"
                                     className={styles.textInput}
-                                    autoComplete="false"
                                     required
                                     type={outType ? 'text' : 'password'}
                                     onChange={handlePaswword}
                                 />
 
-                                <Visbility typeSet={type} />
+                                <Visbility typeSet={types} />
                             </div>
                             {password === confPassword ? null : (
                                 <p className={styles.error}>{passwordMatch}</p>
                             )}
                         </div>
-                        {/* {loading ? <Loader /> : null} */}
-                        <ButtonComp
-                            disabled={activeBtn}
-                            active={activeBtn ? 'active' : 'inactive'}
-                            type="submit"
-                            text="Next"
-                            loads={loads}
-                            err={err}
-                        />
-                        {/* )} */}
+                        {loading ? (
+                            <Loader />
+                        ) : (
+                            <ButtonComp
+                                disabled={activeBtn}
+                                active={activeBtn ? 'active' : 'inactive'}
+                                // onClick={handleSubmit}
+                                type="submit"
+                                text="Next"
+                            />
+                        )}
                     </form>
                 </div>
             </section>

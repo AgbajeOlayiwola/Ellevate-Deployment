@@ -2,25 +2,25 @@ import { accountStatus } from '../types/actionTypes';
 
 const initialState = {
     isLoading: false,
-    accountStatuss: null,
+    accountStatus: [],
     errorMessages: ''
 };
 
 const accountStatusReducer = (state = initialState, { type, payload }) => {
-    //console.log(payload);÷ss
+    // console.log(payload);÷ss
     switch (type) {
         case accountStatus.ACCOUNTSTATUS_LOAD_START:
             return {
                 ...state,
                 isLoading: true,
-                accountStatuss: null,
+                accountStatus: [],
                 errorMessages: ''
             };
         case accountStatus.ACCOUNTSTATUS_LOAD_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                accountStatuss: payload
+                accountStatus: payload
             };
         case accountStatus.ACCOUNTSTATUS_LOAD_ERROR:
             return {

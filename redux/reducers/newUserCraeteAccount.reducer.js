@@ -2,22 +2,22 @@ import { newUserCreateAccount } from '../types/actionTypes';
 
 const initialState = {
     isLoading: false,
-    newAccount: null,
-    newAccountErrorMessage: null
+    newAccount: ' ',
+    newAccountErrorMessage: ''
 };
 
 const newUsercreateAccountReducer = (
     state = initialState,
     { type, payload }
 ) => {
-    //console.log(payload);÷ss
+    // console.log(payload);÷ss
     switch (type) {
         case newUserCreateAccount.CREATE_NEW_ACCOUNT_LOAD_START:
             return {
                 ...state,
                 isLoading: true,
-                newAccount: null,
-                newAccountErrorMessage: null
+                newAccount: [],
+                errorData: ''
             };
         case newUserCreateAccount.CREATE_NEW_ACCOUNT_LOAD_SUCCESS:
             return {

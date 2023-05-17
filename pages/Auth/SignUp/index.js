@@ -25,14 +25,13 @@ const Signup = ({ type }) => {
     const [loading, setLoading] = useState(false);
     const [count, setCount] = useState([]);
     const [outType, setOutType] = useState();
-    const [passwordMatch, setPasswordMatch] = useState('');
-    const [bgcolor, setBgcolor] = useState(false);
     const dispatch = useDispatch();
 
     const { isLoading, user, errorMessage } = useSelector(
         (state) => state.registered
     );
 
+    const [passwordMatch, setPasswordMatch] = useState('');
     const handlePaswword = (e) => {
         setCount(e.target.value.length);
         setConfPassword(e.target.value);
@@ -61,9 +60,9 @@ const Signup = ({ type }) => {
                 minSymbols: 0
             })
         ) {
-            setErrorMessages('Add a symbol');
+            setErrorMessages('Medium');
         } else {
-            setErrorMessages('Add a Number');
+            setErrorMessages('Weak');
         }
         setPassword(e.target.value);
         if (e.target.value === '') {
@@ -100,7 +99,7 @@ const Signup = ({ type }) => {
                 affiliateCode: 'ENG'
             };
             setLoading(true);
-            //console.log(errorMessage);
+            console.log(errorMessage);
             dispatch(createUserAction(postData));
         } else {
             passwordMatch;
@@ -118,7 +117,9 @@ const Signup = ({ type }) => {
         sentSIgnUp();
     }, [errorMessage, user]);
 
-    //console.log(confPassword);
+    const [bgcolor, setBgcolor] = useState(false);
+
+    // console.log(confPassword);
     return (
         <>
             <div className={styles.cover}>
@@ -210,7 +211,7 @@ const Signup = ({ type }) => {
                                     <div className={styles.error}>{error}</div>
                                     {/* register your input into the hook by invoking the "register" function */}
                                     <div>
-                                        <label>Preferred user name/alias</label>
+                                        <label>Preffered Name</label>
                                         <br />
 
                                         <input
@@ -255,7 +256,6 @@ const Signup = ({ type }) => {
                                             <input
                                                 placeholder="Password"
                                                 className={styles.textInput}
-                                                autoComplete="false"
                                                 name="password"
                                                 type={
                                                     outType
@@ -275,10 +275,10 @@ const Signup = ({ type }) => {
                                                         'Strong'
                                                             ? styles.strong
                                                             : errorMessages ===
-                                                              'Add a symbol'
+                                                              'Medium'
                                                             ? styles.medium
                                                             : errorMessages ===
-                                                              'Add a Number'
+                                                              'Weak'
                                                             ? styles.errors
                                                             : styles.strong
                                                     }
@@ -297,7 +297,6 @@ const Signup = ({ type }) => {
                                             <input
                                                 placeholder="Confirm Password"
                                                 className={styles.textInput}
-                                                autoComplete="false"
                                                 required
                                                 type={
                                                     outType
@@ -320,15 +319,20 @@ const Signup = ({ type }) => {
                                     {errors.exampleRequired && (
                                         <span>This field is required</span>
                                     )}
-                                    <ButtonComp
-                                        disabled={activeBtn}
-                                        active={
-                                            activeBtn ? 'active' : 'inactive'
-                                        }
-                                        text="Proceed"
-                                        type="submit"
-                                        err={errorMessage}
-                                    />
+                                    {loading ? (
+                                        <Loader />
+                                    ) : (
+                                        <ButtonComp
+                                            disabled={activeBtn}
+                                            active={
+                                                activeBtn
+                                                    ? 'active'
+                                                    : 'inactive'
+                                            }
+                                            text="Proceed"
+                                            type="submit"
+                                        />
+                                    )}
                                 </form>
                             ) : (
                                 <>

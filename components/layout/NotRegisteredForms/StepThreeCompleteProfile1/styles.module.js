@@ -39,7 +39,7 @@ export const LeftHeading = styled.h3`
     font-weight: 700;
     font-size: 24px;
     line-height: 29px;
-    margin: 0px;
+    /* identical to box height */
     color: #102572;
 `;
 
@@ -90,12 +90,9 @@ export const RegStatusHeading = styled.h6`
 export const ButtonWrapper = styled.div`
     border-radius: 12px;
     display: flex;
+    // flex-flow: row wrap;
     width: 100%;
     margin-top: 32px;
-
-    // @media screen and (max-width: 701px) {
-    //     flex-direction:column;
-    // }
 `;
 export const ToggleNo = styled.span`
     width: 50%;

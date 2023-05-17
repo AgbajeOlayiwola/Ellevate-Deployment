@@ -8,113 +8,14 @@
     display: flex;
     justify-content: space-between;
 }
-.accountNumbers {
-    padding: 0px;
-    background: no-repeat;
-    border: navajowhite;
-    color: white;
-}
-.accountsALl {
-    display: flex;
-    gap: 30px;
-}
-.accountDetails {
-    margin: 0px;
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 15px;
-    color: #efffcc;
-}
 
-.accountNumber {
-    margin: 0px;
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 12px;
-    line-height: 15px;
-    color: #ffffff;
-}
-
-.bagMoney {
-    position: absolute;
-    right: 10%;
-    top: 30%;
-}
-.assctDrop {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.assctDrop div:last-child {
-    cursor: pointer;
-    position: relative;
-    z-index: 20;
-}
-
-.mdCopy {
-    cursor: pointer;
-}
-.filed {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 700 !important;
-    font-size: 14px !important;
-    line-height: 14px !important;
-    text-align: center;
-    color: #394f5c !important;
-    margin: 0px !important;
-}
-.seeAll {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 50px;
-}
-.seeAll a {
-    color: #102572;
-    cursor: pointer;
-    margin-bottom: 10px;
-}
-.pending {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 700 !important;
-    font-size: 14px !important;
-    line-height: 14px !important;
-    text-align: center !important;
-    color: #102572 !important;
-    margin: 0px !important;
-}
-
-.Success {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 700 !important;
-    font-size: 14px !important;
-    line-height: 14px !important;
-    /* identical to box height, or 99% */
-
-    text-align: center !important;
-
-    color: #c28cae !important;
-    margin: 0px !important;
-}
-.Tpwhflex div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 .card {
     background: linear-gradient(124.52deg, #7fbb01 -34.31%, #2f2f2f 115.35%);
     position: relative;
     width: 100%;
     border-radius: 16px;
     color: white;
-    padding: 11px;
+    padding: 32px;
 }
 .Top {
     display: flex;
@@ -128,68 +29,8 @@
     justify-content: space-between;
     display: flex;
     padding: 24px;
-    overflow: scroll;
-    height: 19vh;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-    box-shadow: 0px 0px 74px -10px rgba(0, 0, 0, 0.08);
-}
-.accountsALl {
-    display: flex;
-    gap: 30px;
-    /* justify-content: space-between; */
-    align-items: center;
-}
-.statementCover {
-    height: fit-content;
-    background: #fefefe;
-    box-shadow: 0px 0px 74px -10px rgba(0, 0, 0, 0.08);
-    border-radius: 15px;
-    padding: 20px 15px;
 }
 
-.accntP p:nth-child(1) {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 900;
-    font-size: 16px;
-    line-height: 19px;
-    color: #7fbb01;
-    margin-bottom: 6px;
-    cursor: pointer;
-}
-.accntP p:nth-child(2) {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 17px;
-    /* identical to box height */
-    color: #2f2f2f;
-    margin: 0px;
-    cursor: pointer;
-}
-
-.failed p {
-    color: #ff2e00 !important;
-}
-
-.success p {
-    color: #af3800 !important;
-}
-
-.pending p {
-    color: #ceb407 !important;
-}
-
-.accountHr {
-    height: 46px;
-    border-color: #756c6c2b;
-    margin: 0px;
-}
-.Tpwh::-webkit-scrollbar {
-    display: none;
-}
 .Tpwh p {
     font-family: 'Inter', sans-serif;
     font-style: normal;
@@ -198,18 +39,9 @@
     line-height: 18px;
     text-align: center;
     color: #a4a4a4;
-    /* width: 34%; */
+    width: 34%;
     max-width: 162px;
-    margin: 23px auto 4px;
-}
-.transPs {
-    font-family: 'Inter', sans-serif;
-    font-style: normal;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 19px;
-    color: #102572;
-    margin-bottom: 40px;
+    margin: 70px auto 80px;
 }
 
 .transP {
@@ -246,14 +78,7 @@
 .svgTxt {
     display: flex;
     justify-content: space-between;
-    flex-direction: column;
     align-items: center;
-    border: solid;
-    border-width: 1px;
-    border-color: #d3d3d3;
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 20px;
 }
 .svgCov {
     display: flex;
@@ -449,10 +274,11 @@
     /* display: flex;
     justify-content: space-between; */
     width: 100%;
+    margin-top: 32px;
 }
 .btmI {
-    height: 602px;
-    /* max-width: 478px; */
+    height: 352px;
+    max-width: 478px;
     background: #ffffff;
     box-shadow: 4px 14px 34px -11px #ededed;
     border-radius: 16px;
@@ -460,20 +286,9 @@
     margin-top: 32px;
 }
 .btmItop {
-    justify-content: space-between;
-    margin-bottom: 29.1px;
-    height: 575px;
-    overflow: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none;
-}
-.btmItop::-webkit-scrollbar {
-    display: none;
-}
-.Tpwhflex {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    margin-bottom: 29.1px;
 }
 .btmItop p {
     font-family: 'Inter', sans-serif;
@@ -485,18 +300,10 @@
     color: #102572;
 }
 .btmItop div {
+    background: #f5f6fa;
     border-radius: 8px;
     padding: 0.2rem 0.5rem;
     overflow: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-}
-.sliderImage{
-    margin-right: 40px;
-}
-
-.btmI div::-webkit-scrollbar {
-    display: none;
 }
 .btmI::-webkit-scrollbar {
     display: none;
@@ -513,16 +320,13 @@
 .btmII {
     /* width: 51%;
     max-width: 378px; */
-    height: 519px;
+    height: 352px;
     background: #ffffff;
     box-shadow: 4px 14px 34px -11px #ededed;
     border-radius: 16px;
-    padding: 0rem 1.25rem 1.5rem 1.25rem;
+    padding: 1.5rem 1.25rem 1.5rem 1.25rem;
     overflow: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
 }
-
 .btmII::-webkit-scrollbar {
     display: none;
 }
@@ -536,10 +340,7 @@
     border-radius: 16px;
     padding: 1.5rem 1.25rem 1.5rem 1.25rem;
     overflow: scroll;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
 }
-
 .btmIII::-webkit-scrollbar {
     display: none;
 }
@@ -580,57 +381,28 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0px;
 }
 .names {
-    width: 35%;
+    width: 50%;
 }
-.type {
-    width: 30%;
-}
-
-.money {
-    width: 15%;
-}
-
-.money p {
-    margin: 0px;
-}
-
-.status {
-    width: 13%;
-}
-
-.more {
-    width: 5%;
-}
-
-/* .transaction div > p {
-    text-align: left;
-} */
-
-.statusColor p {
-    font-size: 10px;
-    margin: 0px;
-}
-
-.names p {
+.names p:nth-child(1) {
     font-family: 'Inter', sans-serif;
     font-style: normal;
     font-weight: 500;
-    font-size: 14px;
-    line-height: 17px;
-    margin: 0px;
+    font-size: 16px;
+    line-height: 19px;
+    margin-bottom: 0px;
     color: #102572;
 }
-.type p {
+.names p:nth-child(2) {
     font-family: 'Inter', sans-serif;
     font-style: normal;
     font-weight: 400;
-    font-size: 14px;
-    line-height: 17px;
-    margin: 0px;
-    text-transform: capitalize;
+    margin-top: 0px;
+    font-size: 12px;
+    line-height: 15px;
+    /* identical to box height */
+
     color: #2f2f2f;
 }
 .hr {
@@ -712,33 +484,48 @@
 .moneyCont {
     width: 100%;
     background: #ffffff;
-    margin-bottom: 20px;
     border-radius: 16px;
-    padding: 24px 36px;
-    box-shadow: 0px 0px 74px -10px rgba(0, 0, 0, 0.08);
+    padding: 32px 36px;
 }
-.coppied {
-    position: absolute;
-    top: 10px;
-    padding: 10px;
-    left: 40%;
-    background-color: #6ccf00;
-    color: white;
-    border-radius: 20px;
-}
+
 .moneyBody {
     background: rgba(255, 255, 255, 0.06);
     border-radius: 12px;
     width: 100%;
     padding: 16px 23px;
-    position: relative;
 }
 
 .moneybodyDiv {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 80%;
+    width: 60%;
+}
+
+.accountDetails {
+    margin: 0px;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 15px;
+    color: #efffcc;
+}
+
+.accountNumber {
+    margin: 0px;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 15px;
+    color: #ffffff;
+}
+
+.bagMoney {
+    position: absolute;
+    right: 10%;
+    top: 30%;
 }
 
 .cardRight {
@@ -746,7 +533,7 @@
 }
 
 .otherAccounts {
-    margin-top: 15px;
+    margin-top: 32px;
 }
 
 .otherAccounts h2 {
@@ -760,7 +547,7 @@
 }
 
 .otherAccountsDiv {
-    margin-top: 0px;
+    margin-top: 16px;
 }
 
 .otherAccounts button {
@@ -800,157 +587,4 @@
     text-align: center;
     color: #a4a4a4;
     margin: 0px;
-}
-
-@media screen and (max-width: 1484px) {
-    .moneybodyDiv {
-        width: 70%;
-    }
-}
-
-@media screen and (max-width: 1376px) {
-    .recMak {
-        width: 70%;
-    }
-}
-
-@media screen and (max-width: 1320px) {
-    .bagMoney {
-        display: none;
-    }
-
-    .recMak {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    .moneybodyDiv {
-        width: 100%;
-    }
-
-    .name {
-        font-size: 12px;
-    }
-}
-
-@media screen and (max-width: 1163px) {
-    .name {
-        font-size: 10px;
-    }
-}
-
-@media screen and (max-width: 1098px) {
-    .cove {
-        flex-direction: column-reverse;
-    }
-
-    .sectionI,
-    .sectionII {
-        width: 100%;
-    }
-
-    .sectionI {
-        margin-top: 24px;
-    }
-
-    .btmI {
-        height: unset;
-    }
-
-    .name {
-        font-size: 14px;
-    }
-}
-
-@media screen and (max-width: 731px) {
-    .moneyBody {
-        padding: 16px 12px;
-    }
-
-    .recMak {
-        flex-direction: column;
-    }
-}
-
-@media screen and (max-width: 712px) {
-    .moneybodyDiv {
-        flex-direction: column;
-    }
-
-    .accountNumber {
-        text-align: center;
-    }
-
-    .accountDetails {
-        margin-top: 4px;
-    }
-
-    .name {
-        font-size: 12px;
-    }
-}
-
-@media screen and (max-width: 684px) {
-    .name {
-        font-size: 10px;
-    }
-}
-
-@media screen and (max-width: 584px) {
-    .divCover {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .dinCLass {
-        width: 100%;
-        margin-top: 8px;
-    }
-}
-
-@media screen and (max-width: 539px) {
-    .card {
-        padding: 16px;
-    }
-
-    .btmIIp p:nth-child(1) {
-        font-size: 12px;
-    }
-}
-
-@media screen and (max-width: 496px) {
-    .avail {
-        text-align: center;
-        font-size: 12px;
-    }
-
-    .cardMone h1 {
-        font-size: 20px;
-    }
-
-    .moneyCont {
-        padding: 32px 16px;
-    }
-}
-
-@media screen and (max-width: 433px) {
-    .moneyCont {
-        padding: 32px 8px;
-    }
-
-    .card {
-        padding: 8px;
-    }
-}
-
-@media screen and (max-width: 368px) {
-    .Tpwh {
-        padding: 8px;
-    }
-}
-
-@media screen and (max-width: 354px) {
-    .cardMone h1 {
-        font-size: 15px;
-    }
 }
