@@ -401,7 +401,10 @@ const HomeMain = () => {
                     'account',
                     JSON.stringify(omniliteData.data.user)
                 );
-                router.push('/Onboarding/ExistingProfileSetup');
+                router.push({
+                    pathname: '/Onboarding/ExistingProfileSetup',
+                    query: { id: 0 }
+                });
             }
             //omnilite login end
         } else if (page === 2) {
@@ -446,7 +449,10 @@ const HomeMain = () => {
                 'account',
                 JSON.stringify(omniliteData.data.user)
             );
-            router.push('/Onboarding/ExistingProfileSetup');
+            router.push({
+                pathname: '/Onboarding/ExistingProfileSetup',
+                query: { id: 0 }
+            });
         }
     };
     useEffect(() => {
@@ -462,7 +468,10 @@ const HomeMain = () => {
             setError(errorMessages);
             setLoading(false);
         } else if (accountNumbers.message === 'success') {
-            router.push('/Onboarding/ExistingProfileSetup');
+            router.push({
+                pathname: '/Onboarding/ExistingProfileSetup',
+                query: { id: 0 }
+            });
             const data = {
                 email: accountNumbers.data.email,
                 accountNumber: accountNumbers.data.accountNumber,
@@ -501,7 +510,10 @@ const HomeMain = () => {
                 'account',
                 JSON.stringify(ecobankOnline.data.user)
             );
-            router.push('/Onboarding/ExistingProfileSetup');
+            router.push({
+                pathname: '/Onboarding/ExistingProfileSetup',
+                query: { id: 0 }
+            });
         } else if (ecoOnlineErrorMessage !== null) {
             setError(ecoOnlineErrorMessage);
             setLoading(false);
@@ -510,24 +522,26 @@ const HomeMain = () => {
 
     const cardTest = () => {
         // console.log(cardLogin);
-        if (cardLoginS.message === 'success') {
-            // console.log(cardLogin);
-            // const data = {
-            //     email: omniliteData.data.user.email,
-            //     // accountNumber: omniliteData.data.user.profile.firstName,
-            //     fullName: omniliteData.data.user.profile.lastName,
-            //     phoneNumber: omniliteData.data.user.phoneNumber
-            // };
-            window.localStorage.setItem(
-                'displayAccount',
-                JSON.stringify(cardLoginS.data)
-            );
-            window.localStorage.setItem(
-                'account',
-                JSON.stringify(cardLoginS.data.user)
-            );
+        if (cardLoginS !== null) {
+            if (cardLoginS.message === 'success') {
+                // console.log(cardLogin);
+                // const data = {
+                //     email: omniliteData.data.user.email,
+                //     // accountNumber: omniliteData.data.user.profile.firstName,
+                //     fullName: omniliteData.data.user.profile.lastName,
+                //     phoneNumber: omniliteData.data.user.phoneNumber
+                // };
+                window.localStorage.setItem(
+                    'displayAccount',
+                    JSON.stringify(cardLoginS.data)
+                );
+                window.localStorage.setItem(
+                    'account',
+                    JSON.stringify(cardLoginS.data.user)
+                );
 
-            router.push('/Onboarding/ExistingProfileSetup');
+                router.push('/Onboarding/ExistingProfileSetup');
+            }
         } else {
             setLoading(false);
             setError(cardLoginerrorMessages);

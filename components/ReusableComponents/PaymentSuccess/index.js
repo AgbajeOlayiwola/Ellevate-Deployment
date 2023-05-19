@@ -15,6 +15,7 @@ import { jsPDF } from 'jspdf';
 import { FaDownload, FaUser } from 'react-icons/fa';
 import SingleTrans from '../SingleTransSvg';
 import ManageSignSvg from '../ManageSignSvg';
+import { CloseButton } from 'react-toastify/dist/components';
 
 const PaymentSuccess = ({
     action,
@@ -486,8 +487,7 @@ const PaymentSuccess = ({
                                                 userUnit: 'px'
                                             });
 
-                                            const pdfWidth =
-                                                pdf.internal.pageSize.getWidth();
+                                            const pdfWidth = pdf.internal.pageSize.getWidth();
                                             pdf.html(element, {
                                                 html2canvas: {
                                                     scale: 0.57,
@@ -505,6 +505,13 @@ const PaymentSuccess = ({
                     </div>
                 ) : statusbar === 'error' ? (
                     <div className={styles.errorCont}>
+                        <div className={styles.closeCont}>
+                            <CloseButton
+                                color="#A5A5A5"
+                                classes={styles.closeBtn}
+                                onClick={action}
+                            />
+                        </div>
                         <div>
                             <ErrorSvg />
                         </div>

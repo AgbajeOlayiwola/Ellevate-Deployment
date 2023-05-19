@@ -92,8 +92,11 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
 
     //console.logformData.type);
     useEffect(() => {
-        if (getRC !== null) {
-            setBusinessName(getRC.companyName);
+        console.log(getRC);
+        if (getRC?.data?.dataFromCac?.companyName !== undefined) {
+            setBusinessName(getRC?.data?.dataFromCac?.companyName);
+        } else if (getRC?.data?.reason !== undefined) {
+            console.log(getRC?.data?.reason);
         }
     }, [getRC, getRCErrorMessage]);
     const saveFile = (e) => {
@@ -102,15 +105,24 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
 
         //console.logformData.type);
     };
+    const [phoneNumer, setPhoneNumer] = useState();
+
     useEffect(() => {
         if (window.typeof !== 'undefined') {
             setPhones(JSON.parse(window.localStorage.getItem('account')));
+        }
+        if (userDetails) {
+            setPhoneNumer(userDetails.phoneNumber);
+        } else if (profileInfo) {
+            setPhoneNumer(profileInfo.phoneNumber);
         }
     }, []);
     const [profileInfo, setProfileInfo] = useState([]);
     const account = localStorage.getItem('account');
     const accountDetails = JSON.parse(account);
-
+    const user = localStorage.getItem('user');
+    const userDetails = JSON.parse(user);
+    console.log(userDetails);
     const onSubmitNew = (data) => {
         setLoading((prev) => !prev);
         const userData = {
@@ -120,7 +132,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
             businessType: businesses,
             referralCode: refferalCode,
             countryCode: '+234',
-            businessPhoneNumber: profileInfo.phoneNumber,
+            businessPhoneNumber: phoneNumer,
             street: streetName,
             state: localState,
             city: city,
@@ -160,7 +172,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
             businessType: businesses,
             referralCode: refferalCode,
             countryCode: '+234',
-            businessPhoneNumber: profileInfo.phoneNumber,
+            businessPhoneNumber: phoneNumer,
             street: streetName,
             state: localState,
             city: city,
@@ -233,10 +245,14 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
     }, []);
 
     useEffect(() => {
-        if (accountDetails.profile !== undefined) {
+        const account = localStorage.getItem('account');
+        const accountDetails = JSON.parse(account);
+        if (accountDetails?.profile !== undefined) {
             setProfileInfo(accountDetails.profile);
         } else if (accountDetails.user !== undefined) {
             setProfileInfo(accountDetails.user.profile);
+        } else {
+            setProfileInfo(accountDetails);
         }
         //console.logprofileInfo);
         if (businessCategories !== null) {
@@ -491,7 +507,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                         //     }
                                                         // )}
                                                         // value={phoneNumber}
-                                                        onChange={(e) =>
+                                                        onInput={(e) =>
                                                             setPhoneNumber(
                                                                 e.target.value
                                                             )
@@ -499,6 +515,8 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                         value={
                                                             profileInfo.phoneNumber
                                                                 ? profileInfo.phoneNumber
+                                                                : userDetails
+                                                                ? userDetails?.phoneNumber
                                                                 : phoneNumber
                                                         }
                                                         disabled
@@ -667,7 +685,11 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                         <div
                                             className={styles.existingUserCont}
                                         >
-                                            {/* {getCacNameError?getCacNameError.response.data.message:null} */}
+                                            <p className={styles.error}>
+                                                {getRC?.data?.reason
+                                                    ? getRC?.data?.reason
+                                                    : null}
+                                            </p>
                                             <label>
                                                 Enter your RC /Business
                                                 Registration Number
@@ -742,7 +764,7 @@ const StepFour = ({ title, action, setFormData, formData, countryNames }) => {
                                                         <img
                                                             src={
                                                                 countryNames
-                                                                    .flags.svg
+                                                                    ?.flags.svg
                                                             }
                                                             alt=""
                                                         />

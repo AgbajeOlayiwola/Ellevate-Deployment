@@ -26,6 +26,8 @@ import Lottie from 'react-lottie';
 import animationData from '../../components/ReusableComponents/Lotties/contact-us.json';
 import socialdata from '../../components/ReusableComponents/Lotties/social-media-marketing.json';
 import { useDispatch, useSelector } from 'react-redux';
+import { getAllComplaintGet } from '../../redux/actions/actions';
+import socialdataa from '../../components/ReusableComponents/Lotties/loading.json';
 import {
     getAirtimeBeneficiariesData,
     deleteAirtimeBeneficiariesData,
@@ -57,7 +59,7 @@ import StorePopup from '../../components/ReusableComponents/StorePopup';
 import CloseBtnSvg from '../../components/ReusableComponents/ClosebtnSvg';
 const Profile = () => {
     const router = useRouter();
-    const [activeBtn, setActiveBtn] = useState(true);
+    const [activeBtn, setActiveBtn] = useState(false);
     const [type, setType] = useState('Account');
     const [loading, setLoading] = useState(false);
     const [outcome, setOutcome] = useState(false);
@@ -126,16 +128,38 @@ const Profile = () => {
     const { postBeneficiaries, errorMessagepostBeneficiaries } = useSelector(
         (state) => state.postBeneficiariesReducer
     );
-    const {
-        postAirtimeBeneficiaries,
-        errorMessagepostAirtimeBeneficiaries
-    } = useSelector((state) => state.postAirtimeBeneficiariesReducer);
+    const { postAirtimeBeneficiaries, errorMessagepostAirtimeBeneficiaries } =
+        useSelector((state) => state.postAirtimeBeneficiariesReducer);
     const { fetchRM, fetchRMErrorMessages } = useSelector(
         (state) => state.fetchRMReducer
     );
     const { airtimeNetwork } = useSelector(
         (state) => state.airtimeNetworkReducer
     );
+    const [allDisputes, setAllDisputes] = useState();
+    const { getAllComplaintSuccess, getAllComplaintErrorMessage } = useSelector(
+        (state) => state.getComplaintReducer
+    );
+    const [isLoading, setIsLoading] = useState(true);
+    const socialOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: socialdata,
+        rendererSettings: {
+            preserveAspectRatio: 'xMidYMid slice'
+        }
+    };
+    useEffect(() => {
+        dispatch(getAllComplaintGet());
+    }, []);
+    useEffect(() => {
+        if (getAllComplaintSuccess !== null) {
+            console.log(getAllComplaintSuccess);
+            setAllDisputes(getAllComplaintSuccess?.data?.disputeRecord);
+            setIsLoading(false);
+        }
+    }, [getAllComplaintSuccess]);
+
     const defaultOptions = {
         loop: true,
         autoplay: true,
@@ -145,10 +169,10 @@ const Profile = () => {
         }
     };
 
-    const socialOptions = {
+    const socialOptionss = {
         loop: true,
         autoplay: true,
-        animationData: socialdata,
+        animationData: socialdataa,
         rendererSettings: {
             preserveAspectRatio: 'xMidYMid slice'
         }
@@ -156,7 +180,7 @@ const Profile = () => {
     const interBankEnquiryCheck = () => {
         if (interBankEnquiry !== null) {
             setInterEnquiry(interBankEnquiry);
-            setshowInterEnquiry(true);
+            setActiveBtn(true);
         }
     };
     const iframeRef = useRef(null);
@@ -167,7 +191,7 @@ const Profile = () => {
     const intraBankEnquiryCheck = () => {
         if (intraBankEnquiry !== null) {
             setInterEnquiry(intraBankEnquiry);
-            setshowInterEnquiry(true);
+            setActiveBtn(true);
         }
     };
     useEffect(() => {
@@ -179,11 +203,15 @@ const Profile = () => {
             setMessage('Beneficary added successfully');
             setStatusbar('success');
             setLoading(false);
+            setshowInterEnquiry(false);
+            setInterEnquiry('');
+            setActiveBtn(false);
         } else if (errorMessagepostBeneficiaries !== null) {
             setOutcome(true);
             setMessage(errorMessagepostBeneficiaries);
             setStatusbar('error');
             setLoading(false);
+            setActiveBtn(false);
         }
     };
 
@@ -196,11 +224,13 @@ const Profile = () => {
             setMessage('Beneficary added successfully');
             setStatusbar('success');
             setLoading(false);
+            setActiveBtn(false);
         } else if (errorMessagepostAirtimeBeneficiaries !== null) {
             setOutcome(true);
             setMessage(errorMessagepostAirtimeBeneficiaries);
             setStatusbar('error');
             setLoading(false);
+            setActiveBtn(false);
         }
     }, [postAirtimeBeneficiaries, errorMessagepostAirtimeBeneficiaries]);
     const transactionPin = () => {
@@ -221,17 +251,68 @@ const Profile = () => {
     useEffect(() => {
         transactionPin();
     }, [setTransactionPin, setTransactionPinError]);
-    useEffect(() => {
-        if (banks !== null) {
-            setBank(banks);
+
+    const getAllBanksByAccount = (accountNo) => {
+        //NOTE, This can be fetched from the Database
+        let bankArray = `ACCESS BANK:044:000014:999044~ACCESS BANK:063:000005:999044~Citi Bank:023:000009:CITI-ACC~Fidelity Bank:070:000007:FIDELITY-ACC~First Bank of Nigeria:011:000016:FIRST-ACC~First City Monument Bank:214:000003:FCMB-ACC~GT Bank Plc:058:000013:GUARANTY-ACC~Heritage:030:000020:HERITAGE-ACC~POLARIS BANK:076:000008:POLARIS~Stanbic IBTC Bank:221:000012:STANBIC-IBTC-ACC~Standard Chartered:068:000021:STANDARD-CHARTERED~Sterling Bank:232:000001:STERLING-ACC~Union Bank:032:000018:UNION-ACC~United Bank for Africa:033:000004:UNITED-ACC~Unity Bank:215:000011:UNITY-ACC~Wema Bank:035:000017:WEMA-ACC~Zenith Bank:057:000015:ZENITH-ACC~Sun Trust Account:100:000022:SUNTRUST-ACC`;
+
+        let bankList = [];
+        let bankDets = bankArray.split('~');
+        //   //console.log("bankDets", bankDets);
+
+        for (var bankdet of bankDets) {
+            let split = bankdet.split(':');
+            //console.log('split', split);
+
+            if (isValidNUBAN(accountNo, split[1])) {
+                bankList.push({
+                    bankname: split[0],
+                    cbncode: split[1],
+                    bankcode: split[2],
+                    bankCodes: split[3]
+                });
+            }
         }
-    }, [banks]);
+
+        return bankList.map((bank) => bank);
+    };
+    const isValidNUBAN = (accountNumber, bankCode) => {
+        return isValidNUBANAcct(bankCode.trim() + accountNumber.trim());
+    };
+    const isValidNUBANAcct = (accountNumber) => {
+        accountNumber = accountNumber.trim();
+
+        if (accountNumber.length != 13) return false; // 3-digit bank code + 10-digit NUBAN
+
+        let accountNumberDigits = accountNumber.split('');
+
+        //   //console.log("accountNumberDigits: ", accountNumberDigits);
+
+        let sum =
+            accountNumberDigits[0] * 3 +
+            accountNumberDigits[1] * 7 +
+            accountNumberDigits[2] * 3 +
+            accountNumberDigits[3] * 3 +
+            accountNumberDigits[4] * 7 +
+            accountNumberDigits[5] * 3 +
+            accountNumberDigits[6] * 3 +
+            accountNumberDigits[7] * 7 +
+            accountNumberDigits[8] * 3 +
+            accountNumberDigits[9] * 3 +
+            accountNumberDigits[10] * 7 +
+            accountNumberDigits[11] * 3;
+
+        let mod = sum % 10;
+        let checkDigit = mod == 0 ? mod : 10 - mod;
+
+        return checkDigit == accountNumberDigits[12];
+    };
     useEffect(() => {
         dispatch(getBeneficiariesData());
         dispatch(getAirtimeBeneficiariesData());
         dispatch(loadUserProfile());
         dispatch(loadAccountPrimary());
-        dispatch(loadbank('ENG'));
+        // dispatch(loadbank('ENG'));
         dispatch(postAirtimeNetwork());
     }, []);
     useEffect(() => {
@@ -377,7 +458,11 @@ const Profile = () => {
         //     icon: <ManageSignSvg />,
         //     color: '#7A7978'
         // },
-
+        {
+            text: 'All Disputes',
+            icon: <ShareSvg color="#102572" />,
+            color: '#7A7978'
+        },
         {
             text: 'Contact us',
             icon: <ContactSvg />,
@@ -563,6 +648,7 @@ const Profile = () => {
                                                     }
                                                 />
                                             </div>
+
                                             <form
                                                 onSubmit={handleSubmit(
                                                     deleteAction
@@ -571,6 +657,33 @@ const Profile = () => {
                                                 <h2 className={styles.title}>
                                                     Delete Account
                                                 </h2>
+                                                <div className={styles.bvn}>
+                                                    <p>
+                                                        We are sorry to see you
+                                                        go, but we understand
+                                                        that you may want to
+                                                        delete your account.
+                                                        Before you proceed with
+                                                        this decision, please
+                                                        note that all of your
+                                                        data will be permanently
+                                                        erased from our system.
+                                                        This includes your
+                                                        personal information,
+                                                        account settings, and
+                                                        any content or activity
+                                                        associated with your
+                                                        account. Once your
+                                                        account is deleted, it
+                                                        cannot be recovered. If
+                                                        you change your mind,
+                                                        you will need to create
+                                                        a new account and start
+                                                        from scratch. Enter your
+                                                        email below to confirm
+                                                        account deletion
+                                                    </p>
+                                                </div>
                                                 <div className={styles.bvn}>
                                                     <p>
                                                         You wont be able to
@@ -1464,7 +1577,7 @@ const Profile = () => {
                                             setLoading(true);
                                             const beneData = {
                                                 beneficiaryName:
-                                                    data.accountName,
+                                                    interEnquiry.accountName,
                                                 accountNumber:
                                                     data.accountNumber,
                                                 bankName: data.bankName,
@@ -1528,11 +1641,23 @@ const Profile = () => {
                                                                     .length ===
                                                                 10
                                                             ) {
-                                                                setAccountNumber(
-                                                                    e.target
-                                                                        .value
+                                                                setBank(
+                                                                    getAllBanksByAccount(
+                                                                        e.target
+                                                                            .value
+                                                                    )
                                                                 );
-                                                                //console.log();
+                                                            } else if (
+                                                                e.target.value
+                                                                    .length < 10
+                                                            ) {
+                                                                setInterEnquiry(
+                                                                    ''
+                                                                );
+                                                                setshowInterEnquiry(
+                                                                    false
+                                                                );
+                                                                setBank([]);
                                                             }
                                                         }}
                                                         type="number"
@@ -1562,6 +1687,7 @@ const Profile = () => {
                                                             value={
                                                                 interEnquiry.accountName
                                                             }
+                                                            placeholder="Loading..."
                                                         />
                                                         <p
                                                             className={
@@ -1590,26 +1716,34 @@ const Profile = () => {
                                                         )}
                                                         name="bankName"
                                                         onChange={(e) => {
+                                                            setshowInterEnquiry(
+                                                                true
+                                                            );
                                                             if (
                                                                 e.target
                                                                     .value ===
                                                                 'ECOBANK'
                                                             ) {
-                                                                const details = {
-                                                                    accountNumber: accountNumber
-                                                                };
+                                                                const details =
+                                                                    {
+                                                                        accountNumber:
+                                                                            accountNumber
+                                                                    };
                                                                 dispatch(
                                                                     postIntraBankEnquiry(
                                                                         details
                                                                     )
                                                                 );
                                                             } else {
-                                                                const details = {
-                                                                    destinationBankCode:
-                                                                        e.target
-                                                                            .value,
-                                                                    accountNo: accountNumber
-                                                                };
+                                                                const details =
+                                                                    {
+                                                                        destinationBankCode:
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                        accountNo:
+                                                                            accountNumber
+                                                                    };
                                                                 dispatch(
                                                                     postInterBankEnquiry(
                                                                         details
@@ -1629,14 +1763,14 @@ const Profile = () => {
                                                                 return (
                                                                     <option
                                                                         value={
-                                                                            bank.institutionId
+                                                                            bank.bankCodes
                                                                         }
                                                                         key={
                                                                             index
                                                                         }
                                                                     >
                                                                         {
-                                                                            bank.institutionName
+                                                                            bank.bankname
                                                                         }
                                                                     </option>
                                                                 );
@@ -1738,6 +1872,30 @@ const Profile = () => {
                                                             // value={
                                                             //     interEnquiry.accountName
                                                             // }
+                                                            onInput={(e) => {
+                                                                const inputValue =
+                                                                    e.target
+                                                                        .value;
+                                                                // console.log(
+                                                                //     parseInt(inputValue).toFixed(2)
+                                                                // );
+                                                                // setAmount(parseInt(inputValue).toFixed(2));
+                                                                if (
+                                                                    inputValue.length ===
+                                                                    0
+                                                                ) {
+                                                                    setActiveBtn(
+                                                                        false
+                                                                    );
+                                                                } else if (
+                                                                    inputValue.length >
+                                                                    0
+                                                                ) {
+                                                                    setActiveBtn(
+                                                                        true
+                                                                    );
+                                                                }
+                                                            }}
                                                         />
                                                         {/* <p className={styles.error}>
                                                     {
@@ -1756,9 +1914,16 @@ const Profile = () => {
                                             {loading ? (
                                                 <Loader />
                                             ) : (
-                                                <button type="submit">
-                                                    Create Beneficiary
-                                                </button>
+                                                <ButtonComp
+                                                    text="Create Beneficiary"
+                                                    type="submit"
+                                                    disabled={activeBtn}
+                                                    active={
+                                                        activeBtn
+                                                            ? 'active'
+                                                            : 'inactive'
+                                                    }
+                                                />
                                             )}
                                         </div>
                                     </div>
@@ -1816,6 +1981,57 @@ const Profile = () => {
                                     >
                                         copy
                                     </h5>
+                                </div>
+                            </>
+                        );
+                }
+            case 'All Disputes':
+                switch (count) {
+                    case 0:
+                        return (
+                            <>
+                                <div className={styles.statementCover}>
+                                    <h1 className={styles.nodisputesHeading}>
+                                        All Disputes
+                                    </h1>
+                                    <div className={styles.TableDetailHeader}>
+                                        <div className={styles.beneficiary}>
+                                            Create At
+                                        </div>
+                                        <p className={styles.amount}>
+                                            Case Type
+                                        </p>
+                                        {/* <p className={styles.bank}>Bank/Network</p> */}
+
+                                        <div className={styles.more}>
+                                            Description
+                                        </div>
+                                    </div>
+                                    {isLoading ? (
+                                        <Lottie
+                                            options={socialOptionss}
+                                            height={200}
+                                            width={200}
+                                        />
+                                    ) : allDisputes.length === 0 ? (
+                                        <>
+                                            <h1 className={styles.nodisputes}>
+                                                No Disputes have been lodged
+                                            </h1>
+                                        </>
+                                    ) : (
+                                        allDisputes
+                                            ?.filter((item) => {
+                                                const newDate = item.createAt.split(
+                                                    'T'
+                                                );
+                                                return item;
+                                            })
+                                            ?.map((item, index) => {
+                                                console.log(item);
+                                                return item;
+                                            })
+                                    )}
                                 </div>
                             </>
                         );

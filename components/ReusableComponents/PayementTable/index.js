@@ -18,10 +18,8 @@ const PaymentTable = ({ title, test, page }) => {
     const { transactionHistory, errorMessageTransactionHistory } = useSelector(
         (state) => state.transactionHistoryReducer
     );
-    const {
-        getDisputCategOryTypeSuccess,
-        getDisputCategOryTypeErrorMessage
-    } = useSelector((state) => state.getDisputeTypeReducer);
+    const { getDisputCategOryTypeSuccess, getDisputCategOryTypeErrorMessage } =
+        useSelector((state) => state.getDisputeTypeReducer);
     const [pageSrchIndex, setPageSrchIndex] = useState(0);
     const [numOfRecords, setNumOfRecords] = useState(1000);
     const [tableDetails, setTableDetails] = useState([]);
@@ -58,22 +56,35 @@ const PaymentTable = ({ title, test, page }) => {
     };
     useEffect(() => {
         if (page === 'Collections') {
+            setNewestTableDetails([]);
             tableDetails.filter((item, index) => {
                 if (item.paymentDirection === 'CREDIT') {
                     setNewTableDetails((arr) => [...arr, item]);
                 }
             });
         } else if (page === 'Payments') {
+            setNewestTableDetails([]);
             tableDetails.filter((item) => {
                 if (item.paymentDirection === 'DEBIT') {
                     setNewTableDetails((arr) => [...arr, item]);
                 }
             });
         } else if (page === 'Reports') {
+            setNewestTableDetails([]);
             setNewTableDetails(tableDetails);
         }
     }, [tableDetails]);
-    const pageCount = Math.ceil(newTableDetails.length / usersPerPage);
+    useEffect(() => {
+        setNewestTableDetails([]);
+        newTableDetails?.filter((item) => {
+            if (searchValue === '') {
+                setNewestTableDetails((arr) => [...arr, item]);
+            } else if (filterCondition(item, searchType)) {
+                setNewestTableDetails((arr) => [...arr, item]);
+            }
+        });
+    }, [searchValue, newTableDetails]);
+    const pageCount = Math.ceil(newestTableDetails.length / usersPerPage);
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(getTransactionHistory(pageSrchIndex, numOfRecords));
@@ -85,6 +96,7 @@ const PaymentTable = ({ title, test, page }) => {
 
     useEffect(() => {
         if (transactionHistory !== null) {
+            setNewestTableDetails([]);
             setTableDetails(transactionHistory.transactions);
             //console.logtransactionElevate.transactions);
             if (transactionHistory !== null) {
@@ -117,31 +129,54 @@ const PaymentTable = ({ title, test, page }) => {
                 return item.transactionAmount
                     .toLowerCase()
                     .includes(searchValue.toLowerCase());
+            case 'inflow':
+                return item.transactionType
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase());
+            case 'outflow':
+                return item.transactionType
+                    .toLowerCase()
+                    .includes(searchValue.toLowerCase());
             default:
                 item.transactionType
                     .toLowerCase()
                     .includes(searchValue.toLowerCase());
         }
     };
-    useEffect(() => {}, [searchValue]);
     return (
         <div className={styles.table}>
             <div className={styles.tableHeader}>
                 <h2>{title}</h2>
                 <div className={styles.tableFilter}>
-                    <select
-                        name=""
-                        id=""
-                        onChange={(e) => {
-                            setSearchType(e.target.value);
-                            setSearchValue('');
-                        }}
-                    >
-                        <option value="">Filter</option>
-                        <option value="transactionType">Type</option>
-                        <option value="transactionStatus">Status</option>
-                        <option value="transactionAmount">Amount</option>
-                    </select>
+                    {page === 'Reports' ? (
+                        <select
+                            name=""
+                            id=""
+                            onChange={(e) => {
+                                setSearchType(e.target.value);
+                                setSearchValue('');
+                            }}
+                        >
+                            <option value="">Filter</option>
+                            <option value="inflow">Inflow</option>
+                            <option value="outflow">Outflow</option>
+                        </select>
+                    ) : (
+                        <select
+                            name=""
+                            id=""
+                            onChange={(e) => {
+                                setSearchType(e.target.value);
+                                setSearchValue('');
+                            }}
+                        >
+                            <option value="">Filter</option>
+                            <option value="transactionType">Type</option>
+                            <option value="transactionStatus">Status</option>
+                            <option value="transactionAmount">Amount</option>
+                        </select>
+                    )}
+
                     {page === 'Collections' ? (
                         searchType === 'transactionType' ? (
                             <select
@@ -190,14 +225,17 @@ const PaymentTable = ({ title, test, page }) => {
                                 }}
                             >
                                 <option value="">Choose Type</option>
-                                <option value="Single Transfer">
+                                <option value="SINGLE_TRANSFER">
                                     Single Transfer
                                 </option>
-                                <option value="Bulk Transfer">
+                                <option value="BULK_TRANSFER">
                                     Bulk Transfer
                                 </option>
-                                <option value="Bills Payment">
+                                <option value="BILL_PAYMENT">
                                     Bills Payment
+                                </option>
+                                <option value="AIRTIME_TOPUP">
+                                    Airtime Topup
                                 </option>
                             </select>
                         ) : searchType === 'transactionStatus' ? (
@@ -224,6 +262,40 @@ const PaymentTable = ({ title, test, page }) => {
                                 />
                             </div>
                         ) : null
+                    ) : page === 'Reports' ? (
+                        searchType === 'outflow' ? (
+                            <select
+                                name=""
+                                id=""
+                                onChange={(e) => {
+                                    setSearchValue(e.target.value);
+                                }}
+                            >
+                                <option value="">Choose Type</option>
+                                <option value="Single Transfer">
+                                    Single Transfer
+                                </option>
+                                <option value="Bulk Transfer">
+                                    Bulk Transfer
+                                </option>
+                                <option value="Bills Payment">
+                                    Bills Payment
+                                </option>
+                            </select>
+                        ) : searchType === 'inflow' ? (
+                            <select
+                                name=""
+                                id=""
+                                onChange={(e) => {
+                                    setSearchValue(e.target.value);
+                                }}
+                            >
+                                <option value="">Choose Type</option>
+                                <option value="Paylink">Paylink</option>
+                                <option value="QR_Payment">QR Payment</option>
+                                <option value="USSD">USSD</option>
+                            </select>
+                        ) : null
                     ) : null}
                     {/* <button>
                         Filter
@@ -233,7 +305,7 @@ const PaymentTable = ({ title, test, page }) => {
                     </button> */}
                 </div>
             </div>
-            {newTableDetails?.map((item) => {
+            {newestTableDetails?.map((item) => {
                 if (item.transactionStatus === 'SUCCESS') {
                     success += 1;
                 } else if (item.transactionStatus === 'PENDING') {
@@ -258,10 +330,10 @@ const PaymentTable = ({ title, test, page }) => {
             </div>
             {isLoading ? (
                 <Lottie options={socialOptions} height={200} width={200} />
-            ) : !newTableDetails.length ? (
+            ) : !newestTableDetails.length ? (
                 <p className={styles.noRecent}>No Recent transaction</p>
             ) : (
-                newTableDetails
+                newestTableDetails
                     ?.sort((x, y) => {
                         let a = new Date(x.transactionDate),
                             b = new Date(y.transactionDate);
@@ -276,9 +348,6 @@ const PaymentTable = ({ title, test, page }) => {
                     })
                     ?.slice(pagesVisited, pagesVisited + usersPerPage)
                     ?.map((items, index) => {
-                        {
-                            console.log(items);
-                        }
                         return (
                             <TableDetail
                                 key={index}
@@ -310,7 +379,7 @@ const PaymentTable = ({ title, test, page }) => {
                         );
                     })
             )}
-            {newTableDetails.length === 0 ? null : (
+            {newestTableDetails.length === 0 ? null : (
                 <ReactPaginate
                     previousLabel="Previous"
                     nextLabel="Next"

@@ -46,6 +46,8 @@ import TransactionStatus from '../../components/ReusableComponents/TransactionSt
 import { IoMdCopy } from 'react-icons/io';
 import Lottie from 'react-lottie';
 import socialdata from '../../components/ReusableComponents/Lotties/loading.json';
+import BulkTransfer2 from '../../components/ReusableComponents/BulkTransfSvg/bulktrans';
+import BillTransfer from '../../components/ReusableComponents/BillTransSvg';
 function SampleNextArrow(props) {
     const { className, style, onClick } = props;
     return (
@@ -111,6 +113,7 @@ const Dashboard = () => {
     const [inflow, setInflow] = useState(formatter.format(0));
     const [outflow, setOutflow] = useState(formatter.format(0));
     const [totalMoney, setTotalMMoney] = useState(formatter.format(0));
+    const [copyAcctInfo, setCopyAcctInfo] = useState();
     const { transactionElevate, errorMessageTransactionElevate } = useSelector(
         (state) => state.transactionElevateReducer
     );
@@ -210,7 +213,17 @@ const Dashboard = () => {
     }, []);
     useEffect(() => {
         setAcctNumm(accountPrimarys?.accountNumber);
-    }, [accountPrimarys]);
+        Object.keys(bankAccounts)?.map((accountNo) => {
+            if (bankAccounts[accountNo].isPrimaryAccount === true) {
+                setCopyAcctInfo(bankAccounts[0]);
+                let balanceData;
+                balanceData = {
+                    accountId: bankAccounts[accountNo].accountId
+                };
+                dispatch(getBalanceEnquiry(balanceData));
+            }
+        });
+    }, [accountPrimarys, bankAccounts]);
     useEffect(() => {
         Object.keys(bankAccounts)?.map((accountNo) => {
             if (bankAccounts[accountNo].accountNumber === acctNum) {
@@ -317,7 +330,7 @@ const Dashboard = () => {
             // });
         }
     }, [transactionHistory]);
-    console.log(bankAccounts);
+    // console.log(bankAccounts);
 
     useEffect(() => {}, [pending, success, failed]);
     //console.log(newDate[0]);
@@ -329,8 +342,12 @@ const Dashboard = () => {
         }
     }
     const copyAccountNumber = () => {
-        console.log('copy');
-        copyTextToClipboard(`Account Number is ${acctNum} `)
+        console.log(acctInfoNum);
+        copyTextToClipboard(`Account Name - ${userProfileData.firstName}
+        Account No. - ${copyAcctInfo.accountNumber}
+        Bank Name - Ecobank
+        Swift Code - ${copyAcctInfo.accountSwiftCode}
+        Bank Branch - ${copyAcctInfo.accountBankName} `)
             .then(() => {
                 // If successful, update the isCopied state value
                 setIsCopied(true);
@@ -362,7 +379,7 @@ const Dashboard = () => {
                                 </div>
                                 <div>
                                     <TotlaCollctionsSvg />
-                                    <p>Total</p>
+                                    <p>Total Transaction</p>
                                     <p className={styles.filed}>{totalMoney}</p>
                                 </div>
                             </div>
@@ -738,6 +755,9 @@ const Dashboard = () => {
                                                                     setAcctNumm(
                                                                         accountNo.accountNumber
                                                                     );
+                                                                setCopyAcctInfo(
+                                                                    accountNo
+                                                                );
                                                             }}
                                                         >
                                                             {
@@ -859,6 +879,7 @@ const Dashboard = () => {
                                             return item;
                                         })
                                         ?.map((item, index) => {
+                                            // console.log(item);
                                             const formatter = new Intl.NumberFormat(
                                                 'en-US',
                                                 {
@@ -975,6 +996,9 @@ const Dashboard = () => {
                                                                 }
                                                                 destinationBank={
                                                                     item.receiver
+                                                                }
+                                                                dateTrans={
+                                                                    item.transactionDate
                                                                 }
                                                             />
                                                         </div>

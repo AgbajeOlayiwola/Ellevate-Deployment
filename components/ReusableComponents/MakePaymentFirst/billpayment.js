@@ -101,11 +101,11 @@ const BillPayment = ({
         // setBillerId(e.target.value);
         setBillerTypes([]);
         setBillerPlans();
-        if (firstTitle === 'AIRTIME') {
-            dispatch(postAirtimeNetwork());
-        } else {
-            loadbillerType(firstTitle);
-        }
+        // if (firstTitle === 'AIRTIME') {
+        //     dispatch(postAirtimeNetwork());
+        // } else {
+        //     loadbillerType(firstTitle);
+        // }
     };
     useEffect(() => {
         loadbillerTypeData();
@@ -115,7 +115,6 @@ const BillPayment = ({
             setBillerTypes(billerType);
         }
     }, [billerType]);
-    //console.log(billerTypes);
     useEffect(() => {
         if (airtimeNetwork !== null) {
             setAirtimeNetworkData(airtimeNetwork);
@@ -128,6 +127,11 @@ const BillPayment = ({
             setIsLoadinggg(false);
         }
     }, [billerPlan]);
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'NGN',
+        currencyDisplay: 'narrowSymbol'
+    });
     return (
         <div>
             {firstTitle === 'Bill Payment' ? (
@@ -269,15 +273,22 @@ const BillPayment = ({
                                             accountNum: event.target.value
                                         });
                                     }}
+                                    // value={formData.accountNum}
                                 >
-                                    <option>Select Account To Use</option>
+                                    <option value="">
+                                        Select Account To Use
+                                    </option>
                                     {bankAccounts?.map((accounts, index) => {
                                         return (
                                             <option
                                                 value={accounts.accountId}
                                                 key={index}
                                             >
-                                                {accounts.accountNumber}
+                                                {`${
+                                                    accounts.accountNumber
+                                                } - ${formatter.format(
+                                                    accounts.accountBalance
+                                                )}`}
                                             </option>
                                         );
                                     })}
@@ -286,7 +297,110 @@ const BillPayment = ({
                                     {errors?.sourceAccount?.message}
                                 </p>
                             </div>
-                            <div className={styles.networkCarrier}>
+                            <div className={styles.narration}>
+                                <label>Airtime Type</label>
+                                <select
+                                    name=""
+                                    id=""
+                                    {...register('billerTypes', {
+                                        required: 'Biller Type  is required'
+                                    })}
+                                    onChange={(e) => {
+                                        setIsLoadinggg(true);
+                                        dispatch(
+                                            loadbillerPlan(e.target.value)
+                                        );
+                                        setBillerPlans();
+                                    }}
+                                >
+                                    <option value="">Select biller Type</option>
+                                    {billerTypes.billerInfoList?.map(
+                                        (accounts, index) => {
+                                            return (
+                                                <option
+                                                    value={accounts.billerCode}
+                                                    key={index}
+                                                >
+                                                    {accounts.billerName}
+                                                </option>
+                                            );
+                                        }
+                                    )}
+                                </select>
+                                <p className={styles.error}>
+                                    {errors?.billerTypes?.message}
+                                </p>
+                            </div>
+                            {isLoadinggg ? (
+                                <Lottie
+                                    options={socialOptions}
+                                    height={200}
+                                    width={200}
+                                />
+                            ) : billerPlans ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        {...register('type')}
+                                        value={
+                                            billerPlans?.billerDetail
+                                                ?.billerCode
+                                        }
+                                        className={styles.displayNone}
+                                    />
+
+                                    <div className={styles.narration}>
+                                        <label>Select Package</label>
+                                        <select
+                                            name="desiredPackage"
+                                            id=""
+                                            {...register('desiredPackage', {
+                                                required:
+                                                    'Desired Package is required'
+                                            })}
+                                            onChange={(e) => {
+                                                billerPlans?.billerProductInfo?.map(
+                                                    (item) => {
+                                                        if (
+                                                            item.productName ===
+                                                            e.target.value
+                                                        ) {
+                                                            localStorage.setItem(
+                                                                'DesiredPackage',
+                                                                JSON.stringify(
+                                                                    item
+                                                                )
+                                                            );
+                                                        }
+                                                    }
+                                                );
+                                            }}
+                                        >
+                                            <option value="">
+                                                Select Desired Pacakge
+                                            </option>
+                                            {billerPlans?.billerProductInfo?.map(
+                                                (item, index) => {
+                                                    return (
+                                                        <option
+                                                            value={
+                                                                item.productName
+                                                            }
+                                                            key={index}
+                                                        >
+                                                            {item.productName}
+                                                        </option>
+                                                    );
+                                                }
+                                            )}
+                                        </select>
+                                        <p className={styles.error}>
+                                            {errors?.desiredPackage?.message}
+                                        </p>
+                                    </div>
+                                </>
+                            ) : null}
+                            {/* <div className={styles.networkCarrier}>
                                 <h2>Network</h2>
                                 <div className={styles.networkBody}>
                                     {airtimeNetworkData.networks?.map(
@@ -354,7 +468,7 @@ const BillPayment = ({
                                         }
                                     )}
                                 </div>
-                            </div>
+                            </div> */}
                             <div className={styles.networkForm}>
                                 <div className={styles.formGroup}>
                                     <label>Phone Number</label>{' '}
@@ -571,7 +685,11 @@ const BillPayment = ({
                                                 value={accounts.accountId}
                                                 key={index}
                                             >
-                                                {accounts.accountNumber}
+                                                {`${
+                                                    accounts.accountNumber
+                                                } - ${formatter.format(
+                                                    accounts.accountBalance
+                                                )}`}
                                             </option>
                                         );
                                     })}
