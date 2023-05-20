@@ -97,7 +97,9 @@ import {
     disputSubCategoryType,
     lodgeComplaint_Type,
     verifyTransactionPinType,
-    getAllComplaintType
+    getAllComplaintType,
+    deleteAccountType,
+    setPrimaryAccountType
 } from '../types/actionTypes';
 // import axiosInstance from '../helper/apiClient';
 import apiRoutes from '../helper/apiRoutes';
@@ -1697,7 +1699,7 @@ export const existingUserProfileData = (data) => (dispatch) => {
         .then((response) => {
             setCookie('cookieToken', response.data.data.token, {
                 // httpOnly: 'true',
-                // maxAge: 60 * 1,
+                maxAge: 60 * 1,
                 secure: 'true'
             });
             dispatch(existingUserProfileLoadSuccess(response));
@@ -1843,7 +1845,7 @@ export const loginUserAction = (loginData) => {
                 //console.logresponse.data);
                 setCookie('cookieToken', response.data.data.token, {
                     // httpOnly: 'true',
-                    // maxAge: 60 * 1,
+                    maxAge: 60 * 1,
                     secure: 'true'
                 });
 
@@ -3484,7 +3486,7 @@ export const auth2FaCodeDetails = (auth2FaCodeData) => (dispatch) => {
             );
             setCookie('cookieToken', response.data.data.token, {
                 // httpOnly: 'true',
-                // maxAge: 60 * 1,
+                maxAge: 60 * 1,
                 secure: 'true'
             });
 
@@ -3934,3 +3936,83 @@ export const getAllComplaintGet = (data) => (dispatch) => {
         });
 };
 //Gett ALl COmplaint  Action End
+
+//Delete Account Dispute Type End
+export const deleteAccountStart = () => ({
+    type: deleteAccountType.DELETEACCOUNT_LOAD_START
+});
+
+export const deleteAccountSuccess = (deleteAccountSuccess) => ({
+    type: deleteAccountType.DELETEACCOUNT_LOAD_SUCCESS,
+    payload: deleteAccountSuccess
+});
+
+export const deleteAccountError = (deleteAccountErrorMessage) => ({
+    type: deleteAccountType.DELETEACCOUNT_LOAD_ERROR,
+    payload: deleteAccountErrorMessage
+});
+export const deleteAccountAction = (data) => (dispatch) => {
+    dispatch(deleteAccountStart());
+    let cookie;
+
+    if (getCookie('cookieToken') == undefined) {
+        cookie = getCookie('existingToken');
+    } else {
+        cookie = getCookie('cookieToken');
+    }
+    axiosInstance
+        .post(`${apiRoutes.deleteAccount}`, data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Client-Type': 'web',
+                Authorization: `Bearer ${cookie}`
+            }
+        })
+        .then((response) => {
+            dispatch(deleteAccountSuccess(response?.data));
+        })
+        .catch((error) => {
+            dispatch(deleteAccountError(error?.response));
+        });
+};
+//Delete account COmplaint  Action End
+
+//St primary account Action Statr
+export const setPrimaryAccountStart = () => ({
+    type: setPrimaryAccountType.SET_PRIMARY_ACCOUNT_LOAD_START
+});
+
+export const setPrimaryAccountSuccess = (setPrimaryAccountSuccess) => ({
+    type: setPrimaryAccountType.SET_PRIMARY_ACCOUNT_LOAD_SUCCESS,
+    payload: setPrimaryAccountSuccess
+});
+
+export const setPrimaryAccountError = (setPrimaryAccountErrorMessage) => ({
+    type: setPrimaryAccountType.SET_PRIMARY_ACCOUNT_LOAD_ERROR,
+    payload: setPrimaryAccountErrorMessage
+});
+export const setPrimaryAccountAction = (data) => (dispatch) => {
+    dispatch(setPrimaryAccountStart());
+    let cookie;
+
+    if (getCookie('cookieToken') == undefined) {
+        cookie = getCookie('existingToken');
+    } else {
+        cookie = getCookie('cookieToken');
+    }
+    axiosInstance
+        .post(`${apiRoutes.setPrimaryAccount}`, data, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Client-Type': 'web',
+                Authorization: `Bearer ${cookie}`
+            }
+        })
+        .then((response) => {
+            dispatch(setPrimaryAccountSuccess(response?.data));
+        })
+        .catch((error) => {
+            dispatch(setPrimaryAccountError(error?.response));
+        });
+};
+//St primary account Action End

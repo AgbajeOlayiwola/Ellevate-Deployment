@@ -14,7 +14,7 @@ const Visbility = ({ typeSet, color, input }) => {
     const [visible, setVisible] = useState(false);
     const [showTransId, setShowtransId] = useState(false);
     const visibilityToggle = () => {
-        setVisible((prev) => !prev);
+        setVisible(true);
         setType((prev) => !prev);
         typeSet(type);
     };

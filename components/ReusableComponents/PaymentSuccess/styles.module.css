@@ -13,6 +13,9 @@
 .elevateSuccess span {
     font-weight: 700;
 }
+.closeCont svg{
+    cursor: pointer;
+}
 .closeCont {
     display: flex;
     justify-content: right;

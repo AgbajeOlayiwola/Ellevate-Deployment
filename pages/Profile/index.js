@@ -26,7 +26,11 @@ import Lottie from 'react-lottie';
 import animationData from '../../components/ReusableComponents/Lotties/contact-us.json';
 import socialdata from '../../components/ReusableComponents/Lotties/social-media-marketing.json';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllComplaintGet } from '../../redux/actions/actions';
+import {
+    deleteAccountAction,
+    getAllComplaintGet,
+    logoutAction
+} from '../../redux/actions/actions';
 import socialdataa from '../../components/ReusableComponents/Lotties/loading.json';
 import {
     getAirtimeBeneficiariesData,
@@ -128,8 +132,10 @@ const Profile = () => {
     const { postBeneficiaries, errorMessagepostBeneficiaries } = useSelector(
         (state) => state.postBeneficiariesReducer
     );
-    const { postAirtimeBeneficiaries, errorMessagepostAirtimeBeneficiaries } =
-        useSelector((state) => state.postAirtimeBeneficiariesReducer);
+    const {
+        postAirtimeBeneficiaries,
+        errorMessagepostAirtimeBeneficiaries
+    } = useSelector((state) => state.postAirtimeBeneficiariesReducer);
     const { fetchRM, fetchRMErrorMessages } = useSelector(
         (state) => state.fetchRMReducer
     );
@@ -140,6 +146,9 @@ const Profile = () => {
     const { getAllComplaintSuccess, getAllComplaintErrorMessage } = useSelector(
         (state) => state.getComplaintReducer
     );
+    const { deleteAccountSuccess, deleteAccountErrorMessage } = useSelector(
+        (state) => state.deleteAccountReducer
+    );
     const [isLoading, setIsLoading] = useState(true);
     const socialOptions = {
         loop: true,
@@ -149,6 +158,29 @@ const Profile = () => {
             preserveAspectRatio: 'xMidYMid slice'
         }
     };
+    const [deleteAccountEmail, setDeleteAccountEmail] = useState();
+    const [deleteAccountPassword, setDeleteAccountPassword] = useState();
+    const [deleteAccountError, setDeleteAccountError] = useState();
+    const deleteAccount = () => {
+        const Data = {
+            email: deleteAccountEmail,
+            password: deleteAccountPassword
+        };
+        dispatch(deleteAccountAction(Data));
+    };
+    useEffect(() => {
+        console.log(deleteAccountErrorMessage);
+        if (deleteAccountErrorMessage) {
+            console.log(deleteAccountErrorMessage);
+            setDeleteAccountError(deleteAccountErrorMessage?.data?.message);
+        } else {
+            // dispatch(logoutAction());
+            if (!localStorage.getItem('user')) {
+                router.replace('../Auth/Login');
+            }
+        }
+    }, [deleteAccountSuccess, deleteAccountErrorMessage]);
+
     useEffect(() => {
         dispatch(getAllComplaintGet());
     }, []);
@@ -691,21 +723,29 @@ const Profile = () => {
                                                         deleted
                                                     </p>
                                                 </div>
-                                                {error ? (
+                                                {deleteAccountError ? (
                                                     <p className={styles.error}>
-                                                        {error}
+                                                        {deleteAccountError}
                                                     </p>
                                                 ) : null}
                                                 <div
                                                     className={styles.formGroup}
                                                 >
                                                     <input
+                                                        value={
+                                                            deleteAccountEmail
+                                                        }
                                                         type="text"
                                                         placeholder="Enter Delete Account"
                                                         {...register('delete', {
                                                             required:
                                                                 'Input is Required'
                                                         })}
+                                                        onChange={(e) =>
+                                                            setDeleteAccountEmail(
+                                                                e.target.value
+                                                            )
+                                                        }
                                                     />
                                                     <p className={styles.error}>
                                                         {
@@ -729,7 +769,14 @@ const Profile = () => {
                                                                         'Password is Required'
                                                                 }
                                                             )}
+                                                            value={
+                                                                deleteAccountPassword
+                                                            }
                                                             onInput={(e) => {
+                                                                setDeleteAccountPassword(
+                                                                    e.target
+                                                                        .value
+                                                                );
                                                                 if (
                                                                     e?.target
                                                                         .value
@@ -780,7 +827,12 @@ const Profile = () => {
                                                     {loading ? (
                                                         <Loader />
                                                     ) : active ? (
-                                                        <button type="submit">
+                                                        <button
+                                                            onClick={
+                                                                deleteAccount
+                                                            }
+                                                            type="submit"
+                                                        >
                                                             Delete
                                                         </button>
                                                     ) : (
@@ -1724,26 +1776,21 @@ const Profile = () => {
                                                                     .value ===
                                                                 'ECOBANK'
                                                             ) {
-                                                                const details =
-                                                                    {
-                                                                        accountNumber:
-                                                                            accountNumber
-                                                                    };
+                                                                const details = {
+                                                                    accountNumber: accountNumber
+                                                                };
                                                                 dispatch(
                                                                     postIntraBankEnquiry(
                                                                         details
                                                                     )
                                                                 );
                                                             } else {
-                                                                const details =
-                                                                    {
-                                                                        destinationBankCode:
-                                                                            e
-                                                                                .target
-                                                                                .value,
-                                                                        accountNo:
-                                                                            accountNumber
-                                                                    };
+                                                                const details = {
+                                                                    destinationBankCode:
+                                                                        e.target
+                                                                            .value,
+                                                                    accountNo: accountNumber
+                                                                };
                                                                 dispatch(
                                                                     postInterBankEnquiry(
                                                                         details
