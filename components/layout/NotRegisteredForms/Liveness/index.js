@@ -48,9 +48,7 @@ const Liveness = ({ action, cookie }) => {
         var file = new File([buf], 'userface-1828438.jpg', { type: mimeType });
 
         var formData = new FormData();
-
         formData.append('userFace', file);
-
         // let cookie;
 
         // if (getCookie('cookieToken') == undefined) {

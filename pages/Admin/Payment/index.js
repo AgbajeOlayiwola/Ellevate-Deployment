@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import DashLayout from '../../components/layout/Dashboard';
-import MakePaymentFirst from '../../components/ReusableComponents/MakePaymentFirst';
-import MakePaymentSecond from '../../components/ReusableComponents/MakePaymentSecond';
-import PaymentTable from '../../components/ReusableComponents/PayementTable';
-import PaymentSuccess from '../../components/ReusableComponents/PaymentSuccess';
-import ReceivePaymentFirst from '../../components/ReusableComponents/ReceivePaymentFirst';
-import ReceivePaymentSecond from '../../components/ReusableComponents/ReceivePaymentSecond';
+import DashLayout from '../../../components/layout/Dashboard';
+import MakePaymentFirst from '../../../components/ReusableComponents/MakePaymentFirst';
+import MakePaymentSecond from '../../../components/ReusableComponents/MakePaymentSecond';
+import PaymentTable from '../../../components/ReusableComponents/PayementTable';
+import PaymentSuccess from '../../../components/ReusableComponents/PaymentSuccess';
+import ReceivePaymentFirst from '../../../components/ReusableComponents/ReceivePaymentFirst';
+import ReceivePaymentSecond from '../../../components/ReusableComponents/ReceivePaymentSecond';
 import styles from './styles.module.css';
 import Image from 'next/image';
-import Overlay from '../../components/ReusableComponents/Overlay';
-import SchedulePayment from '../../components/ReusableComponents/Schedulepayment';
-import Visbility from '../../components/ReusableComponents/Eyeysvg';
+import Overlay from '../../../components/ReusableComponents/Overlay';
+import SchedulePayment from '../../../components/ReusableComponents/Schedulepayment';
+import Visbility from '../../../components/ReusableComponents/Eyeysvg';
 import { RWebShare } from 'react-web-share';
 import {
     postAirtime,
@@ -24,15 +24,16 @@ import {
     postBeneficiariesData,
     loadAccountPrimary,
     bankAccountsData
-} from '../../redux/actions/actions';
+} from '../../../redux/actions/actions';
 // import ChartDiv from './chartDivStyled';
 // import ChartContent from './chartContentStyled';
-import PaymentSingleBody from '../../components/ReusableComponents/PaymentSingleBody';
-import PaymentCard from '../../components/ReusableComponents/PaymentCard';
+import PaymentSingleBody from '../../../components/ReusableComponents/PaymentSingleBody';
+import PaymentCard from '../../../components/ReusableComponents/PaymentCard';
 // import PaymentError from '../../components/ReusableComponents/PaymentError';
 import { useRouter } from 'next/router';
-import { PaymentData } from '../../components/ReusableComponents/Data';
-import AccountsInfoCard from '../../components/ReusableComponents/AccountInfoCard';
+import { PaymentData } from '../../../components/ReusableComponents/Data';
+import AccountsInfoCard from '../../../components/ReusableComponents/AccountInfoCard';
+import withAuth from '../../../components/HOC/withAuth';
 
 const Payment = () => {
     const router = useRouter();
@@ -59,8 +60,10 @@ const Payment = () => {
         (state) => state.transactionFeesReducer
     );
 
-    const { internationalTransfer, errorMessageinternationalTransfer } =
-        useSelector((state) => state.internationalTransferReducer);
+    const {
+        internationalTransfer,
+        errorMessageinternationalTransfer
+    } = useSelector((state) => state.internationalTransferReducer);
 
     const { verifyCurrency, errorMessageverifyCurrency } = useSelector(
         (state) => state.verifyCurrencyReducer
@@ -110,7 +113,9 @@ const Payment = () => {
     let desiredPackageData = {};
     if (typeof window !== 'undefined') {
         desiredPackage = window.localStorage.getItem('DesiredPackage');
-        desiredPackageData = JSON.parse(desiredPackage);
+        if (desiredPackage !== 'undefined') {
+            desiredPackageData = JSON.parse(desiredPackage);
+        }
     }
     let csvType = [];
     useEffect(() => {
@@ -698,16 +703,18 @@ const Payment = () => {
                                                                   : e.Bank ===
                                                                     'Zenith Bank'
                                                                   ? 'ZENITH-ACC'
+                                                                  : e.Bank ===
+                                                                    'Ecobank'
+                                                                  ? 'ECOBANK'
                                                                   : null,
                                                           beneficiaryName:
                                                               e.BeneName,
                                                           destinationAccountNo:
                                                               e.AccountNo,
-                                                          transactionAmount:
-                                                              parseInt(
-                                                                  e.Amount,
-                                                                  10
-                                                              ).toString(),
+                                                          transactionAmount: parseInt(
+                                                              e.Amount,
+                                                              10
+                                                          ).toString(),
                                                           narration: e.narration
                                                       };
                                                   })
@@ -761,6 +768,11 @@ const Payment = () => {
                     case 2:
                         return (
                             <PaymentSuccess
+                                beneName={`${
+                                    csvData !== null
+                                        ? csvData.slice(2).length
+                                        : paymentDetails?.details?.length
+                                } beneficiaries`}
                                 error={error}
                                 statusbar={status}
                                 overlay={overlay}
@@ -897,13 +909,11 @@ const Payment = () => {
                                                 .toString()
                                                 .replaceAll(',', ''),
                                             accountId: senderDetails,
-                                            billerCode:
-                                                airtimeNetData.billerDetail.billerCode.toString(),
-                                            billerId:
-                                                airtimeNetData.billerDetail.billerID.toString(),
+                                            billerCode: airtimeNetData.billerDetail.billerCode.toString(),
+                                            billerId: airtimeNetData.billerDetail.billerID.toString(),
                                             // productCode: airtimeNetData.name,
                                             productCode:
-                                                desiredPackageData.productCode,
+                                                paymentDetails.airtimeCode,
                                             mobileNo:
                                                 paymentDetails.phoneNumber ===
                                                 ''
@@ -934,8 +944,7 @@ const Payment = () => {
                                             billerCode:
                                                 airtimeNetData.billerDetail
                                                     .billerCode,
-                                            billerId:
-                                                airtimeNetData.billerDetail.billerID.toString(),
+                                            billerId: airtimeNetData.billerDetail.billerID.toString(),
                                             productCode:
                                                 desiredPackageData.productCode,
                                             paymentDescription:
@@ -1093,7 +1102,7 @@ const Payment = () => {
         setOutType(type);
     };
     return (
-        <DashLayout page="Payments">
+        <>
             <div className={styles.statementCover}>
                 {/* {active && (
                 <div className={styles.greencard}>
@@ -1157,8 +1166,8 @@ const Payment = () => {
 
                 {renderForm()}
             </div>
-        </DashLayout>
+        </>
     );
 };
 
-export default Payment;
+export default withAuth(Payment);

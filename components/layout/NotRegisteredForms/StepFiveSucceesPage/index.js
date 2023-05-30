@@ -43,7 +43,7 @@ const StepFiveSuccessPage = ({ handleShowSuccessStep }) => {
                         Your Account Number is{' '}
                         <span>{accountDone.accountNumber}</span>
                     </h3>
-                    <Link href="/Dashboard">
+                    <Link href="/Admin/Dashboard">
                         <ButtonComp
                             disabled={activeBtn}
                             active={activeBtn ? 'active' : 'inactive'}

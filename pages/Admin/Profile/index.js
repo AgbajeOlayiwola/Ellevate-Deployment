@@ -1,37 +1,37 @@
 import Image from 'next/image';
 import React, { useEffect, useState, useRef } from 'react';
-import DashLayout from '../../components/layout/Dashboard';
-import ProfileLayout from '../../components/layout/ProfileLayout';
-import ArrowBackSvg from '../../components/ReusableComponents/ArrowBackSvg';
-import BeneSvg from '../../components/ReusableComponents/BeneSvg';
-import BvnSvg from '../../components/ReusableComponents/BvnSvg';
+import DashLayout from '../../../components/layout/Dashboard';
+import ProfileLayout from '../../../components/layout/ProfileLayout';
+import ArrowBackSvg from '../../../components/ReusableComponents/ArrowBackSvg';
+import BeneSvg from '../../../components/ReusableComponents/BeneSvg';
+import BvnSvg from '../../../components/ReusableComponents/BvnSvg';
 import Iframe from 'react-iframe';
-import CheckedSvg from '../../components/ReusableComponents/CheckedSvg';
-import Visbility from '../../components/ReusableComponents/Eyeysvg';
-import InputTag from '../../components/ReusableComponents/Input';
-import ManageBeneSingle from '../../components/ReusableComponents/ManageBene';
-import ManageLimit from '../../components/ReusableComponents/ManageLimit1';
-import ManageLimit2 from '../../components/ReusableComponents/ManageLimit2';
-import ManageLimitSvg from '../../components/ReusableComponents/ManageLimitSvg';
-import ManageSignSvg from '../../components/ReusableComponents/ManageSignSvg';
-import ProfileSingle from '../../components/ReusableComponents/ProfileSingle';
-import AddSvg from '../../components/ReusableComponents/ReusableSvgComponents/AddSvg';
-import ContactSvg from '../../components/ReusableComponents/ReusableSvgComponents/ContactSvg';
-import EditProfileSvg from '../../components/ReusableComponents/ReusableSvgComponents/EditProfileSvg';
-import LogoutSvg from '../../components/ReusableComponents/ReusableSvgComponents/LogoutSvg';
-import RmSvg from '../../components/ReusableComponents/RmSvg';
-import ShareSvg from '../../components/ReusableComponents/ShareSvg';
+import CheckedSvg from '../../../components/ReusableComponents/CheckedSvg';
+import Visbility from '../../../components/ReusableComponents/Eyeysvg';
+import InputTag from '../../../components/ReusableComponents/Input';
+import ManageBeneSingle from '../../../components/ReusableComponents/ManageBene';
+import ManageLimit from '../../../components/ReusableComponents/ManageLimit1';
+import ManageLimit2 from '../../../components/ReusableComponents/ManageLimit2';
+import ManageLimitSvg from '../../../components/ReusableComponents/ManageLimitSvg';
+import ManageSignSvg from '../../../components/ReusableComponents/ManageSignSvg';
+import ProfileSingle from '../../../components/ReusableComponents/ProfileSingle';
+import AddSvg from '../../../components/ReusableComponents/ReusableSvgComponents/AddSvg';
+import ContactSvg from '../../../components/ReusableComponents/ReusableSvgComponents/ContactSvg';
+import EditProfileSvg from '../../../components/ReusableComponents/ReusableSvgComponents/EditProfileSvg';
+import LogoutSvg from '../../../components/ReusableComponents/ReusableSvgComponents/LogoutSvg';
+import RmSvg from '../../../components/ReusableComponents/RmSvg';
+import ShareSvg from '../../../components/ReusableComponents/ShareSvg';
 import styles from './styles.module.css';
 import Lottie from 'react-lottie';
-import animationData from '../../components/ReusableComponents/Lotties/contact-us.json';
-import socialdata from '../../components/ReusableComponents/Lotties/social-media-marketing.json';
+import animationData from '../../../components/ReusableComponents/Lotties/contact-us.json';
+import socialdata from '../../../components/ReusableComponents/Lotties/social-media-marketing.json';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     deleteAccountAction,
     getAllComplaintGet,
     logoutAction
-} from '../../redux/actions/actions';
-import socialdataa from '../../components/ReusableComponents/Lotties/loading.json';
+} from '../../../redux/actions/actions';
+import socialdataa from '../../../components/ReusableComponents/Lotties/loading.json';
 import {
     getAirtimeBeneficiariesData,
     deleteAirtimeBeneficiariesData,
@@ -46,21 +46,24 @@ import {
     postIntraBankEnquiry,
     loadbank,
     loadfetchRM,
+    bankAccountsData,
     postBeneficiariesData,
     postAirtimeNetwork,
     loadsetTransactionPin,
     postAirtimeBeneficiariesData
-} from '../../redux/actions/actions';
+} from '../../../redux/actions/actions';
 import { useForm } from 'react-hook-form';
-import Loader from '../../components/ReusableComponents/Loader';
-import PaymentSuccess from '../../components/ReusableComponents/PopupStyle';
+import Loader from '../../../components/ReusableComponents/Loader';
+import PaymentSuccess from '../../../components/ReusableComponents/PopupStyle';
 import Link from 'next/link';
-import { ButtonComp } from '../../components';
+import { ButtonComp } from '../../../components';
 import { useRouter } from 'next/router';
 import { FaTrash } from 'react-icons/fa';
-import OutsideClick from '../../components/ReusableComponents/OutsideClick';
-import StorePopup from '../../components/ReusableComponents/StorePopup';
-import CloseBtnSvg from '../../components/ReusableComponents/ClosebtnSvg';
+import OutsideClick from '../../../components/ReusableComponents/OutsideClick';
+import StorePopup from '../../../components/ReusableComponents/StorePopup';
+import CloseBtnSvg from '../../../components/ReusableComponents/ClosebtnSvg';
+import { deleteCookie, getCookie } from 'cookies-next';
+import withAuth from '../../../components/HOC/withAuth';
 const Profile = () => {
     const router = useRouter();
     const [activeBtn, setActiveBtn] = useState(false);
@@ -93,6 +96,8 @@ const Profile = () => {
     const [rafiki, setRafiki] = useState(false);
     const [active, setActive] = useState(false);
     const [airtimeNetworkData, setAirtimeNetworkData] = useState([]);
+    const [copyAcctInfo, setCopyAcctInfo] = useState();
+    const [alert, setAlert] = useState(false);
     const dispatch = useDispatch();
     const { getBeneficiaries } = useSelector(
         (state) => state.getBeneficiariesReducer
@@ -149,6 +154,9 @@ const Profile = () => {
     const { deleteAccountSuccess, deleteAccountErrorMessage } = useSelector(
         (state) => state.deleteAccountReducer
     );
+    const { bankAccounts, bankAccountErrorMessages } = useSelector(
+        (state) => state.bankAccountsReducer
+    );
     const [isLoading, setIsLoading] = useState(true);
     const socialOptions = {
         loop: true,
@@ -169,12 +177,29 @@ const Profile = () => {
         dispatch(deleteAccountAction(Data));
     };
     useEffect(() => {
+        Object.keys(bankAccounts)?.map((accountNo) => {
+            if (bankAccounts[accountNo].isPrimaryAccount === true) {
+                setCopyAcctInfo(bankAccounts[0]);
+            }
+        });
+    }, [bankAccounts]);
+    useEffect(() => {
         console.log(deleteAccountErrorMessage);
         if (deleteAccountErrorMessage) {
             console.log(deleteAccountErrorMessage);
             setDeleteAccountError(deleteAccountErrorMessage?.data?.message);
-        } else {
+        } else if (deleteAccountSuccess) {
             // dispatch(logoutAction());
+            localStorage.removeItem('user');
+
+            localStorage.removeItem('token');
+            localStorage.clear();
+
+            if (getCookie('cookieToken') == undefined) {
+                deleteCookie('existingToken');
+            } else {
+                deleteCookie('cookieToken');
+            }
             if (!localStorage.getItem('user')) {
                 router.replace('../Auth/Login');
             }
@@ -283,6 +308,7 @@ const Profile = () => {
     useEffect(() => {
         transactionPin();
     }, [setTransactionPin, setTransactionPinError]);
+    const [deleteCondition, setDeleteCondition] = useState();
 
     const getAllBanksByAccount = (accountNo) => {
         //NOTE, This can be fetched from the Database
@@ -346,6 +372,7 @@ const Profile = () => {
         dispatch(loadAccountPrimary());
         // dispatch(loadbank('ENG'));
         dispatch(postAirtimeNetwork());
+        dispatch(bankAccountsData());
     }, []);
     useEffect(() => {
         if (airtimeNetwork !== null) {
@@ -481,7 +508,7 @@ const Profile = () => {
             color: '#7A7978'
         },
         {
-            text: 'RM Name and Contact Details ',
+            text: 'RM Name and Contact Details',
             icon: <RmSvg />,
             color: '#7A7978'
         },
@@ -828,9 +855,12 @@ const Profile = () => {
                                                         <Loader />
                                                     ) : active ? (
                                                         <button
-                                                            onClick={
-                                                                deleteAccount
-                                                            }
+                                                            onClick={() => {
+                                                                // deleteAccount
+                                                                setDeleteCondition(
+                                                                    true
+                                                                );
+                                                            }}
                                                             type="submit"
                                                         >
                                                             Delete
@@ -847,6 +877,41 @@ const Profile = () => {
                                                         </button>
                                                     )}
                                                 </div>
+                                                {deleteCondition ? (
+                                                    <div
+                                                        className={
+                                                            styles.deleteConfirmation
+                                                        }
+                                                    >
+                                                        <p>
+                                                            Are You Sure You
+                                                            Want To Delete Your
+                                                            Account
+                                                        </p>
+                                                        <div
+                                                            className={
+                                                                styles.deleteButtons
+                                                            }
+                                                        >
+                                                            <button
+                                                                onClick={
+                                                                    deleteAccount
+                                                                }
+                                                            >
+                                                                Yes
+                                                            </button>
+                                                            <button
+                                                                onClick={() =>
+                                                                    setDeleteCondition(
+                                                                        false
+                                                                    )
+                                                                }
+                                                            >
+                                                                No
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : null}
                                             </form>
                                         </div>
                                     </StorePopup>
@@ -991,7 +1056,7 @@ const Profile = () => {
                             </form>
                         );
                 }
-            case 'RM Name and Contact Details ':
+            case 'RM Name and Contact Details':
                 switch (count) {
                     case 0:
                         return (
@@ -1386,7 +1451,7 @@ const Profile = () => {
                                     </div>
                                 </div>
                                 <img
-                                    src="Assets/Images/rafiki.jpeg"
+                                    src="/Assets/Images/rafiki.jpeg"
                                     alt="Rafiki"
                                     className={styles.rafiki}
                                 />
@@ -1698,6 +1763,10 @@ const Profile = () => {
                                                                         e.target
                                                                             .value
                                                                     )
+                                                                );
+                                                                setAccountNumber(
+                                                                    e.target
+                                                                        .value
                                                                 );
                                                             } else if (
                                                                 e.target.value
@@ -2087,7 +2156,8 @@ const Profile = () => {
     };
 
     return (
-        <DashLayout page="Profile Management">
+        // <DashLayout page="Profile Management">
+        <>
             <ProfileLayout
                 head={
                     <>
@@ -2145,19 +2215,32 @@ const Profile = () => {
                                 <h4>Account Number</h4>
                                 <div className={styles.accountNumberCopy}>
                                     <p>{acctNumber}</p>
-                                    <h5
-                                        onClick={() => {
-                                            {
-                                                navigator.clipboard
-                                                    .writeText(acctNumber)
-                                                    .then(() => {
-                                                        alert('Copied');
-                                                    });
-                                            }
-                                        }}
-                                    >
-                                        copy
-                                    </h5>
+                                    {alert ? (
+                                        <p>Copied to Clipboard</p>
+                                    ) : (
+                                        <h5
+                                            onClick={() => {
+                                                {
+                                                    navigator.clipboard
+                                                        .writeText(
+                                                            `Account Name - ${userProfileData.lastName}  ${userProfileData.firstName} 
+        Account No. - ${copyAcctInfo.accountNumber}
+        Bank Name - Ecobank
+        Swift Code - ${copyAcctInfo.accountSwiftCode}
+        Bank Branch - ${copyAcctInfo.accountBankName} `
+                                                        )
+                                                        .then(() => {
+                                                            setAlert(true);
+                                                            setTimeout(() => {
+                                                                setAlert(false);
+                                                            }, 1500);
+                                                        });
+                                                }
+                                            }}
+                                        >
+                                            copy
+                                        </h5>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -2286,8 +2369,9 @@ const Profile = () => {
                     }
                 />
             ) : null}
-        </DashLayout>
+            {/* </DashLayout> */}
+        </>
     );
 };
 
-export default Profile;
+export default withAuth(Profile);

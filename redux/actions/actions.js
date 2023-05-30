@@ -801,7 +801,7 @@ export const changeTransactionPinLoadError = (errorMessage) => ({
 export const loadchangeTransactionPin = (code) => (dispatch) => {
     dispatch(changeTransactionPinLoadStart());
     axiosInstance
-        .patch(`${apiRoutes.changeTransactionPin}`, code)
+        .post(`${apiRoutes.changeTransactionPin}`, code)
         .then((response) =>
             dispatch(changeTransactionPinLoadSuccess(response.data))
         )
@@ -1141,34 +1141,33 @@ export const transactionHistoryLoadError = (transactionHistoryerror) => ({
     type: transactionHistory.TRANSACTIONHISTORY_LOAD_ERROR,
     payload: transactionHistoryerror
 });
-export const getTransactionHistory = (pageSrchIndex, numOfRecords) => (
-    dispatch
-) => {
-    let cookie;
-    if (getCookie('cookieToken') == undefined) {
-        cookie = getCookie('existingToken');
-    } else {
-        cookie = getCookie('cookieToken');
-    }
-    dispatch(transactionHistoryLoadStart());
-    axiosInstance
-        .get(
-            `${apiRoutes.transactionHistory}?pageSearchIndex=${pageSrchIndex}&numberOfRecords=${numOfRecords}`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Client-Type': 'web',
-                    Authorization: `Bearer ${cookie}`
+export const getTransactionHistory =
+    (pageSrchIndex, numOfRecords) => (dispatch) => {
+        let cookie;
+        if (getCookie('cookieToken') == undefined) {
+            cookie = getCookie('existingToken');
+        } else {
+            cookie = getCookie('cookieToken');
+        }
+        dispatch(transactionHistoryLoadStart());
+        axiosInstance
+            .get(
+                `${apiRoutes.transactionHistory}?pageSearchIndex=${pageSrchIndex}&numberOfRecords=${numOfRecords}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Client-Type': 'web',
+                        Authorization: `Bearer ${cookie}`
+                    }
                 }
-            }
-        )
-        .then((response) =>
-            dispatch(transactionHistoryLoadSuccess(response.data.data))
-        )
-        .catch((error) =>
-            dispatch(transactionHistoryLoadError(error?.message))
-        );
-};
+            )
+            .then((response) =>
+                dispatch(transactionHistoryLoadSuccess(response.data.data))
+            )
+            .catch((error) =>
+                dispatch(transactionHistoryLoadError(error?.message))
+            );
+    };
 
 //transactionHistory action end
 
@@ -1212,36 +1211,33 @@ export const transactionElevateLoadError = (transactionElevateerror) => ({
     type: transactionElevate.TRANSACTIONELEVATE_LOAD_ERROR,
     payload: transactionElevateerror
 });
-export const getTransactionElevate = (
-    pageSrchIndex,
-    numOfRecords,
-    transactionType
-) => (dispatch) => {
-    dispatch(transactionElevateLoadStart());
-    let cookie;
-    if (getCookie('cookieToken') == undefined) {
-        cookie = getCookie('existingToken');
-    } else {
-        cookie = getCookie('cookieToken');
-    }
-    axiosInstance
-        .get(
-            `${apiRoutes.transactionElevate}?pageSearchIndex=${pageSrchIndex}&numberOfRecords=${numOfRecords}&transactionType=${transactionType}`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Client-Type': 'web',
-                    Authorization: `Bearer ${cookie}`
+export const getTransactionElevate =
+    (pageSrchIndex, numOfRecords, transactionType) => (dispatch) => {
+        dispatch(transactionElevateLoadStart());
+        let cookie;
+        if (getCookie('cookieToken') == undefined) {
+            cookie = getCookie('existingToken');
+        } else {
+            cookie = getCookie('cookieToken');
+        }
+        axiosInstance
+            .get(
+                `${apiRoutes.transactionElevate}?pageSearchIndex=${pageSrchIndex}&numberOfRecords=${numOfRecords}&transactionType=${transactionType}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Client-Type': 'web',
+                        Authorization: `Bearer ${cookie}`
+                    }
                 }
-            }
-        )
-        .then((response) =>
-            dispatch(transactionElevateLoadSuccess(response.data.data))
-        )
-        .catch((error) =>
-            dispatch(transactionElevateLoadError(error?.message))
-        );
-};
+            )
+            .then((response) =>
+                dispatch(transactionElevateLoadSuccess(response.data.data))
+            )
+            .catch((error) =>
+                dispatch(transactionElevateLoadError(error?.message))
+            );
+    };
 
 //transactionElevate action end
 
@@ -1699,7 +1695,7 @@ export const existingUserProfileData = (data) => (dispatch) => {
         .then((response) => {
             setCookie('cookieToken', response.data.data.token, {
                 // httpOnly: 'true',
-                maxAge: 60 * 1,
+                // maxAge: 60 * 1,
                 secure: 'true'
             });
             dispatch(existingUserProfileLoadSuccess(response));
@@ -1845,7 +1841,7 @@ export const loginUserAction = (loginData) => {
                 //console.logresponse.data);
                 setCookie('cookieToken', response.data.data.token, {
                     // httpOnly: 'true',
-                    maxAge: 60 * 1,
+                    // maxAge: 60 * 1,
                     secure: 'true'
                 });
 
@@ -3031,37 +3027,38 @@ export const postEllevateProfilingError = (ellevateProfillingError) => ({
     type: postEllevateProfilling.POST_ELLEVATE_PROFILLING_ERROR,
     payload: ellevateProfillingError
 });
-export const postEllevateProfilingDetails = (profileSetupItems) => (
-    dispatch
-) => {
-    let cookie;
+export const postEllevateProfilingDetails =
+    (profileSetupItems) => (dispatch) => {
+        let cookie;
 
-    if (getCookie('cookieToken') == undefined) {
-        cookie = getCookie('existingToken');
-    } else {
-        cookie = getCookie('cookieToken');
-    }
+        if (getCookie('cookieToken') == undefined) {
+            cookie = getCookie('existingToken');
+        } else {
+            cookie = getCookie('cookieToken');
+        }
 
-    // dispatch(accountNumberLoadStart());
-    axios
-        .post(
-            `https://testvate.live${apiRoutes.postEllevateProfiling}`,
-            profileSetupItems,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Client-Type': 'web',
-                    Authorization: `Bearer ${cookie}`
+        // dispatch(accountNumberLoadStart());
+        axios
+            .post(
+                `https://testvate.live${apiRoutes.postEllevateProfiling}`,
+                profileSetupItems,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Client-Type': 'web',
+                        Authorization: `Bearer ${cookie}`
+                    }
                 }
-            }
-        )
-        .then((response) => {
-            dispatch(postEllevateProfilingSuccess(response.data.message));
-        })
-        .catch((error) =>
-            dispatch(postEllevateProfilingError(error?.response.data.message))
-        );
-};
+            )
+            .then((response) => {
+                dispatch(postEllevateProfilingSuccess(response.data.message));
+            })
+            .catch((error) =>
+                dispatch(
+                    postEllevateProfilingError(error?.response.data.message)
+                )
+            );
+    };
 //Ellevate Profiling end
 
 ////Vnin Profiling
@@ -3462,21 +3459,21 @@ export const auth2FaCodeError = (auth2FaCodeError) => ({
     payload: auth2FaCodeError
 });
 export const auth2FaCodeDetails = (auth2FaCodeData) => (dispatch) => {
-    let cookie;
+    // let cookie;
 
-    if (getCookie('cookieToken') == undefined) {
-        cookie = getCookie('existingToken');
-    } else {
-        cookie = getCookie('cookieToken');
-    }
+    // if (getCookie('cookieToken') == undefined) {
+    //     cookie = getCookie('existingToken');
+    // } else {
+    //     cookie = getCookie('cookieToken');
+    // }
 
     axios
         .post(`https://testvate.live${apiRoutes.auth2Fa}`, auth2FaCodeData, {
             headers: {
                 'Content-Type': 'application/json',
-                'X-Client-Type': 'web',
+                'X-Client-Type': 'web'
                 // withCredentials: true,
-                Authorization: `Bearer ${cookie}`
+                // Authorization: `Bearer ${cookie}`
             }
         })
         .then((response) => {
@@ -3486,7 +3483,7 @@ export const auth2FaCodeDetails = (auth2FaCodeData) => (dispatch) => {
             );
             setCookie('cookieToken', response.data.data.token, {
                 // httpOnly: 'true',
-                maxAge: 60 * 1,
+                // maxAge: 60 * 1,
                 secure: 'true'
             });
 
@@ -3744,33 +3741,32 @@ export const getDisputCategorySubError = (
     type: disputSubCategoryType.DISPUTCATEGORYSUB_LOAD_ERROR,
     payload: getDisputCategoryErrorSubMessage
 });
-export const getDisputCategorySubGen = (categoryType, disputeSubCategory) => (
-    dispatch
-) => {
-    dispatch(getDisputCategorySubStart(disputeSubCategory));
-    let cookie;
+export const getDisputCategorySubGen =
+    (categoryType, disputeSubCategory) => (dispatch) => {
+        dispatch(getDisputCategorySubStart(disputeSubCategory));
+        let cookie;
 
-    if (getCookie('cookieToken') == undefined) {
-        cookie = getCookie('existingToken');
-    } else {
-        cookie = getCookie('cookieToken');
-    }
-    axiosInstance
-        .get(
-            `${apiRoutes.subComplaintCategories}?caseType=${disputeSubCategory}&caseCategory=${categoryType}`,
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Client-Type': 'web',
-                    Authorization: `Bearer ${cookie}`
+        if (getCookie('cookieToken') == undefined) {
+            cookie = getCookie('existingToken');
+        } else {
+            cookie = getCookie('cookieToken');
+        }
+        axiosInstance
+            .get(
+                `${apiRoutes.subComplaintCategories}?caseType=${disputeSubCategory}&caseCategory=${categoryType}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Client-Type': 'web',
+                        Authorization: `Bearer ${cookie}`
+                    }
                 }
-            }
-        )
-        .then((response) => {
-            dispatch(getDisputCategorySubSuccess(response.data.data));
-        })
-        .catch((error) => dispatch(getDisputCategorySubError(error)));
-};
+            )
+            .then((response) => {
+                dispatch(getDisputCategorySubSuccess(response.data.data));
+            })
+            .catch((error) => dispatch(getDisputCategorySubError(error)));
+    };
 
 //Get Dispute Type Info actions end
 
@@ -4009,7 +4005,7 @@ export const setPrimaryAccountAction = (data) => (dispatch) => {
             }
         })
         .then((response) => {
-            dispatch(setPrimaryAccountSuccess(response?.data));
+            dispatch(setPrimaryAccountSuccess(response));
         })
         .catch((error) => {
             dispatch(setPrimaryAccountError(error?.response));

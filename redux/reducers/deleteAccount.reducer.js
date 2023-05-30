@@ -2,7 +2,7 @@ import { createAccount, deleteAccountType } from '../types/actionTypes';
 
 const initialState = {
     isLoading: false,
-    deleteAccountSuccess: [],
+    deleteAccountSuccess: null,
     deleteAccountErrorMessage: ''
 };
 

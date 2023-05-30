@@ -39,11 +39,11 @@ const Sidebar = ({ showSubnav }) => {
                 <FaTimes />
             </div>
             <div className={styles.top}>
-                <div className={styles.ellevate}>
-                    <Link href="/Dashboard">
+                <Link href="/Admin/Dashboard">
+                    <div className={styles.ellevate}>
                         <ElevateLogo />
-                    </Link>
-                </div>
+                    </div>
+                </Link>
                 <div className={styles.track}>
                     {SidebarData.map((item, index) => {
                         if (item.subNav) {
@@ -61,11 +61,11 @@ const Sidebar = ({ showSubnav }) => {
                             );
                         } else {
                             return (
-                                <a
+                                <Link
                                     href={
                                         router.pathname !== item.path
                                             ? item.path
-                                            : null
+                                            : '#'
                                     }
                                     className={styles.title}
                                 >
@@ -86,7 +86,7 @@ const Sidebar = ({ showSubnav }) => {
                                             <div>{item.title}</div>
                                         </div>
                                     </div>
-                                </a>
+                                </Link>
                             );
                         }
                     })}

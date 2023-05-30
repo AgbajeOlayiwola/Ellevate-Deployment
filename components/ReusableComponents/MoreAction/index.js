@@ -81,7 +81,7 @@ const MoreAction = ({
     const [descriptions, setDescription] = useState('');
 
     const type = 'Complaint';
-    const sub = 'Transfers';
+    const sub = 'TransferError';
     useEffect(() => {
         if (isDirection?.toLowerCase() === 'debit') {
             setSelectedDisputeCategory('Payments');
@@ -106,6 +106,7 @@ const MoreAction = ({
         };
         dispatch(lodgeDisputeSubGen(data));
         if (lodgeDisputeErrorSubMessage) {
+            setLodgeDisputeError(lodgeDisputeErrorSubMessage?.data?.message);
         }
     };
     let newDate = dates?.split('T');
