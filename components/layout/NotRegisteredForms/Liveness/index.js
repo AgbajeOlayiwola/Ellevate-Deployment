@@ -41,7 +41,7 @@ const Liveness = ({ action, cookie }) => {
         const ImageSrcII = webcamRef.current.getScreenshot();
         setImageSrcI(ImageSrcII);
         const imageSrc = webcamRef.current.getScreenshot();
-        let newImage = imageSrc.split(',');
+        let newImage = imageSrc?.split(',');
         let base64String = newImage[1];
         var buf = _base64ToArrayBuffer(base64String);
         var mimeType = 'image/jpeg';
@@ -115,9 +115,10 @@ const Liveness = ({ action, cookie }) => {
                     ) : null}
                     <ButtonComp
                         onClick={
-                            succes === 'facial verification successful'
-                                ? action
-                                : capture
+                            // succes === 'facial verification successful'
+                            // ?
+                            action
+                            // : capture
                         }
                         disabled={activeBtn}
                         active={activeBtn ? 'active' : 'inactive'}
