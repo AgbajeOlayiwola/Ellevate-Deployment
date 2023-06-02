@@ -25,7 +25,8 @@ const ReceivePaymentSecond = ({
     share,
     primary,
     merchantCode,
-    terminalId
+    terminalId,
+    ussdStatusClick
 }) => {
     const [destinationTrue, setDestinationTrue] = useState(true);
     const [addnew, setAddnew] = useState(false);
@@ -509,6 +510,7 @@ const ReceivePaymentSecond = ({
                     null}
 
                     <button onClick={action}>{buttonText}</button>
+                    <button onClick={ussdStatusClick}>View USSD Status</button>
                     {title === 'Confirm mPOS Payment Details' ? null : (
                         <p className={styles.allLinks}>
                             Tap to view all your{' '}

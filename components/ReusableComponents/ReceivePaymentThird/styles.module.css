@@ -21,7 +21,14 @@
     width: 67%;
     margin: 4px auto 64px;
 }
-
+.amountTrans{
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+.amountTrans p{
+    font-size: 15px !important;
+}
 .closeCont {
     display: flex;
     justify-content: right;

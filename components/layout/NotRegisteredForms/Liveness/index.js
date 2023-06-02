@@ -74,7 +74,8 @@ const Liveness = ({ action, cookie }) => {
                 setLoads(false);
             })
             .catch((error) => {
-                setError(error.response.data.message);
+                setSuccess(error.response.data.message);
+                // setError(error.response.data.message);
                 setLoading(false);
                 setLoads(false);
             });

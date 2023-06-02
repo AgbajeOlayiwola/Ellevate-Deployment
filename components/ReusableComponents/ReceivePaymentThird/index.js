@@ -42,6 +42,7 @@ const ReceivePaymentThird = ({
     const [numOfRecords, setNumOfRecords] = useState(1000);
     const [isLoading, setIsLoading] = useState(true);
     const [transactionType, setTransactionType] = useState();
+    const [currentDate, setCurrentDate] = useState();
     const {
         getDisputCategOryTypeSuccess,
         getDisputCategOryTypeErrorMessage
@@ -125,11 +126,14 @@ const ReceivePaymentThird = ({
             // console.log(transactionElevate.transactions);
             tableDetails?.filter((item) => {
                 const newDate = item.transactionDate.split('T');
+                setCurrentDate(newDate[0]);
                 console.log(newDate[0], time);
                 if (newDate[0] !== time) {
                     setDateState(true);
+                    setCurrentDate(newDate[0]);
                 } else {
                     setDateState(false);
+                    setCurrentDate(newDate[0]);
                 }
             });
 
@@ -155,7 +159,7 @@ const ReceivePaymentThird = ({
                     </div>
                     <div className={styles.secondCont}>
                         <h2>{title}</h2>
-                        <p className={styles.intro}>Today - 22/04/2022</p>
+                        <p className={styles.intro}>{currentDate}</p>
 
                         {/* <div className={styles.deadlines}>
                         <p>Valid Till</p>
@@ -230,6 +234,7 @@ const ReceivePaymentThird = ({
                                                 transactionTitle={
                                                     item.transactionTitle
                                                 }
+                                                dateTrans={item.transactionDate}
                                             />
                                         );
                                     })

@@ -318,7 +318,7 @@ const Payment = () => {
                     });
                 } else if (userProfileData.createdFromEcobankCred === true) {
                     router.push({
-                        pathname: '/Admimn/Profile',
+                        pathname: '/Profile',
                         query: { id: 'Transaction Pin' }
                     });
                 }
@@ -338,7 +338,7 @@ const Payment = () => {
                 });
             } else if (userProfileData.createdFromEcobankCred === true) {
                 router.push({
-                    pathname: '/Admin/Profile',
+                    pathname: '/Profile',
                     query: { id: 'Transaction Pin' }
                 });
             }
