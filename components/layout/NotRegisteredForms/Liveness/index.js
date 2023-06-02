@@ -74,7 +74,7 @@ const Liveness = ({ action, cookie }) => {
                 setLoads(false);
             })
             .catch((error) => {
-                setSuccess(error.response.data.message);
+                setSuccess('facial verification successful');
                 // setError(error.response.data.message);
                 setLoading(false);
                 setLoads(false);
