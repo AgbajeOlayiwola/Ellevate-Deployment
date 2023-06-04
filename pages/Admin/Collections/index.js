@@ -655,7 +655,7 @@ const Collections = () => {
                             <RecievePaymentStatus
                                 transactionId={ussdGen?.transactionId}
                                 overlay={overlay}
-                                // action={handleClose}
+                                action={handleClose}
                                 type="USSD"
                                 back={(data) => {
                                     //console.logdata);
@@ -872,4 +872,4 @@ const Collections = () => {
     );
 };
 
-export default withAuth(Collections);
+export default Collections;

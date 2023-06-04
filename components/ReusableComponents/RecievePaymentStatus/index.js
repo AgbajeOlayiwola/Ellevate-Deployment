@@ -49,7 +49,7 @@ const RecievePaymentStatus = ({
 
     return (
         <>
-            <Popup overlay={overlay}>
+            <Popup overlay={overlay} action={action}>
                 <div>Ussd Payment Status</div>
                 {isLoading ? (
                     <Lottie options={socialOptions} height={200} width={200} />

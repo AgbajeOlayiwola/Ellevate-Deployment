@@ -164,6 +164,15 @@ border-radius: 12px;
 margin-top: 20px;
 position: relative;
 }
+.dates{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 15px;  
+    color: #7f7f7f;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
 
 .deadlines p {
     font-style: normal;

@@ -275,21 +275,21 @@ export const RecievePayment = [
         path: 'Ecobank QR only',
         icon: <BiIcons.BiScan />
     },
-    {
-        title: 'By Phone POS',
-        path: 'Phone POS',
-        icon: <HiIcons.HiOutlineCreditCard />
-    },
+    // {
+    //     title: 'By Phone POS',
+    //     path: 'Phone POS',
+    //     icon: <HiIcons.HiOutlineCreditCard />
+    // },
     {
         title: 'USSD',
         path: 'USSD only',
         icon: <StarSharp />
-    },
-    {
-        title: 'Paylink',
-        path: 'Paylink',
-        icon: <BiIcons.BiLinkAlt />
     }
+    // {
+    //     title: 'Paylink',
+    //     path: 'Paylink',
+    //     icon: <BiIcons.BiLinkAlt />
+    // }
 ];
 
 export const MakePayment = [

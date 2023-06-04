@@ -510,7 +510,11 @@ const ReceivePaymentSecond = ({
                     null}
 
                     <button onClick={action}>{buttonText}</button>
-                    <button onClick={ussdStatusClick}>View USSD Status</button>
+                    {title === 'USSD' ? (
+                        <button onClick={ussdStatusClick}>
+                            View USSD Status
+                        </button>
+                    ) : null}
                     {title === 'Confirm mPOS Payment Details' ? null : (
                         <p className={styles.allLinks}>
                             Tap to view all your{' '}
