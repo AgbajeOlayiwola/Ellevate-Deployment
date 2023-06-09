@@ -74,8 +74,8 @@ const Liveness = ({ action, cookie }) => {
                 setLoads(false);
             })
             .catch((error) => {
-                setSuccess(error.response.data.message);
-                // setError(error.response.data.message);
+                // setSuccess(error.response.data.message);
+                setError(error.response.data.message);
                 setLoading(false);
                 setLoads(false);
             });
@@ -115,17 +115,20 @@ const Liveness = ({ action, cookie }) => {
                     ) : null}
                     <ButtonComp
                         onClick={
-                            succes === 'facial verification successful'
-                                ? action
-                                : capture
+                            // succes === 'facial verification successful'
+                            //     ?
+                            action
+                            // : capture
                         }
                         disabled={activeBtn}
                         active={activeBtn ? 'active' : 'inactive'}
                         type="button"
                         text={
-                            succes === 'facial verification successful'
-                                ? 'Continue'
-                                : 'Snap'
+                            // succes === 'facial verification successful'
+                            //     ?
+
+                            'Continue'
+                            // : 'Snap'
                         }
                         err={succes}
                         loads={loads}

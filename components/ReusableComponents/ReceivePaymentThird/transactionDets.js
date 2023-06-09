@@ -18,7 +18,7 @@ const TransactionDets = ({
     transactionTitle,
     dateTrans,
     // dates
-    typeTran,
+    // type,
     sender,
     destinationBank,
     narration,
@@ -317,7 +317,7 @@ const TransactionDets = ({
                                                     }
                                                 >
                                                     <p>Transaction Type</p>
-                                                    <p>{typeTran}</p>
+                                                    <p>{type}</p>
                                                 </div>
                                                 <hr />
                                             </>
